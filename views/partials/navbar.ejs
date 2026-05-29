@@ -19,6 +19,8 @@
             <li><a href="/restaurants">Restaurants</a></li>
             <li><a href="/orderhistory">Order History</a></li>
             <li><a href="/restaurants/<%=currentUser._id%>">My Menu</a></li>
+            <li><a href="/restaurants/<%=currentUser._id%>/donations">Donations</a></li>
+            <li><a href="/restaurants/<%=currentUser._id%>/donations/history">Donation History</a></li>
             <li><a href="/profile/<%= currentUser._id %>">Profile</a></li>
         <% } else { %>
             <li><a href="/restaurants">Restaurants</a></li>

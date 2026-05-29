@@ -1,0 +1,28 @@
+<% layout('layouts/boilerplate') %>
+<div class="container mt-4">
+  <h1>Donation History</h1>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Food Name</th>
+        <th>Donated Quantity</th>
+        <th>Donation Date</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if(!donations || donations.length === 0) { %>
+        <tr><td colspan="4">No donations found.</td></tr>
+      <% } else { %>
+        <% for(const d of donations) { %>
+          <tr>
+            <td><%= d.foodName %></td>
+            <td><%= d.donatedQuantity %></td>
+            <td><%= d.donationDate.toLocaleString() %></td>
+            <td><%= d.status %></td>
+          </tr>
+        <% } %>
+      <% } %>
+    </tbody>
+  </table>
+</div>

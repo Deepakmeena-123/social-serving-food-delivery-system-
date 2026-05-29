@@ -1,0 +1,48 @@
+<% layout('layouts/boilerplate') %>
+<div class="container mt-4">
+  <h1>Donation Center</h1>
+  <p>Select one or more dishes below and specify quantity to donate.</p>
+  <form action="/restaurants/<%= restaurant._id %>/donations" method="POST">
+    <div class="mb-3">
+      <label for="NGO_select">Select NGO to receive donations</label>
+      <select class="form-select" id="NGO_select" name="NGO" required>
+        <option value="">Choose NGO</option>
+        <% for (let ngo of ngos) { %>
+          <option value="<%= ngo._id %>"><%= ngo.username %> - <%= ngo.location %></option>
+        <% } %>
+      </select>
+    </div>
+    <div class="row">
+      <% for(let item of restaurant.cart) { %>
+      <% const food = item.food; %>
+      <div class="col-md-6 mb-3">
+        <div class="card">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <% if(food.image && food.image.url) { %>
+              <img src="<%= food.image.url %>" class="img-fluid" alt="<%= food.name %>">
+              <% } else { %>
+              <img src="https://via.placeholder.com/150" class="img-fluid" alt="no image">
+              <% } %>
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="selected" value="<%= food._id %>" id="sel_<%= food._id %>">
+                  <label class="form-check-label" for="sel_<%= food._id %>"><strong><%= food.name %></strong></label>
+                </div>
+                <p class="mb-1">Available: <strong><%= food.count %></strong> plates</p>
+                <div class="mb-2">
+                  <label for="quantity_<%= food._id %>">Donate quantity</label>
+                  <input type="number" name="quantity_<%= food._id %>" id="quantity_<%= food._id %>" class="form-control" min="1" max="<%= food.count %>" value="1">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% } %>
+    </div>
+    <button class="btn btn-primary">Donate Selected Food</button>
+  </form>
+</div>

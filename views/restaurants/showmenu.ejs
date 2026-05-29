@@ -46,12 +46,6 @@
               >Edit
             </a>
             <% } %>
-            <a
-              class="btn btn-success mb-2"
-              href="/restaurants/<%=restaurant._id%>/<%= food.food._id %>/donate-leftover"
-            >
-              Donate Leftover Food
-            </a>
             <form
               class="d-inline"
               action="/restaurants/<%=restaurant._id%>/<%=food.food._id%>?_method=DELETE"
