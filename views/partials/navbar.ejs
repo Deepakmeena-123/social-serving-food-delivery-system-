@@ -23,10 +23,8 @@
             <li><a href="/restaurants/<%=currentUser._id%>/donations/history">Donation History</a></li>
             <li><a href="/profile/<%= currentUser._id %>">Profile</a></li>
         <% } else { %>
-            <li><a href="/restaurants">Restaurants</a></li>
-            <li><a href="/orderhistory">Order History</a></li>
+            <li><a href="/receiveddonations">Received Donations</a></li>
             <li><a href="/donationhistory">Donation History</a></li>
-            <li><a href="/cart">Cart</a></li>
             <li><a href="/profile/<%= currentUser._id %>">Profile</a></li>
         <% } %>
         <li><a href="/logout">Logout</a></li>

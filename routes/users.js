@@ -96,6 +96,30 @@ router.get('/donationhistory',catchAsync( async (req,res) => {
     }
 }))
 
+// Received Donations for NGO
+router.get('/receiveddonations', catchAsync(async (req, res) => {
+    if(!req.user){
+        req.flash('error',"User Must LOGGED IN")
+        return res.redirect('/login')
+    }
+
+    const user = await User.findById(req.user._id)
+    const orders = await Order.find({ NGO: user._id }).populate({
+        path: 'NGO'
+    }).populate({
+        path: 'user'
+    }).populate({
+        path: 'order',
+        populate: {
+            path: 'food',
+            populate:{
+                path: 'restaurant'
+            }
+        }
+    })
+    res.render('order', { orders, str: 'Received Donations' })
+}))
+
 //Order Details
 router.get('/orderhistory/:orderid', catchAsync(async(req,res) => {
     if(!req.user){
