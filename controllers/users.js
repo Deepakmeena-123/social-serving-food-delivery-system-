@@ -29,7 +29,7 @@ module.exports.register = async (req, res, next) => {
         const registeredUser = await User.register(user, password);
         req.login(registeredUser, async (err) => {
             if (err) return next(err);
-            req.flash('success', 'Welcome to NPO!');
+            req.flash('success', 'Welcome to FoodBridge! Your account has been created successfully.');
             if(req.user.roles === 'restaurant'){
                 const portalTime = await PortalTime.find();
                 const start = portalTime?.[0]?.start ?? '00:00';
@@ -87,7 +87,7 @@ module.exports.renderLogin = (req, res) => {
 
 //Logging User In
 module.exports.login = async (req, res) => {
-    req.flash('success', 'Welcome back!');
+    req.flash('success', `Welcome back, ${req.user.username}!`);
     if(req.user.roles === 'restaurant'){
         const portalTime=await PortalTime.find();
         const start = portalTime?.[0]?.start ?? '00:00';

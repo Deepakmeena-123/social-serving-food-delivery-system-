@@ -21,6 +21,20 @@
       </div>
       <div class="col-md-8">
         <div class="card-body">
+          <div class="mb-2">
+            <label class="form-check-label">
+              <input
+                type="checkbox"
+                class="form-check-input selected-food-checkbox"
+                value="<%= food.food._id %>"
+                data-count="<%= food.count %>"
+                data-unit-price="<%= currentUser.roles === 'customer' ? (0.8 * food.food.price) : (0.6 * food.food.price) %>"
+                data-rest-lat="<%= food.food.restaurant.geometry['coordinates'][1] %>"
+                data-rest-lng="<%= food.food.restaurant.geometry['coordinates'][0] %>"
+              />
+              Select this item
+            </label>
+          </div>
           <h5 class="card-title"><%= food.food.name %></h5>
           <p class="card-text">
             <small class="d-block"
@@ -30,7 +44,7 @@
               ><%= food.food.restaurant.location%></small
             >
 
-            Price: <strike style="color: red">₹<%= food.food.price %></strike>
+            Price: <span style="color: red; text-decoration: line-through;">₹<%= food.food.price %></span>
             <% if(currentUser.roles === 'customer') {%> ₹<%= 0.8*food.food.price
             %> <% } else { %> ₹<%= 0.6*food.food.price %> <% } %>
           </p>
@@ -74,41 +88,103 @@
     <div class="row">
       <div class="col-md-4">
         <div class="card-body">
-          <%  let a=0;let c=0;let delivery = 0;
-          if (cart[0]){
-            // Haversine Formula
-            let latDiff=currentUser.geometry['coordinates'][1]*Math.PI/180-cart[0].food.restaurant.geometry['coordinates'][1]*Math.PI/180;
-            let longDiff=currentUser.geometry['coordinates'][0]*Math.PI/180-cart[0].food.restaurant.geometry['coordinates'][0]*Math.PI/180%>
-            <% a=Math.sin(latDiff/2)**2 +
-  Math.cos(currentUser.geometry['coordinates'][1]*Math.PI/180)*Math.cos(cart[0].food.restaurant.geometry['coordinates'][1]*Math.PI/180)*Math.sin(longDiff/2)**2;
-  %> <% c=2*Math.atan2(a**0.5,(1-a)**0.5); %> <% let d=c*6371; %>
-          <%if (d < 2) { 
-              delivery = 0
-          } else {
-            delivery = parseInt(5*100*d)/100
-          }
-        }%>
-            <strong class="d-block">Delivery Charges: ₹<%=delivery%></strong>
-          <strong
-            >Total Amount: <% if(currentUser.roles === 'customer') {%> ₹<%=
-             parseInt(100*((0.8*money) + delivery))/100%> <% } else { %> ₹<%= parseInt(100*((0.6*money) + delivery))/100 %> <% } %>
-          </strong>
+            <strong class="d-block">Delivery Charges: ₹<span id="selected-delivery">0.00</span></strong>
+          <strong>Total Amount: ₹<span id="selected-total">0.00</span></strong>
         </div>
       </div>
       <div class="col-md-8">
         <div class="card-body">
-          <% if(currentUser.roles !== 'NGO') {%>
-          <a href="/cart/donation" class="btn btn-primary <%= money === 0?'disabled':''%>"  >Donate To NGO</a>
-          <button class="btn btn-primary" id="rzp-button2 <%= money === 0?'disabled':''%>">Self Pick-Up</button>
-          <a href="/cart/pay/cod" class="btn btn-primary  <%= money === 0?'disabled':''%>">Payment: COD</a>
-          <a href="/cart/pay/cod" class="btn btn-primary  <%= money === 0?'disabled':''%>">Payment: Online</a>
-          <% } else{%>
-          <button class="btn btn-primary" id="rzp-button2 <%= money === 0?'disabled':''%>">Self Pick-Up</button>
-          <a href="/cart/pay/cod" class="btn btn-primary  <%= money === 0?'disabled':''%>">Payment: COD</a>
-          <a href="/cart/pay/cod" class="btn btn-primary  <%= money === 0?'disabled':''%>">Payment: Online</a>
+          <button class="btn btn-primary" id="place-order-btn">Place Order (Selected)</button>
+          <% if(currentUser.roles !== 'restaurant' && currentUser.roles !== 'Admin') {%>
+          <button class="btn btn-primary" id="donate-selected-btn">Donate To NGO (Selected)</button>
           <% } %>
+          <a href="/cart/pay/cod" class="btn btn-outline-primary <%= money === 0?'disabled':''%>">Order All (COD)</a>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<form id="selected-place-order-form" action="/cart/selection" method="POST"></form>
+<form id="selected-donation-form" action="/cart/selection/donation" method="POST"></form>
+
+<script>
+  const userLat = <%= currentUser.geometry['coordinates'][1] %>;
+  const userLng = <%= currentUser.geometry['coordinates'][0] %>;
+
+  function calculateDelivery(restLat, restLng) {
+    const latDiff = (userLat * Math.PI / 180) - (restLat * Math.PI / 180);
+    const lngDiff = (userLng * Math.PI / 180) - (restLng * Math.PI / 180);
+    const a = (Math.sin(latDiff / 2) ** 2) +
+      Math.cos(userLat * Math.PI / 180) *
+      Math.cos(restLat * Math.PI / 180) *
+      (Math.sin(lngDiff / 2) ** 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = c * 6371;
+    if (distance < 2) return 0;
+    return Math.round((5 * distance) * 100) / 100;
+  }
+
+  function updateSelectedTotals() {
+    const selected = Array.from(document.querySelectorAll('.selected-food-checkbox:checked'));
+    let subtotal = 0;
+    let delivery = 0;
+
+    selected.forEach((checkbox, index) => {
+      const count = Number(checkbox.dataset.count || 0);
+      const unitPrice = Number(checkbox.dataset.unitPrice || 0);
+      subtotal += (count * unitPrice);
+
+      if (index === 0) {
+        const restLat = Number(checkbox.dataset.restLat || 0);
+        const restLng = Number(checkbox.dataset.restLng || 0);
+        delivery = calculateDelivery(restLat, restLng);
+      }
+    });
+
+    const total = Math.round((subtotal + delivery) * 100) / 100;
+    document.getElementById('selected-delivery').textContent = delivery.toFixed(2);
+    document.getElementById('selected-total').textContent = total.toFixed(2);
+  }
+
+  function appendSelectedInputs(form) {
+    form.innerHTML = '';
+    const selected = document.querySelectorAll('.selected-food-checkbox:checked');
+    selected.forEach((checkbox) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'selectedFoodIds';
+      input.value = checkbox.value;
+      form.appendChild(input);
+    });
+    return selected.length;
+  }
+
+  document.getElementById('place-order-btn')?.addEventListener('click', function (e) {
+    e.preventDefault();
+    const form = document.getElementById('selected-place-order-form');
+    const count = appendSelectedInputs(form);
+    if (count === 0) {
+      alert('Please select at least one food item.');
+      return;
+    }
+    form.submit();
+  });
+
+  document.getElementById('donate-selected-btn')?.addEventListener('click', function (e) {
+    e.preventDefault();
+    const form = document.getElementById('selected-donation-form');
+    const count = appendSelectedInputs(form);
+    if (count === 0) {
+      alert('Please select at least one food item.');
+      return;
+    }
+    form.submit();
+  });
+
+  document.querySelectorAll('.selected-food-checkbox').forEach((checkbox) => {
+    checkbox.addEventListener('change', updateSelectedTotals);
+  });
+
+  updateSelectedTotals();
+</script>

@@ -69,6 +69,13 @@
             />
             <% if(currentUser.isOpen){ %>
             <button class="btn btn-primary mb-2">Add To Cart</button>
+            <button
+              class="btn btn-success mb-2"
+              formaction="/cart/place-order/<%= food.food._id %>"
+              formmethod="POST"
+            >
+              Place Order
+            </button>
             <% } %>
           </form>
           <% } %>

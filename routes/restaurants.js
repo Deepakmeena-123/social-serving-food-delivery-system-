@@ -147,11 +147,12 @@ router.post('/:foodid/add',catchAsync(async (req,res) => {
             }
             user.cart.unshift(cartFood);
         } else {
-            user.cart[index].count += parseInt(req.body.count)
+            user.cart[index].count += Number.parseInt(req.body.count)
         }
         await user.save()
         food.count = food.count - req.body.count
         await food.save()
+        req.flash('success', 'Added to cart successfully. Continue shopping!')
     }
     res.redirect(`/restaurants/${food.restaurant._id}`)
 }))
