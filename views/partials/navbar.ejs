@@ -1,0 +1,61 @@
+<nav class="navb">
+    <div class="navb-container navbcontainer">
+        <input type="checkbox" name="" id=""/>
+        <div class="hamburger-lines">
+            <span class="line line1"></span>
+            <span class="line line2"></span>
+            <span class="line line3"></span>
+        </div>
+        <ul class="menu-items">
+            <li><a  href="/">Home</a></li>
+        <% if (typeof currentUser === 'undefined' || !currentUser) { %>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/register">Signup</a></li>
+        <% } else {%> <% if(currentUser.roles === 'Admin'){ %>
+            <li><a href="/admin">Admin</a></li>
+        <% } else { %>
+            <li><a href="/restaurants">Restaurants</a></li>
+            <li><a href="/orderhistory">Order History</a></li>
+        <% if(currentUser.roles === 'NGO'){ %>
+            <li><a href="/donationhistory">Donation History</a></li>
+        <% } %> <% if(currentUser.roles === 'restaurant') { %>
+            <li><a href="/restaurants/<%=currentUser._id%>">My Menu</a></li>
+        <% } else { %>
+            <li><a href="/cart">
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                fill="currentColor"
+                class="bi bi-cart-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+                />
+              </svg>
+            </a></li>
+        <% } %>
+        <li><a href="/profile/<%= currentUser._id %>">          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            fill="currentColor"
+            class="bi bi-person-check-fill"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M15.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L12.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z"
+            />
+            <path
+              d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"
+            />
+          </svg></a></li>
+        <% } %>
+        <li><a href="/logout">Logout</a></li>
+        <% } %>
+        </ul>
+        <h1 class="logo">Food Chargers</h1>
+    </div>
+</nav>

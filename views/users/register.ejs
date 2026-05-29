@@ -1,0 +1,58 @@
+<% layout('layouts/boilerplate')%>
+
+    <div class="login-container">
+        <h2 class="login-title">Sign Up</h2>
+
+        <form class="login-form validated-form" action="/register" method="POST" enctype="multipart/form-data"
+            novalidate>
+            <div>
+                <label for="username">Username</label>
+                <input id="username" type="text" class="form-control" placeholder="username" name="username" required />
+                <div class="valid-feedback">Looks good!</div>
+            </div>
+            <div>
+                <label for="email">Email</label>
+                <input class="form-control" id="email" type="email" placeholder="me@example.com" name="email"
+                    required />
+                <div class="valid-feedback">Looks good!</div>
+
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input class="form-control" id="password" type="password" placeholder="password" name="password"
+                    required />
+                <div class="valid-feedback">Looks good!</div>
+            </div>
+            <div>
+                <label for="roles">Select</label>
+                <select id="roles" name="option" class="form-select">
+                    <option value="customer">Customer</option>
+                    <option value="restaurant">Restaurant</option>
+                    <option value="NGO">NGO</option>
+                </select>
+                <div class="valid-feedback">Looks good!</div>
+            </div>
+            <div>
+                <label for="location">Enter location</label>
+                <input class="form-control" type="text" id="location" name="location" placeholder="Location" required />
+                <div class="valid-feedback">Looks good!</div>
+            </div>
+            <div class="mb-3">
+                <div class="form-file custom-file">
+                    <input type="file" class="form-file-input" id="image" name="image" />
+                    <label class="form-file-label d-flex" for="image">
+                        <span class="form-file-text custom-file-label" style="width: 60%;">Choose image...</span>
+                        <span class="form-file-button" style="width: 40%;">Browse</span>
+                    </label>
+                </div>
+            </div>
+            <button class="login-btn btn--form" type="submit" value="Log in">
+                Sign Up
+            </button>
+        </form>
+        <div style="margin: 1rem 0rem;">
+            Already a user?
+            <a href="/login" id="linkInlogin">
+                Login
+            </a>
+        </div>

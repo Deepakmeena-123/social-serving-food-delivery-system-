@@ -1,0 +1,115 @@
+<!-- Home Page -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Food Chargers</title>
+  <link rel="icon" href="/images/logo.png" type="image/icon type">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
+      integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/stylesheets/home.css" />
+    <link rel="stylesheet" href="/stylesheets/navbar.css" />
+  </head>
+
+  <body class="d-flex text-center text-white bg-dark">
+    <div class=" d-flex w-100 h-100 p-3 mx-auto flex-column">
+      <header class="mb-auto ">
+        <div >
+          <nav class="navb" style="border-radius: 2rem; padding: 1rem;">
+            <div class="navb-container navbcontainer">
+                <input type="checkbox" name="" id=""/>
+                <div class="hamburger-lines">
+                    <span class="line line1"></span>
+                    <span class="line line2"></span>
+                    <span class="line line3"></span>
+                </div>
+                <ul class="menu-items">
+                    <li><a  href="/">Home</a></li>
+                <% if(!currentUser) {%>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register">Signup</a></li>
+                <% } else {%> <% if(currentUser.roles === 'Admin'){ %>
+                    <li><a href="/admin">Admin</a></li>
+                <% } else { %>
+                    <li><a href="/restaurants">Restaurants</a></li>
+                    <li><a href="/orderhistory">Order History</a></li>
+                <% if(currentUser.roles === 'NGO'){ %>
+                    <li><a href="/donationhistory">Donation History</a></li>
+                <% } %> <% if(currentUser.roles === 'restaurant') { %>
+                    <li><a href="//restaurants/<%=currentUser._id%>">My Menu</a></li>
+                <% } else { %>
+                    <li><a href="/cart">
+                        <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        fill="currentColor"
+                        class="bi bi-cart-fill"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+                        />
+                      </svg>
+                    </a></li>
+                <% } %>
+                <li><a href="/profile/<%= currentUser._id %>">          <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    class="bi bi-person-check-fill"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M15.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L12.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z"
+                    />
+                    <path
+                      d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"
+                    />
+                  </svg></a></li>
+                <% } %>
+                <li><a href="/logout">Logout</a></li>
+                <% } %>
+                </ul>
+                <h1 class="logo">Food Chargers</h1>
+            </div>
+        </nav>
+        </div>
+      </header>
+      <main class="px-3">
+        <div class="px-4 py-5 my-5 text-center">
+          <img class="d-block mx-auto mb-4" src="./images/logo.png" alt="" style="width: 10rem;">
+          <h1 class="display-5 fw-bold text-body-emphasis">Food Chargers</h1>
+          <div class="col-lg-6 mx-auto">
+            <p class="lead mb-4">Quickly design and customize responsive mobile-first sites with Bootstrap, the world’s most popular front-end open source toolkit, featuring Sass variables and mixins, responsive grid system, extensive prebuilt components, and powerful JavaScript plugins.</p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+              <a href="/restaurants"><button type="button" class="btn btn-outline-info btn-lg px-4">View Restaurants</button></a>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="mt-auto text-white-50">
+        <p>&copy; Non-Profitable Organization 2023</p>
+      </footer>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
+      integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
