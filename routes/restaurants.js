@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require("../models/user")
 const Food = require('../models/food');
+const Order = require('../models/order');
 const PortalTime=require('../models/portal');
 const multer = require('multer');
 const { storage } = require('../cloudinary');
@@ -108,9 +109,85 @@ router.get('/:id/:foodid/edit', catchAsync(async(req,res) => {
         req.flash('error',"User Must LOGGED IN")
         res.redirect('/login')
     } else {
-    const food = await Food.findById(req.params.foodid)
+    const food = await Food.findById(req.params.foodid).populate('restaurant')
     res.render('restaurants/editFood',{food})
     }
+}))
+
+//Render Donate Leftover Food Form
+router.get('/:id/:foodid/donate-leftover', catchAsync(async (req, res) => {
+    if(!req.user){
+        req.flash('error',"User Must LOGGED IN")
+        return res.redirect('/login')
+    }
+
+    if(!req.user._id.equals(req.params.id)) {
+        req.flash('error','Not Authorized')
+        return res.redirect('/restaurants')
+    }
+
+    const food = await Food.findById(req.params.foodid)
+    const ngos = await User.find({ roles: 'NGO' })
+    if(!food) {
+        req.flash('error','Food not found')
+        return res.redirect(`/restaurants/${req.params.id}`)
+    }
+
+    res.render('restaurants/donateLeftover', { food, ngos })
+}))
+
+//Submit Donate Leftover Food
+router.post('/:id/:foodid/donate-leftover', catchAsync(async (req, res) => {
+    if(!req.user){
+        req.flash('error',"User Must LOGGED IN")
+        return res.redirect('/login')
+    }
+
+    if(!req.user._id.equals(req.params.id)) {
+        req.flash('error','Not Authorized')
+        return res.redirect('/restaurants')
+    }
+
+    const { NGO, count } = req.body
+    const food = await Food.findById(req.params.foodid).populate('restaurant')
+    if(!food) {
+        req.flash('error','Food not found')
+        return res.redirect(`/restaurants/${req.params.id}`)
+    }
+
+    const donateCount = Number.parseInt(count)
+    if(!NGO) {
+        req.flash('error','Select the NGO')
+        return res.redirect(`/restaurants/${req.params.id}/${req.params.foodid}/donate-leftover`)
+    }
+    if(!donateCount || donateCount < 1 || donateCount > food.count) {
+        req.flash('error','Please enter a valid quantity to donate')
+        return res.redirect(`/restaurants/${req.params.id}/${req.params.foodid}/donate-leftover`)
+    }
+
+    const restaurant = await User.findById(req.params.id)
+    const newOrder = new Order({
+        user: restaurant._id,
+        order: [{
+            food: food._id,
+            count: donateCount,
+            money: 0,
+        }],
+        money: 0,
+        modeOfPayment: 'DONATION',
+        NGO,
+        selfpickup: false,
+        status: 'Success'
+    })
+
+    food.count = food.count - donateCount
+    restaurant.order.unshift(newOrder._id)
+    await food.save()
+    await restaurant.save()
+    await newOrder.save()
+
+    req.flash('success', 'Leftover food donation request sent successfully.')
+    res.redirect(`/restaurants/${req.params.id}`)
 }))
 
 //Updating Food in the Menu Form

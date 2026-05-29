@@ -30,7 +30,7 @@
             <small class="text-muted">
               <% if(currentUser.roles === 'restaurant' || currentUser.roles ===
               'Admin') {%> ₹ <%= food.food.price %> <% } else { %>
-              <strike style="color: red">₹<%= food.food.price %></strike>
+              <span style="color: red; text-decoration: line-through;">₹<%= food.food.price %></span>
               <% if(currentUser.roles === 'customer') {%> ₹<%=
               0.8*food.food.price %> <% } else { %> ₹<%= 0.6*food.food.price %>
               <% } %> <% } %>
@@ -46,6 +46,12 @@
               >Edit
             </a>
             <% } %>
+            <a
+              class="btn btn-success mb-2"
+              href="/restaurants/<%=restaurant._id%>/<%= food.food._id %>/donate-leftover"
+            >
+              Donate Leftover Food
+            </a>
             <form
               class="d-inline"
               action="/restaurants/<%=restaurant._id%>/<%=food.food._id%>?_method=DELETE"
