@@ -1,0 +1,46 @@
+<% layout('layouts/boilerplate') %>
+<div class="container py-4">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+    <div>
+      <h1 class="mb-1">Pending Donations</h1>
+      <p class="text-muted mb-0">Review incoming food donations and accept or reject them.</p>
+    </div>
+  </div>
+
+  <% if (!donations || donations.length === 0) { %>
+    <div class="alert alert-light border">No pending donations found.</div>
+  <% } else { %>
+    <div class="row g-4">
+      <% for (const donation of donations) { %>
+        <% const donationDate = donation.donationDate ? new Date(donation.donationDate) : new Date(); %>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
+                <div>
+                  <p class="text-uppercase text-muted small mb-1">Donor Type</p>
+                  <h5 class="mb-0"><%= donation.donorType || 'Restaurant' %></h5>
+                </div>
+                <span class="badge bg-warning text-dark"><%= donation.status %></span>
+              </div>
+
+              <p class="mb-2"><strong>Donor Name:</strong> <%= donation.donorName || (donation.donorId && donation.donorId.username) || 'Unknown' %></p>
+              <p class="mb-2"><strong>Food Name:</strong> <%= donation.foodName %></p>
+              <p class="mb-2"><strong>Quantity:</strong> <%= donation.donatedQuantity %></p>
+              <p class="mb-3"><strong>Date:</strong> <%= donationDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-') %></p>
+
+              <div class="mt-auto d-flex gap-2">
+                <form action="/receiveddonations/<%= donation._id %>/accept" method="POST" class="flex-fill">
+                  <button type="submit" class="btn btn-success w-100">Accept</button>
+                </form>
+                <form action="/receiveddonations/<%= donation._id %>/reject" method="POST" class="flex-fill">
+                  <button type="submit" class="btn btn-outline-danger w-100">Reject</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+</div>

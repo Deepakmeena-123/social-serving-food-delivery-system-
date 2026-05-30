@@ -4,6 +4,7 @@ const passport = require('passport');
 const catchAsync = require('../utils/catchAsync');
 const User = require('../models/user');
 const Order = require('../models/order');
+const Donation = require('../models/donation');
 const Food = require('../models/food');
 const users = require('../controllers/users');
 const multer = require('multer');
@@ -78,21 +79,16 @@ router.get('/donationhistory',catchAsync( async (req,res) => {
         res.redirect('/login')
     } else {
         const user = await User.findById(req.user._id)
-        const orders = await Order.find({ NGO: user._id }).populate({
-            path: 'NGO'
-        }).populate({
-            path: 'user'
-        }).populate({
-            path: 'order',
-            populate: {
-                path: 'food',
-                populate:{
-                    path: 'restaurant'
-                }
-            }
-        })
-        console.log(orders)
-        res.render('order',{ orders, str: "Donation" })
+        if(user.roles !== 'NGO') {
+            req.flash('error','Not Authorized')
+            return res.redirect('/')
+        }
+
+        const donations = await Donation.find({ ngoId: user._id })
+            .populate('donorId')
+            .sort({ donationDate: -1 })
+
+        res.render('users/donationHistory', { donations })
     }
 }))
 
@@ -104,20 +100,72 @@ router.get('/receiveddonations', catchAsync(async (req, res) => {
     }
 
     const user = await User.findById(req.user._id)
-    const orders = await Order.find({ NGO: user._id }).populate({
-        path: 'NGO'
-    }).populate({
-        path: 'user'
-    }).populate({
-        path: 'order',
-        populate: {
-            path: 'food',
-            populate:{
-                path: 'restaurant'
-            }
-        }
-    })
-    res.render('order', { orders, str: 'Received Donations' })
+    if(user.roles !== 'NGO') {
+        req.flash('error','Not Authorized')
+        return res.redirect('/')
+    }
+
+    const donations = await Donation.find({ ngoId: user._id, status: 'Pending' })
+        .populate('donorId')
+        .sort({ donationDate: -1 })
+
+    res.render('users/receivedDonations', { donations })
+}))
+
+router.post('/receiveddonations/:id/accept', catchAsync(async (req, res) => {
+    if(!req.user){
+        req.flash('error',"User Must LOGGED IN")
+        return res.redirect('/login')
+    }
+
+    const user = await User.findById(req.user._id)
+    if(user.roles !== 'NGO') {
+        req.flash('error','Not Authorized')
+        return res.redirect('/')
+    }
+
+    const donation = await Donation.findById(req.params.id)
+    if(!donation) {
+        req.flash('error','Donation not found')
+        return res.redirect('/receiveddonations')
+    }
+    if(!donation.ngoId?.equals(user._id)) {
+        req.flash('error','Donation not found')
+        return res.redirect('/receiveddonations')
+    }
+
+    donation.status = 'Accepted'
+    await donation.save()
+    req.flash('success', 'Donation accepted successfully')
+    res.redirect('/receiveddonations')
+}))
+
+router.post('/receiveddonations/:id/reject', catchAsync(async (req, res) => {
+    if(!req.user){
+        req.flash('error',"User Must LOGGED IN")
+        return res.redirect('/login')
+    }
+
+    const user = await User.findById(req.user._id)
+    if(user.roles !== 'NGO') {
+        req.flash('error','Not Authorized')
+        return res.redirect('/')
+    }
+
+    const donation = await Donation.findById(req.params.id)
+    if(!donation) {
+        req.flash('error','Donation not found')
+        return res.redirect('/receiveddonations')
+    }
+    if(!donation.ngoId?.equals(user._id)) {
+        req.flash('error','Donation not found')
+        return res.redirect('/receiveddonations')
+    }
+
+    donation.status = 'Rejected'
+    await donation.save()
+    req.flash('success', 'Donation rejected')
+    res.redirect('/receiveddonations')
 }))
 
 //Order Details

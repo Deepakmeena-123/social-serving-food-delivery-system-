@@ -1,0 +1,33 @@
+<% layout('layouts/boilerplate') %>
+<div class="container mt-4">
+  <h1>Donation History</h1>
+  <table class="table table-striped align-middle mt-3">
+    <thead>
+      <tr>
+        <th>Donor Name</th>
+        <th>Food Name</th>
+        <th>Quantity</th>
+        <th>Donation Date</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (!donations || donations.length === 0) { %>
+        <tr>
+          <td colspan="5">No donations found.</td>
+        </tr>
+      <% } else { %>
+        <% for (const donation of donations) { %>
+          <% const donationDate = donation.donationDate ? new Date(donation.donationDate) : new Date(); %>
+          <tr>
+            <td><%= donation.donorName || (donation.donorId && donation.donorId.username) || 'Unknown' %></td>
+            <td><%= donation.foodName %></td>
+            <td><%= donation.donatedQuantity %></td>
+            <td><%= donationDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-') %></td>
+            <td><%= donation.status %></td>
+          </tr>
+        <% } %>
+      <% } %>
+    </tbody>
+  </table>
+</div>

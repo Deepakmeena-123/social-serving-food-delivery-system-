@@ -22,9 +22,11 @@
             <li><a href="/restaurants/<%=currentUser._id%>/donations">Donations</a></li>
             <li><a href="/restaurants/<%=currentUser._id%>/donations/history">Donation History</a></li>
             <li><a href="/profile/<%= currentUser._id %>">Profile</a></li>
-        <% } else { %>
+        <% } else if(currentUser.roles === 'NGO') { %>
             <li><a href="/receiveddonations">Received Donations</a></li>
             <li><a href="/donationhistory">Donation History</a></li>
+            <li><a href="/profile/<%= currentUser._id %>">Profile</a></li>
+        <% } else { %>
             <li><a href="/profile/<%= currentUser._id %>">Profile</a></li>
         <% } %>
         <li><a href="/logout">Logout</a></li>
