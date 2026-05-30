@@ -1,33 +1,76 @@
 <% layout('layouts/boilerplate') %>
-<div class="container mt-4">
-  <h1>Donation History</h1>
-  <table class="table table-striped align-middle mt-3">
-    <thead>
-      <tr>
-        <th>Donor Name</th>
-        <th>Food Name</th>
-        <th>Quantity</th>
-        <th>Donation Date</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% if (!donations || donations.length === 0) { %>
+<div class="container py-4">
+  <div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between gap-3 mb-4">
+    <div>
+      <h1 class="mb-1">Donation History ⭐⭐⭐⭐⭐</h1>
+      <p class="text-muted mb-0">This page shows every donation record for your NGO.</p>
+    </div>
+    <div class="btn-group flex-wrap" role="group" aria-label="Donation filters">
+      <button type="button" class="btn btn-primary active" data-filter="all">All</button>
+      <button type="button" class="btn btn-outline-primary" data-filter="accepted">Accepted</button>
+      <button type="button" class="btn btn-outline-primary" data-filter="rejected">Rejected</button>
+      <button type="button" class="btn btn-outline-primary" data-filter="distributed">Distributed</button>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
         <tr>
-          <td colspan="5">No donations found.</td>
+          <th scope="col">Donor</th>
+          <th scope="col">Food</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Date</th>
+          <th scope="col">Status</th>
         </tr>
-      <% } else { %>
-        <% for (const donation of donations) { %>
-          <% const donationDate = donation.donationDate ? new Date(donation.donationDate) : new Date(); %>
-          <tr>
-            <td><%= donation.donorName || (donation.donorId && donation.donorId.username) || 'Unknown' %></td>
-            <td><%= donation.foodName %></td>
-            <td><%= donation.donatedQuantity %></td>
-            <td><%= donationDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-') %></td>
-            <td><%= donation.status %></td>
+      </thead>
+      <tbody id="donation-history-body">
+        <% if (!donations || donations.length === 0) { %>
+          <tr class="donation-row" data-status="all">
+            <td colspan="5">No donations found.</td>
           </tr>
+        <% } else { %>
+          <% for (const donation of donations) { %>
+            <% const donationDate = donation.donationDate ? new Date(donation.donationDate) : new Date(); %>
+            <% const statusValue = (donation.status || 'Pending').trim(); %>
+            <% const statusKey = statusValue.toLowerCase(); %>
+            <% const statusClass = statusKey === 'accepted' ? 'bg-success' : statusKey === 'rejected' ? 'bg-danger' : statusKey === 'distributed' ? 'bg-primary' : 'bg-secondary'; %>
+            <tr class="donation-row" data-status="<%= statusKey %>">
+              <td><%= donation.donorName || (donation.donorId && donation.donorId.username) || 'Unknown' %></td>
+              <td><%= donation.foodName %></td>
+              <td><%= donation.donatedQuantity %></td>
+              <td><%= donationDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) %></td>
+              <td><span class="badge <%= statusClass %>"><%= statusValue %></span></td>
+            </tr>
+          <% } %>
         <% } %>
-      <% } %>
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('[data-filter]');
+    const rows = document.querySelectorAll('.donation-row[data-status]');
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const filter = button.dataset.filter;
+
+        buttons.forEach((item) => {
+          item.classList.remove('btn-primary', 'active');
+          item.classList.add('btn-outline-primary');
+        });
+
+        button.classList.add('btn-primary', 'active');
+        button.classList.remove('btn-outline-primary');
+
+        rows.forEach((row) => {
+          const rowStatus = row.dataset.status;
+          row.style.display = filter === 'all' || rowStatus === filter ? '' : 'none';
+        });
+      });
+    });
+  });
+</script>
