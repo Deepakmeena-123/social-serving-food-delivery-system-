@@ -8,6 +8,9 @@
     <div class="card mb-3">
       <div class="card-body">
         <h5 class="card-title"><%= user.username%></h5>
+        <% if (user.roles === 'NGO') { %>
+        <p class="card-text text-muted mb-0">NGO Profile</p>
+        <% } %>
       </div>
       <ul class="list-group list-group-flush">
         <li class="list-group-item text-muted">
@@ -26,6 +29,13 @@
           <% } else { %> <%= user.location %> <% } %>
         </li>
         <li class="list-group-item">Role: <%= user.roles.toUpperCase()%></li>
+        <% if (user.roles === 'NGO') { %>
+        <li class="list-group-item">NGO Name: <%= user.username %></li>
+        <li class="list-group-item">Contact Number: <%= user.contactNumber || 'Not provided' %></li>
+        <li class="list-group-item">Email: <%= user.email %></li>
+        <li class="list-group-item">Member Since: <%= user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A' %></li>
+        <li class="list-group-item">Total Food Distributed: <%= totalFoodDistributed %></li>
+        <% } %>
       </ul>
     </div>
   </div>

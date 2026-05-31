@@ -17,7 +17,11 @@ const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 //Getting Profile
 router.get('/profile/:id',catchAsync(async (req,res) => {
     const user = await User.findById(req.params.id)
-    res.render('users/profile',{ user });
+    const totalFoodDistributedDocs = await Donation.find({ ngoId: user._id, status: 'Accepted' })
+        .select('donatedQuantity');
+    const totalFoodDistributed = totalFoodDistributedDocs.reduce((total, donation) => total + (donation.donatedQuantity || 0), 0);
+
+    res.render('users/profile', { user, totalFoodDistributed });
 }))
 
 //Updating Address in the Profile

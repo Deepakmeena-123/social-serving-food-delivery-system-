@@ -19,6 +19,10 @@ const UserSchema = new Schema({
         type: String,
         required :true
     },
+    contactNumber: {
+        type: String,
+        trim: true
+    },
     image: {
         url: {
             type: String,
@@ -79,7 +83,7 @@ const UserSchema = new Schema({
         type: Boolean,
         default: false
     }
-});
+}, { timestamps: true });
 
 //Plugging In Passport to the User Schema
 UserSchema.plugin(passportLocalMongoose);

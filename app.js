@@ -13,7 +13,7 @@ const flash = require('connect-flash');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
 const passport = require('passport');
-const LocalStrategy = require('passport-local');
+const { Strategy: LocalStrategy } = require('passport-local');
 const User = require('./models/user');
 const mongoSanitize = require('express-mongo-sanitize');
 
@@ -26,7 +26,10 @@ const adminRoutes = require('./routes/admin')
 const MongoDBStore = require("connect-mongo").default;
 
 // const dbUrl = 'mongodb://localhost:27017/NPOTake2'
-const dbUrl = process.env.DB_URL
+const isProduction = process.env.NODE_ENV === 'production';
+const dbUrl = isProduction
+    ? (process.env.DB_URL || process.env.MONGO_URI)
+    : (process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/social-serving-food-delivery-system');
 
 const app = express();
 

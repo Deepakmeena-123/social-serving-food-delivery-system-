@@ -13,12 +13,12 @@ module.exports.renderRegister = (req, res) => {
 //Creating User, Storing it in Database and Logging him/her in.
 module.exports.register = async (req, res, next) => {    
     try {
-        const { email, username, password,option,location } = req.body;
+        const { email, username, password, option, location, contactNumber } = req.body;
         const geoData = await geocoder.forwardGeocode({
             query: location,
             limit: 1
         }).send()
-        const user = new User({ email,roles:option,location, username });
+        const user = new User({ email, roles: option, location, username, contactNumber });
         user.geometry = geoData.body.features[0].geometry;
         if(req.file){
             user.image = {
