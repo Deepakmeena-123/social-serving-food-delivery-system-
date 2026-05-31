@@ -1,21 +1,74 @@
-<nav class="navb">
-  <div class="navb-container navbcontainer">
-    <input type="checkbox" name="" id="" />
-    <div class="hamburger-lines">
-      <span class="line line1"></span>
-      <span class="line line2"></span>
-      <span class="line line3"></span>
+<div id="adminSidebarBackdrop" class="admin-sidebar-backdrop"></div>
+
+<aside id="adminSidebar" class="admin-sidebar" aria-label="Admin Sidebar">
+  <div class="admin-brand">
+    <img
+        src="/images/foodbridge-logo.png"
+        alt="FoodBridge Logo"
+        class="admin-logo"
+    >
+    <div>
+        <h1 class="admin-brand-title">FoodBridge</h1>
+        <p class="admin-brand-subtitle">Admin Panel</p>
     </div>
-    <ul class="menu-items">
-      <li><a href="/admin">Dashboard</a></li>
-      <li><a href="/admin/users">Users</a></li>
-      <li><a href="/admin/restaurants">Restaurants</a></li>
-      <li><a href="/admin/ngos">NGOs</a></li>
-      <li><a href="/admin/donations">Donations</a></li>
-      <li><a href="/admin/reports">Reports</a></li>
-      <li><a href="/admin/profile">Profile</a></li>
-      <li><a href="/logout">Logout</a></li>
-    </ul>
-    <h1 class="logo">FoodBridge Admin</h1>
+</div>
+
+  <nav class="admin-nav" aria-label="Admin Navigation">
+    <a class="admin-nav-link" data-title="Dashboard" href="/admin">
+      <i class="bi bi-speedometer2"></i>
+      <span>Dashboard</span>
+    </a>
+    <a class="admin-nav-link" data-title="Users" href="/admin/users">
+      <i class="bi bi-people"></i>
+      <span>Users</span>
+    </a>
+    <a class="admin-nav-link" data-title="Restaurants" href="/admin/restaurants">
+      <i class="bi bi-shop"></i>
+      <span>Restaurants</span>
+    </a>
+    <a class="admin-nav-link" data-title="NGOs" href="/admin/ngos">
+      <i class="bi bi-hospital"></i>
+      <span>NGOs</span>
+    </a>
+    <a class="admin-nav-link" data-title="Donations" href="/admin/donations">
+      <i class="bi bi-gift"></i>
+      <span>Donations</span>
+    </a>
+    <a class="admin-nav-link" data-title="Reports" href="/admin/reports">
+      <i class="bi bi-bar-chart-line"></i>
+      <span>Reports</span>
+    </a>
+    <a class="admin-nav-link" data-title="Profile" href="/admin/profile">
+      <i class="bi bi-person-circle"></i>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <div class="admin-sidebar-footer">
+    <a class="admin-nav-link admin-nav-link-logout" href="/logout">
+      <i class="bi bi-box-arrow-right"></i>
+      <span>Logout</span>
+    </a>
   </div>
-</nav>
+</aside>
+
+<header class="admin-topbar">
+  <div class="d-flex align-items-center gap-2">
+    <button id="adminSidebarToggle" class="btn admin-sidebar-toggle" type="button" aria-label="Toggle sidebar" aria-expanded="false">
+      <i class="bi bi-list"></i>
+    </button>
+    <h2 id="adminPageTitle" class="admin-page-title mb-0">Dashboard</h2>
+  </div>
+
+  <div class="admin-topbar-actions">
+    <button class="btn admin-icon-btn" type="button" aria-label="Notifications">
+      <i class="bi bi-bell"></i>
+      <span class="admin-notification-dot"></span>
+    </button>
+
+    <a href="/admin/profile" class="admin-profile-chip text-decoration-none">
+      <span class="admin-avatar"><i class="bi bi-person-fill"></i></span>
+      <span class="admin-profile-text"><%= currentUser ? currentUser.username : 'Admin' %></span>
+    </a>
+  </div>
+</header>
