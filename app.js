@@ -27,9 +27,7 @@ const MongoDBStore = require("connect-mongo").default;
 
 // const dbUrl = 'mongodb://localhost:27017/NPOTake2'
 const isProduction = process.env.NODE_ENV === 'production';
-const dbUrl = isProduction
-    ? (process.env.DB_URL || process.env.MONGO_URI)
-    : (process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/social-serving-food-delivery-system');
+const dbUrl = process.env.DB_URL || process.env.MONGO_URI;
 
 const app = express();
 

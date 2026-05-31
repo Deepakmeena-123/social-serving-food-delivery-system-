@@ -1,0 +1,50 @@
+<% layout('layouts/adminBoilerplate') %>
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Reports</h1>
+    <a href="/admin" class="btn btn-outline-primary">Back to Dashboard</a>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <h6 class="text-muted">Total Food Donated</h6>
+          <h2 class="mb-0"><%= totalFoodDonated %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <h6 class="text-muted">Total Food Distributed</h6>
+          <h2 class="mb-0"><%= totalFoodDistributed %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <h6 class="text-muted">Total Donations</h6>
+          <h2 class="mb-0"><%= totalDonations %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <h6 class="text-muted">Total Participating Restaurants</h6>
+          <h2 class="mb-0"><%= totalRestaurants %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <h6 class="text-muted">Total Participating NGOs</h6>
+          <h2 class="mb-0"><%= totalNGOs %></h2>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

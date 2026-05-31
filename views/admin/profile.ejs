@@ -1,0 +1,29 @@
+<% layout('layouts/adminBoilerplate') %>
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-header bg-dark text-white">
+        <h4 class="mb-0">Admin Profile</h4>
+      </div>
+      <div class="card-body">
+        <div class="row g-4 align-items-start">
+          <div class="col-md-4">
+            <img
+              src="<%= admin.image && admin.image.url ? admin.image.url : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>"
+              class="img-fluid rounded"
+              alt="admin"
+            />
+          </div>
+          <div class="col-md-8">
+            <h3 class="mb-3"><%= admin.username %></h3>
+            <p class="mb-1"><strong>Email:</strong> <%= admin.email %></p>
+            <p class="mb-1"><strong>Role:</strong> <%= admin.roles %></p>
+            <p class="mb-1"><strong>Location:</strong> <%= admin.location %></p>
+            <p class="mb-1"><strong>Contact Number:</strong> <%= admin.contactNumber || 'Not provided' %></p>
+            <p class="mb-1"><strong>Member Since:</strong> <%= admin.createdAt ? new Date(admin.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A' %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

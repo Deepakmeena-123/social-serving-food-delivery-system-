@@ -1,0 +1,44 @@
+<% layout('layouts/adminBoilerplate') %>
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Donation Monitoring</h1>
+    <a href="/admin" class="btn btn-outline-primary">Back to Dashboard</a>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>Donor Name</th>
+          <th>Donor Type</th>
+          <th>NGO Name</th>
+          <th>Food Name</th>
+          <th>Quantity</th>
+          <th>Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% donations.forEach(donation => { %>
+        <tr>
+          <td><%= donation.donorName || (donation.donorId && donation.donorId.username) || 'N/A' %></td>
+          <td><%= donation.donorType || 'N/A' %></td>
+          <td><%= donation.ngoName || (donation.ngoId && donation.ngoId.username) || 'N/A' %></td>
+          <td><%= donation.foodName || (donation.foodId && donation.foodId.name) || 'N/A' %></td>
+          <td><%= donation.donatedQuantity %></td>
+          <td><%= donation.donationDate ? new Date(donation.donationDate).toLocaleDateString('en-IN') : 'N/A' %></td>
+          <td>
+            <% if (donation.status === 'Accepted') { %>
+              <span class="badge bg-success">Accepted</span>
+            <% } else if (donation.status === 'Rejected') { %>
+              <span class="badge bg-danger">Rejected</span>
+            <% } else { %>
+              <span class="badge bg-warning text-dark">Pending</span>
+            <% } %>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

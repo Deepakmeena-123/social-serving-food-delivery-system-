@@ -1,22 +1,26 @@
-<% layout('layouts/boilerplate')%>
-<!-- Admin Home Page -->
+<% layout('layouts/adminBoilerplate') %>
 <div class="container">
-  <h1 class="text-center">ADMIN</h1>
-  <div class="my-5 h-100 d-flex justify-content-center align-items-center">
-    <a href="/admin/restaurant" class="btn btn-primary btn-xl mx-2"
-      >View Restaurants</a
-    >
-    <a href="/admin/ngo" class="btn btn-primary btn-xl mx-2">View NGOs</a>
+  <div class="text-center mb-5">
+    <h1 class="display-5 fw-bold">Admin Dashboard</h1>
+    <p class="text-muted">Monitor platform activity and manage users from one place.</p>
   </div>
-  <div class="h-100 d-flex justify-content-center align-items-center">
-    <a href="/admin/customer" class="btn btn-primary btn-xl mx-2"
-      >View Customers</a
-    >
-    <a href="/admin/orders" class="btn btn-primary btn-xl mx-2">View Orders</a>
+
+  <div class="row g-4 mb-5">
+    <div class="col-md-4"><div class="card shadow-sm h-100"><div class="card-body text-center"><h6 class="text-muted">Total Users</h6><h2><%= totalUsers %></h2></div></div></div>
+    <div class="col-md-4"><div class="card shadow-sm h-100"><div class="card-body text-center"><h6 class="text-muted">Total Restaurants</h6><h2><%= totalRestaurants %></h2></div></div></div>
+    <div class="col-md-4"><div class="card shadow-sm h-100"><div class="card-body text-center"><h6 class="text-muted">Total NGOs</h6><h2><%= totalNGOs %></h2></div></div></div>
+    <div class="col-md-4"><div class="card shadow-sm h-100"><div class="card-body text-center"><h6 class="text-muted">Total Donations</h6><h2><%= totalDonations %></h2></div></div></div>
+    <div class="col-md-4"><div class="card shadow-sm h-100"><div class="card-body text-center"><h6 class="text-muted">Pending Donations</h6><h2><%= pendingDonations %></h2></div></div></div>
+    <div class="col-md-6"><div class="card shadow-sm h-100"><div class="card-body text-center"><h6 class="text-muted">Accepted Donations</h6><h2><%= acceptedDonations %></h2></div></div></div>
+    <div class="col-md-6"><div class="card shadow-sm h-100"><div class="card-body text-center"><h6 class="text-muted">Distributed Donations</h6><h2><%= distributedDonations %></h2></div></div></div>
   </div>
-  <div class="my-5 h-100 d-flex justify-content-center align-items-center">
-    <a href="/admin/windowslot" class="btn btn-primary btn-xl mx-2"
-      >Change Time-Window of Restaurants</a
-    >
+
+  <div class="row g-3">
+    <div class="col-md-4"><a href="/admin/users" class="btn btn-dark w-100 py-3">Users</a></div>
+    <div class="col-md-4"><a href="/admin/restaurants" class="btn btn-dark w-100 py-3">Restaurants</a></div>
+    <div class="col-md-4"><a href="/admin/ngos" class="btn btn-dark w-100 py-3">NGOs</a></div>
+    <div class="col-md-4"><a href="/admin/donations" class="btn btn-outline-dark w-100 py-3">Donations</a></div>
+    <div class="col-md-4"><a href="/admin/reports" class="btn btn-outline-dark w-100 py-3">Reports</a></div>
+    <div class="col-md-4"><a href="/admin/profile" class="btn btn-outline-dark w-100 py-3">Profile</a></div>
   </div>
 </div>
