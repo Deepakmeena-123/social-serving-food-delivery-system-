@@ -1,18 +1,27 @@
 <% layout('layouts/adminBoilerplate') %>
-<div class="row justify-content-center">
-  <div class="col-lg-7">
-    <div class="card shadow-sm">
-      <div class="card-header bg-dark text-white">
-        <h4 class="mb-0">Foodbridge Admin Profile</h4>
-      </div>
-      <div class="card-body">
-        <div class="row g-4 align-items-start">
-          <div class="col-md-4">
-            <img
-              src="<%= admin.image && admin.image.url ? admin.image.url : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>"
-              class="img-fluid rounded"
-              alt="admin"
-            />
+<%
+  const defaultProfileImage = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
+  const profileImage = admin.image && admin.image.url ? admin.image.url : defaultProfileImage;
+  const adminName = admin.username || 'Admin';
+  const adminRole = admin.roles || 'Admin';
+  const adminInitials = adminName
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase() || 'A';
+  const createdAt = admin.createdAt ? new Date(admin.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
+%>
+
+<div class="admin-profile-page">
+  <section class="profile-hero card admin-glass-card mb-4">
+    <div class="card-body p-4 p-lg-5">
+      <div class="row align-items-center g-4">
+        <div class="col-xl-8">
+          <div class="profile-hero-kicker mb-2">
+            <i class="bi bi-person-badge-fill"></i>
+            <span>FoodBridge Admin Center</span>
           </div>
           <h1 class="profile-page-title mb-2"><%= adminName %></h1>
           <div class="profile-hero-meta d-flex flex-wrap gap-3 mb-3">
