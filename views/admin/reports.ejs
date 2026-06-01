@@ -1,13 +1,9 @@
 <% layout('layouts/adminBoilerplate') %>
-<%
-  const hasCoreData = [totalRestaurants, totalNGOs, totalDonations].every((value) => value !== undefined && value !== null);
-  const chartLabels = [
-    { title: 'Monthly Donations', icon: 'bi-bar-chart-line-fill', accent: 'chart-accent-green' },
-    { title: 'User Growth', icon: 'bi-people-fill', accent: 'chart-accent-orange' },
-    { title: 'Order Statistics', icon: 'bi-bag-check-fill', accent: 'chart-accent-green' },
-    { title: 'NGO Activity', icon: 'bi-building-heart', accent: 'chart-accent-orange' }
-  ];
-%>
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">FoodBridge Reports Dashboard</h1>
+    <a href="/admin" class="btn btn-outline-primary">Back to Dashboard</a>
+  </div>
 
 <div class="admin-reports-page">
   <section class="reports-hero card admin-glass-card mb-4">
