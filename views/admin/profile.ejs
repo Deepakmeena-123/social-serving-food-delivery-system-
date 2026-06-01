@@ -14,16 +14,139 @@
               alt="admin"
             />
           </div>
-          <div class="col-md-8">
-            <h3 class="mb-3"><%= admin.username %></h3>
-            <p class="mb-1"><strong>Email:</strong> <%= admin.email %></p>
-            <p class="mb-1"><strong>Role:</strong> <%= admin.roles %></p>
-            <p class="mb-1"><strong>Location:</strong> <%= admin.location %></p>
-            <p class="mb-1"><strong>Contact Number:</strong> <%= admin.contactNumber || 'Not provided' %></p>
-            <p class="mb-1"><strong>Member Since:</strong> <%= admin.createdAt ? new Date(admin.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A' %></p>
+          <h1 class="profile-page-title mb-2"><%= adminName %></h1>
+          <div class="profile-hero-meta d-flex flex-wrap gap-3 mb-3">
+            <span class="profile-role-badge"><i class="bi bi-shield-lock-fill me-1"></i><%= adminRole %></span>
+            <span class="profile-hero-email"><i class="bi bi-envelope-fill me-2"></i><%= admin.email %></span>
+          </div>
+          <p class="profile-page-subtitle mb-0">Manage your FoodBridge account, keep your profile updated, and review your platform oversight summary.</p>
+        </div>
+
+        <div class="col-xl-4">
+          <div class="profile-avatar-card card h-100">
+            <div class="card-body p-4 text-center">
+              <div class="profile-avatar-wrap mb-3">
+                <img src="<%= profileImage %>" alt="<%= adminName %>" class="profile-avatar" />
+                <span class="profile-avatar-initials"><%= adminInitials %></span>
+              </div>
+              <h2 class="profile-avatar-name mb-1"><%= adminName %></h2>
+              <p class="profile-avatar-text mb-0"><%= admin.email %></p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
+
+  <section class="mb-4">
+    <div class="row g-3 g-xl-4">
+      <div class="col-xl-7">
+        <div class="profile-info-card card admin-glass-card h-100">
+          <div class="card-body p-4 p-lg-5">
+            <div class="section-heading d-flex align-items-center justify-content-between mb-3">
+              <div>
+                <h2 class="section-title mb-1">Profile Information</h2>
+                <p class="section-subtitle mb-0">Your account details as stored in FoodBridge.</p>
+              </div>
+            </div>
+
+            <div class="profile-details-list">
+              <div class="profile-detail-row">
+                <span>Username</span>
+                <strong><%= admin.username %></strong>
+              </div>
+              <div class="profile-detail-row">
+                <span>Email</span>
+                <strong><a href="mailto:<%= admin.email %>"><%= admin.email %></a></strong>
+              </div>
+              <div class="profile-detail-row">
+                <span>Role</span>
+                <strong><span class="profile-role-badge profile-role-badge-inline"><%= adminRole %></span></strong>
+              </div>
+              <div class="profile-detail-row">
+                <span>Account Created Date</span>
+                <strong><%= createdAt %></strong>
+              </div>
+              <div class="profile-detail-row">
+                <span>Location</span>
+                <strong><%= admin.location || 'Not provided' %></strong>
+              </div>
+              <div class="profile-detail-row">
+                <span>Contact Number</span>
+                <strong><%= admin.contactNumber || 'Not provided' %></strong>
+              </div>
+            </div>
+
+            <div class="profile-actions mt-4">
+              <button type="button" class="btn profile-action-btn profile-action-edit" disabled title="Edit profile route is not connected in the current frontend-only task">
+                <i class="bi bi-pencil-square"></i>
+                <span>Edit Profile</span>
+              </button>
+              <button type="button" class="btn profile-action-btn profile-action-password" disabled title="Change password route is not connected in the current frontend-only task">
+                <i class="bi bi-key-fill"></i>
+                <span>Change Password</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-5">
+        <div class="profile-summary-card card admin-glass-card h-100">
+          <div class="card-body p-4 p-lg-5">
+            <div class="section-heading d-flex align-items-center justify-content-between mb-3">
+              <div>
+                <h2 class="section-title mb-1">Activity Summary</h2>
+                <p class="section-subtitle mb-0">Quick platform totals tied to your admin dashboard.</p>
+              </div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-6">
+                <article class="profile-stat-card profile-stat-users">
+                  <div class="profile-stat-icon"><i class="bi bi-people-fill"></i></div>
+                  <div class="profile-stat-body">
+                    <span class="profile-stat-label">Total Users</span>
+                    <strong class="profile-stat-value">—</strong>
+                  </div>
+                </article>
+              </div>
+              <div class="col-6">
+                <article class="profile-stat-card profile-stat-restaurants">
+                  <div class="profile-stat-icon"><i class="bi bi-shop-window"></i></div>
+                  <div class="profile-stat-body">
+                    <span class="profile-stat-label">Total Restaurants</span>
+                    <strong class="profile-stat-value">—</strong>
+                  </div>
+                </article>
+              </div>
+              <div class="col-6">
+                <article class="profile-stat-card profile-stat-ngos">
+                  <div class="profile-stat-icon"><i class="bi bi-building-heart"></i></div>
+                  <div class="profile-stat-body">
+                    <span class="profile-stat-label">Total NGOs</span>
+                    <strong class="profile-stat-value">—</strong>
+                  </div>
+                </article>
+              </div>
+              <div class="col-6">
+                <article class="profile-stat-card profile-stat-donations">
+                  <div class="profile-stat-icon"><i class="bi bi-gift-fill"></i></div>
+                  <div class="profile-stat-body">
+                    <span class="profile-stat-label">Total Donations</span>
+                    <strong class="profile-stat-value">—</strong>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <div class="profile-summary-note mt-4">
+              <i class="bi bi-info-circle-fill"></i>
+              <p class="mb-0">Summary cards are styled for FoodBridge reporting and can be wired to live totals without changing this page structure.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
