@@ -1,45 +1,409 @@
 <% layout('layouts/adminBoilerplate') %>
-<div class="container">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="mb-0">NGOs Management</h1>
-    <a href="/admin" class="btn btn-outline-primary">Back to Dashboard</a>
-  </div>
+<%
+  const ngosList = Array.isArray(ngos) ? ngos : [];
+  const totalNGOs = ngosList.length;
+  const activeNGOs = ngosList.filter((ngo) => ngo.isOpen).length;
+  const totalDonationsReceived = ngosList.reduce((sum, ngo) => {
+    const completedNotifications = Array.isArray(ngo.notification)
+      ? ngo.notification.filter((item) => item && item.completed).length
+      : 0;
 
-  <div class="table-responsive">
-    <table class="table table-striped table-hover align-middle">
-      <thead class="table-dark">
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Location</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% ngos.forEach(ngo => { %>
-        <tr>
-          <td><%= ngo.username %></td>
-          <td><%= ngo.email %></td>
-          <td><%= ngo.location %></td>
-          <td>
-            <% if (ngo.isOpen) { %>
-              <span class="badge bg-success">Enabled</span>
-            <% } else { %>
-              <span class="badge bg-secondary">Disabled</span>
-            <% } %>
-          </td>
-          <td>
-            <a href="/admin/ngos/<%= ngo._id %>" class="btn btn-sm btn-primary">View</a>
-            <form action="/admin/ngos/<%= ngo._id %>/toggle" method="POST" class="d-inline">
-              <button class="btn btn-sm <%= ngo.isOpen ? 'btn-warning' : 'btn-success' %>">
-                <%= ngo.isOpen ? 'Disable' : 'Enable' %>
-              </button>
-            </form>
-          </td>
-        </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  </div>
+    return sum + completedNotifications;
+  }, 0);
+  const pendingRequests = ngosList.reduce((sum, ngo) => {
+    const pendingNotifications = Array.isArray(ngo.notification)
+      ? ngo.notification.filter((item) => item && !item.completed).length
+      : 0;
+
+    return sum + pendingNotifications;
+  }, 0);
+  const featuredNgo = ngosList[0] || null;
+  const defaultNgoImage = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
+
+  const getNgoImage = (ngo) => (ngo && ngo.image && ngo.image.url ? ngo.image.url : defaultNgoImage);
+  const getNgoName = (ngo) => (ngo ? ngo.username || 'Unnamed NGO' : 'No NGO selected');
+  const getContactPerson = (ngo) => {
+    if (!ngo) return 'Contact not available';
+    return ngo.contactNumber || ngo.username || 'Contact not available';
+  };
+  const getDonationCount = (ngo) => {
+    if (!ngo || !Array.isArray(ngo.notification)) return 0;
+    return ngo.notification.filter((item) => item && item.completed).length;
+  };
+  const getPendingCount = (ngo) => {
+    if (!ngo || !Array.isArray(ngo.notification)) return 0;
+    return ngo.notification.filter((item) => item && !item.completed).length;
+  };
+  const getSearchText = (ngo) => {
+    if (!ngo) return '';
+    return [ngo.username, ngo.email, ngo.location, ngo.contactNumber]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+  };
+%>
+
+<div class="admin-ngos-page">
+  <section class="ngos-hero card admin-glass-card mb-4">
+    <div class="card-body p-4 p-lg-5">
+      <div class="row align-items-center g-4">
+        <div class="col-xl-7">
+          <div class="ngos-hero-kicker mb-2">
+            <i class="bi bi-people-fill"></i>
+            <span>FoodBridge NGO Network</span>
+          </div>
+          <h1 class="ngos-page-title mb-2">NGO Management</h1>
+          <p class="ngos-page-subtitle mb-3">Manage all registered NGOs and donation receivers.</p>
+          <div class="ngos-meta d-flex flex-wrap gap-3">
+            <div class="ngos-meta-pill">
+              <i class="bi bi-building-heart"></i>
+              <span><%= totalNGOs %> NGO records</span>
+            </div>
+            <div class="ngos-meta-pill ngos-meta-pill-soft">
+              <i class="bi bi-bell-fill"></i>
+              <span><%= pendingRequests %> pending requests</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-5">
+          <div class="ngo-profile-card card h-100">
+            <div class="card-body p-4">
+              <% if (featuredNgo) { %>
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                  <span class="ngo-profile-kicker">Featured NGO</span>
+                  <span class="ngo-profile-status <%= featuredNgo.isOpen ? 'is-open' : 'is-closed' %>">
+                    <i class="bi <%= featuredNgo.isOpen ? 'bi-check-circle-fill' : 'bi-dash-circle-fill' %>"></i>
+                    <span><%= featuredNgo.isOpen ? 'Active' : 'Inactive' %></span>
+                  </span>
+                </div>
+                <div class="ngo-profile-top">
+                  <img
+                    src="<%= getNgoImage(featuredNgo) %>"
+                    alt="<%= getNgoName(featuredNgo) %>"
+                    class="ngo-profile-avatar"
+                  />
+                  <div class="ngo-profile-title-wrap">
+                    <h2 class="ngo-profile-title mb-1"><%= getNgoName(featuredNgo) %></h2>
+                    <p class="ngo-profile-subtitle mb-0"><%= featuredNgo.location || 'Coverage area not provided' %></p>
+                  </div>
+                </div>
+                <div class="ngo-profile-details">
+                  <div class="ngo-profile-row">
+                    <span>Contact</span>
+                    <strong><%= featuredNgo.contactNumber || 'Not provided' %></strong>
+                  </div>
+                  <div class="ngo-profile-row">
+                    <span>Total Donations Received</span>
+                    <strong><%= getDonationCount(featuredNgo) %></strong>
+                  </div>
+                  <div class="ngo-profile-row">
+                    <span>Coverage Area</span>
+                    <strong><%= featuredNgo.location || 'N/A' %></strong>
+                  </div>
+                  <div class="ngo-profile-row">
+                    <span>Joined</span>
+                    <strong><%= featuredNgo.createdAt ? new Date(featuredNgo.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A' %></strong>
+                  </div>
+                </div>
+              <% } else { %>
+                <div class="ngo-profile-empty">
+                  <div class="ngo-profile-empty-icon"><i class="bi bi-people-fill"></i></div>
+                  <h2 class="mb-2">No featured NGO</h2>
+                  <p class="mb-0">Once NGOs register, a quick profile summary will appear here with donation and coverage details.</p>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mb-4">
+    <div class="section-heading d-flex align-items-center justify-content-between mb-3">
+      <div>
+        <h2 class="section-title mb-1">NGO Statistics</h2>
+        <p class="section-subtitle mb-0">Track registered NGOs, active groups, and request flow at a glance.</p>
+      </div>
+      <span class="section-badge"><i class="bi bi-graph-up-arrow me-1"></i> NGO summary</span>
+    </div>
+
+    <div class="row g-3 g-xl-4">
+      <div class="col-6 col-xl-3">
+        <article class="stat-card stat-card-ngo-total">
+          <div class="stat-card-icon"><i class="bi bi-building-heart"></i></div>
+          <div class="stat-card-body">
+            <span class="stat-card-label">Total NGOs</span>
+            <strong class="stat-card-value"><%= totalNGOs %></strong>
+          </div>
+        </article>
+      </div>
+      <div class="col-6 col-xl-3">
+        <article class="stat-card stat-card-ngo-active">
+          <div class="stat-card-icon"><i class="bi bi-check2-circle"></i></div>
+          <div class="stat-card-body">
+            <span class="stat-card-label">Active NGOs</span>
+            <strong class="stat-card-value"><%= activeNGOs %></strong>
+          </div>
+        </article>
+      </div>
+      <div class="col-6 col-xl-3">
+        <article class="stat-card stat-card-ngo-donations">
+          <div class="stat-card-icon"><i class="bi bi-gift-fill"></i></div>
+          <div class="stat-card-body">
+            <span class="stat-card-label">Donations Received</span>
+            <strong class="stat-card-value"><%= totalDonationsReceived %></strong>
+          </div>
+        </article>
+      </div>
+      <div class="col-6 col-xl-3">
+        <article class="stat-card stat-card-ngo-requests">
+          <div class="stat-card-icon"><i class="bi bi-bell-fill"></i></div>
+          <div class="stat-card-body">
+            <span class="stat-card-label">Pending Requests</span>
+            <strong class="stat-card-value"><%= pendingRequests %></strong>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="card ngos-toolbar-card mb-4 admin-glass-card">
+    <div class="card-body p-3 p-lg-4">
+      <div class="row g-3 align-items-end">
+        <div class="col-xl-5">
+          <label for="ngoNameSearchInput" class="form-label ngos-toolbar-label mb-2">Search NGO name</label>
+          <div class="input-group ngos-search-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" id="ngoNameSearchInput" class="form-control" placeholder="Search by NGO name">
+            <button class="btn btn-outline-secondary" type="button" id="ngoClearNameSearch">Clear</button>
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <label for="ngoLocationSearchInput" class="form-label ngos-toolbar-label mb-2">Search location</label>
+          <div class="input-group ngos-search-group">
+            <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
+            <input type="text" id="ngoLocationSearchInput" class="form-control" placeholder="Search by location">
+            <button class="btn btn-outline-secondary" type="button" id="ngoClearLocationSearch">Clear</button>
+          </div>
+        </div>
+        <div class="col-xl-3">
+          <div class="ngos-toolbar-label mb-2">Filter by status</div>
+          <div class="ngos-filter-group" id="ngosFilterGroup">
+            <button type="button" class="ngos-filter-btn active" data-filter="all">All NGOs</button>
+            <button type="button" class="ngos-filter-btn" data-filter="active">Active</button>
+            <button type="button" class="ngos-filter-btn" data-filter="inactive">Inactive</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card ngos-table-card admin-glass-card">
+    <div class="card-body p-0">
+      <div class="ngos-table-header px-4 py-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <div>
+          <h2 class="ngos-table-title mb-1">Registered NGOs</h2>
+          <p class="ngos-table-subtitle mb-0"><%= totalNGOs %> NGOs available in the system.</p>
+        </div>
+        <div class="ngos-table-legend d-flex flex-wrap gap-2">
+          <span class="legend-pill legend-pill-green"><i class="bi bi-dot"></i> Active</span>
+          <span class="legend-pill legend-pill-gray"><i class="bi bi-dot"></i> Inactive</span>
+          <span class="legend-pill legend-pill-orange"><i class="bi bi-dot"></i> FoodBridge</span>
+        </div>
+      </div>
+
+      <% if (ngosList.length) { %>
+        <div class="table-responsive ngos-table-responsive">
+          <table class="table align-middle mb-0 ngos-table">
+            <thead>
+              <tr>
+                <th>NGO Logo/Avatar</th>
+                <th>NGO Name</th>
+                <th>Contact Person</th>
+                <th>Email</th>
+                <th>Location</th>
+                <th>Donations Received</th>
+                <th>Status</th>
+                <th>Joined Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ngosTableBody">
+              <% ngosList.forEach((ngo) => { %>
+                <tr
+                  class="ngo-row"
+                  data-status="<%= ngo.isOpen ? 'active' : 'inactive' %>"
+                  data-search="<%= getSearchText(ngo) %>"
+                >
+                  <td>
+                    <div class="ngo-avatar-wrap">
+                      <img
+                        src="<%= getNgoImage(ngo) %>"
+                        alt="<%= getNgoName(ngo) %>"
+                        class="ngo-avatar"
+                      />
+                    </div>
+                  </td>
+                  <td>
+                    <div class="ngo-name-cell">
+                      <strong><%= getNgoName(ngo) %></strong>
+                      <span><%= ngo.contactNumber || 'Contact number not provided' %></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="ngo-contact-cell">
+                      <span class="ngo-contact-name"><%= getContactPerson(ngo) %></span>
+                      <span class="ngo-contact-meta"><%= ngo.contactNumber || 'No alternate contact available' %></span>
+                    </div>
+                  </td>
+                  <td>
+                    <% if (ngo.email) { %>
+                      <a href="mailto:<%= ngo.email %>" class="ngo-email-link"><%= ngo.email %></a>
+                    <% } else { %>
+                      <span class="ngo-muted">Email not provided</span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <div class="ngo-location-cell">
+                      <i class="bi bi-geo-alt-fill"></i>
+                      <span><%= ngo.location || 'Location not provided' %></span>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="ngo-count-pill ngo-count-donations"><i class="bi bi-gift-fill"></i><%= getDonationCount(ngo) %></span>
+                  </td>
+                  <td>
+                    <% if (ngo.isOpen) { %>
+                      <span class="ngo-status-badge ngo-status-active"><i class="bi bi-check-circle-fill me-1"></i>Active</span>
+                    <% } else { %>
+                      <span class="ngo-status-badge ngo-status-inactive"><i class="bi bi-dash-circle-fill me-1"></i>Inactive</span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <div class="ngo-joined-cell">
+                      <i class="bi bi-calendar3"></i>
+                      <span><%= ngo.createdAt ? new Date(ngo.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A' %></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="ngos-actions">
+                      <a href="/admin/ngos/<%= ngo._id %>" class="btn btn-sm ngo-action-btn ngo-action-view">
+                        <i class="bi bi-eye"></i>
+                        <span>View</span>
+                      </a>
+                      <button type="button" class="btn btn-sm ngo-action-btn ngo-action-edit" disabled title="Edit UI is not connected to a backend route">
+                        <i class="bi bi-pencil-square"></i>
+                        <span>Edit</span>
+                      </button>
+                      <button type="button" class="btn btn-sm ngo-action-btn ngo-action-delete" disabled title="Delete UI is not connected to a backend route">
+                        <i class="bi bi-trash3"></i>
+                        <span>Delete</span>
+                      </button>
+                      <form action="/admin/ngos/<%= ngo._id %>/toggle" method="POST" class="d-inline ngos-toggle-form">
+                        <button class="btn btn-sm ngo-action-btn ngo-action-toggle" title="Toggle NGO status">
+                          <i class="bi <%= ngo.isOpen ? 'bi-slash-circle' : 'bi-check2-circle' %>"></i>
+                          <span><%= ngo.isOpen ? 'Disable' : 'Enable' %></span>
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="ngosEmptyState" class="ngo-empty-state d-none">
+          <div class="ngo-empty-icon"><i class="bi bi-search-heart"></i></div>
+          <h3>No matching NGOs found</h3>
+          <p>Try another NGO name, location, or switch back to All NGOs.</p>
+        </div>
+      <% } else { %>
+        <div class="ngo-empty-state">
+          <div class="ngo-empty-icon"><i class="bi bi-people-fill"></i></div>
+          <h3>No NGOs available</h3>
+          <p>Registered NGOs will appear here with their profile image, contact details, and quick actions.</p>
+        </div>
+      <% } %>
+    </div>
+  </section>
 </div>
+
+<script>
+  (function () {
+    const nameInput = document.getElementById('ngoNameSearchInput');
+    const locationInput = document.getElementById('ngoLocationSearchInput');
+    const clearNameButton = document.getElementById('ngoClearNameSearch');
+    const clearLocationButton = document.getElementById('ngoClearLocationSearch');
+    const filterGroup = document.getElementById('ngosFilterGroup');
+    const rows = Array.from(document.querySelectorAll('.ngo-row'));
+    const emptyState = document.getElementById('ngosEmptyState');
+
+    if (!nameInput || !locationInput || !filterGroup || !rows.length) return;
+
+    let activeFilter = 'all';
+
+    const normalize = (value) => (value || '').trim().toLowerCase();
+
+    const updateEmptyState = (visibleCount) => {
+      if (!emptyState) return;
+      emptyState.classList.toggle('d-none', visibleCount !== 0);
+    };
+
+    const applyFilters = () => {
+      const nameQuery = normalize(nameInput.value);
+      const locationQuery = normalize(locationInput.value);
+      let visibleCount = 0;
+
+      rows.forEach((row) => {
+        const status = row.dataset.status || 'inactive';
+        const searchable = row.dataset.search || '';
+        const matchesStatus = activeFilter === 'all' || status === activeFilter;
+        const matchesName = !nameQuery || searchable.includes(nameQuery);
+        const matchesLocation = !locationQuery || searchable.includes(locationQuery);
+        const shouldShow = matchesStatus && matchesName && matchesLocation;
+
+        row.classList.toggle('d-none', !shouldShow);
+        if (shouldShow) visibleCount += 1;
+      });
+
+      updateEmptyState(visibleCount);
+    };
+
+    filterGroup.addEventListener('click', (event) => {
+      const button = event.target.closest('.ngos-filter-btn');
+      if (!button) return;
+
+      activeFilter = button.dataset.filter || 'all';
+
+      filterGroup.querySelectorAll('.ngos-filter-btn').forEach((item) => {
+        item.classList.toggle('active', item === button);
+      });
+
+      applyFilters();
+    });
+
+    nameInput.addEventListener('input', applyFilters);
+    locationInput.addEventListener('input', applyFilters);
+
+    if (clearNameButton) {
+      clearNameButton.addEventListener('click', () => {
+        nameInput.value = '';
+        applyFilters();
+        nameInput.focus();
+      });
+    }
+
+    if (clearLocationButton) {
+      clearLocationButton.addEventListener('click', () => {
+        locationInput.value = '';
+        applyFilters();
+        locationInput.focus();
+      });
+    }
+
+    applyFilters();
+  })();
+</script>
