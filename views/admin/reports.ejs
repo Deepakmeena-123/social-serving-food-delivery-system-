@@ -1,50 +1,238 @@
 <% layout('layouts/adminBoilerplate') %>
-<div class="container">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="mb-0">Reports</h1>
-    <a href="/admin" class="btn btn-outline-primary">Back to Dashboard</a>
-  </div>
+<%
+  const hasCoreData = [totalRestaurants, totalNGOs, totalDonations].every((value) => value !== undefined && value !== null);
+  const chartLabels = [
+    { title: 'Monthly Donations', icon: 'bi-bar-chart-line-fill', accent: 'chart-accent-green' },
+    { title: 'User Growth', icon: 'bi-people-fill', accent: 'chart-accent-orange' },
+    { title: 'Order Statistics', icon: 'bi-bag-check-fill', accent: 'chart-accent-green' },
+    { title: 'NGO Activity', icon: 'bi-building-heart', accent: 'chart-accent-orange' }
+  ];
+%>
 
-  <div class="row g-4">
-    <div class="col-md-4">
-      <div class="card shadow-sm h-100">
-        <div class="card-body text-center">
-          <h6 class="text-muted">Total Food Donated</h6>
-          <h2 class="mb-0"><%= totalFoodDonated %></h2>
+<div class="admin-reports-page">
+  <section class="reports-hero card admin-glass-card mb-4">
+    <div class="card-body p-4 p-lg-5">
+      <div class="row align-items-center g-4">
+        <div class="col-xl-8">
+          <div class="reports-hero-kicker mb-2">
+            <i class="bi bi-graph-up-arrow"></i>
+            <span>FoodBridge Intelligence Center</span>
+          </div>
+          <h1 class="reports-page-title mb-2">Reports &amp; Analytics</h1>
+          <p class="reports-page-subtitle mb-3">Platform Insights Overview</p>
+          <div class="reports-meta d-flex flex-wrap gap-3">
+            <div class="reports-meta-pill">
+              <i class="bi bi-bar-chart-line-fill"></i>
+              <span>Dashboard-ready reporting</span>
+            </div>
+            <div class="reports-meta-pill reports-meta-pill-soft">
+              <i class="bi bi-lightning-charge-fill"></i>
+              <span>FoodBridge analytics theme</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <div class="reports-summary-card">
+            <p class="reports-summary-label mb-1">Snapshot</p>
+            <h2 class="reports-summary-value mb-2"><%= totalDonations %></h2>
+            <p class="reports-summary-text mb-0">Total donation events tracked in the current reporting payload.</p>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card shadow-sm h-100">
-        <div class="card-body text-center">
-          <h6 class="text-muted">Total Food Distributed</h6>
-          <h2 class="mb-0"><%= totalFoodDistributed %></h2>
-        </div>
+  </section>
+
+  <section class="mb-4">
+    <div class="section-heading d-flex align-items-center justify-content-between mb-3">
+      <div>
+        <h2 class="section-title mb-1">Platform Analytics</h2>
+        <p class="section-subtitle mb-0">Key operational counts across users, partners, donations, and orders.</p>
+      </div>
+      <span class="section-badge"><i class="bi bi-activity me-1"></i> Overview metrics</span>
+    </div>
+
+    <div class="row g-3 g-xl-4">
+      <div class="col-6 col-xl-2-4">
+        <article class="stat-card stat-card-users">
+          <div class="stat-card-icon"><i class="bi bi-people-fill"></i></div>
+          <div class="stat-card-body">
+            <span class="stat-card-label">Total Users</span>
+            <strong class="stat-card-value">—</strong>
+          </div>
+        </article>
+      </div>
+      <div class="col-6 col-xl-2-4">
+        <article class="stat-card stat-card-restaurants">
+          <div class="stat-card-icon"><i class="bi bi-shop-window"></i></div>
+          <div class="stat-card-body">
+            <span class="stat-card-label">Total Restaurants</span>
+            <strong class="stat-card-value"><%= totalRestaurants %></strong>
+          </div>
+        </article>
+      </div>
+      <div class="col-6 col-xl-2-4">
+        <article class="stat-card stat-card-ngos">
+          <div class="stat-card-icon"><i class="bi bi-building-heart"></i></div>
+          <div class="stat-card-body">
+            <span class="stat-card-label">Total NGOs</span>
+            <strong class="stat-card-value"><%= totalNGOs %></strong>
+          </div>
+        </article>
+      </div>
+      <div class="col-6 col-xl-2-4">
+        <article class="stat-card stat-card-donations">
+          <div class="stat-card-icon"><i class="bi bi-gift-fill"></i></div>
+          <div class="stat-card-body">
+            <span class="stat-card-label">Total Donations</span>
+            <strong class="stat-card-value"><%= totalDonations %></strong>
+          </div>
+        </article>
+      </div>
+      <div class="col-6 col-xl-2-4">
+        <article class="stat-card stat-card-pending">
+          <div class="stat-card-icon"><i class="bi bi-bag-check-fill"></i></div>
+          <div class="stat-card-body">
+            <span class="stat-card-label">Total Orders</span>
+            <strong class="stat-card-value">—</strong>
+          </div>
+        </article>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card shadow-sm h-100">
-        <div class="card-body text-center">
-          <h6 class="text-muted">Total Donations</h6>
-          <h2 class="mb-0"><%= totalDonations %></h2>
-        </div>
+  </section>
+
+  <section class="mb-4">
+    <div class="section-heading d-flex align-items-center justify-content-between mb-3">
+      <div>
+        <h2 class="section-title mb-1">Donation Insights</h2>
+        <p class="section-subtitle mb-0">Split counts are not exposed by the current report payload, so these cards are ready for live binding.</p>
+      </div>
+      <span class="section-badge"><i class="bi bi-shield-check me-1"></i> Insight cards</span>
+    </div>
+
+    <div class="row g-3 g-xl-4">
+      <div class="col-md-4">
+        <article class="insight-card insight-card-pending">
+          <div class="insight-card-icon"><i class="bi bi-hourglass-split"></i></div>
+          <div class="insight-card-body">
+            <span class="insight-card-label">Pending Donations</span>
+            <strong class="insight-card-value">—</strong>
+            <small class="insight-card-note">Not available in current report payload</small>
+          </div>
+        </article>
+      </div>
+      <div class="col-md-4">
+        <article class="insight-card insight-card-accepted">
+          <div class="insight-card-icon"><i class="bi bi-check2-circle"></i></div>
+          <div class="insight-card-body">
+            <span class="insight-card-label">Accepted Donations</span>
+            <strong class="insight-card-value">—</strong>
+            <small class="insight-card-note">Ready for Chart.js-powered binding</small>
+          </div>
+        </article>
+      </div>
+      <div class="col-md-4">
+        <article class="insight-card insight-card-completed">
+          <div class="insight-card-icon"><i class="bi bi-bag-check-fill"></i></div>
+          <div class="insight-card-body">
+            <span class="insight-card-label">Completed Donations</span>
+            <strong class="insight-card-value">—</strong>
+            <small class="insight-card-note">Placeholder until backend exposes status counts</small>
+          </div>
+        </article>
       </div>
     </div>
-    <div class="col-md-6">
-      <div class="card shadow-sm h-100">
-        <div class="card-body text-center">
-          <h6 class="text-muted">Total Participating Restaurants</h6>
-          <h2 class="mb-0"><%= totalRestaurants %></h2>
+  </section>
+
+  <section class="mb-4">
+    <div class="section-heading d-flex align-items-center justify-content-between mb-3">
+      <div>
+        <h2 class="section-title mb-1">Chart Sections</h2>
+        <p class="section-subtitle mb-0">Responsive Chart.js containers prepared for live analytics datasets.</p>
+      </div>
+      <span class="section-badge"><i class="bi bi-pie-chart-fill me-1"></i> Chart placeholders</span>
+    </div>
+
+    <div class="row g-3 g-xl-4">
+      <% chartLabels.forEach((chart) => { %>
+        <div class="col-lg-6">
+          <section class="chart-card card admin-glass-card h-100">
+            <div class="card-body p-4">
+              <div class="chart-card-header d-flex align-items-center justify-content-between gap-2 mb-3">
+                <div>
+                  <p class="chart-card-kicker mb-1">Chart.js placeholder</p>
+                  <h3 class="chart-card-title mb-0"><%= chart.title %></h3>
+                </div>
+                <div class="chart-card-icon <%= chart.accent %>"><i class="bi <%= chart.icon %>"></i></div>
+              </div>
+              <div class="chart-placeholder">
+                <canvas class="chart-placeholder-canvas" aria-hidden="true"></canvas>
+                <div class="chart-placeholder-copy">
+                  <i class="bi bi-bar-chart-line"></i>
+                  <span>Connect Chart.js data series here</span>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
+      <% }) %>
+    </div>
+  </section>
+
+  <section class="mb-4">
+    <div class="row g-3 g-xl-4">
+      <div class="col-xl-6">
+        <section class="ranking-card card admin-glass-card h-100">
+          <div class="card-body p-4">
+            <div class="ranking-card-header d-flex align-items-center justify-content-between gap-2 mb-3">
+              <div>
+                <p class="ranking-card-kicker mb-1">Top Performing NGOs</p>
+                <h3 class="ranking-card-title mb-0">Donation Receiver Leaders</h3>
+              </div>
+              <i class="bi bi-building-heart ranking-card-icon"></i>
+            </div>
+
+            <div class="ranking-empty-state">
+              <div class="ranking-empty-icon"><i class="bi bi-building-heart"></i></div>
+              <h4>No NGO ranking data available</h4>
+              <p>Analytics rows will populate once the backend exposes per-NGO performance data.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="col-xl-6">
+        <section class="ranking-card card admin-glass-card h-100">
+          <div class="card-body p-4">
+            <div class="ranking-card-header d-flex align-items-center justify-content-between gap-2 mb-3">
+              <div>
+                <p class="ranking-card-kicker mb-1">Top Restaurants</p>
+                <h3 class="ranking-card-title mb-0">Food &amp; Order Leaders</h3>
+              </div>
+              <i class="bi bi-shop-window ranking-card-icon"></i>
+            </div>
+
+            <div class="ranking-empty-state">
+              <div class="ranking-empty-icon"><i class="bi bi-shop-window"></i></div>
+              <h4>No restaurant ranking data available</h4>
+              <p>Restaurant ranking rows will appear once the reporting pipeline provides aggregated counts.</p>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
-    <div class="col-md-6">
-      <div class="card shadow-sm h-100">
-        <div class="card-body text-center">
-          <h6 class="text-muted">Total Participating NGOs</h6>
-          <h2 class="mb-0"><%= totalNGOs %></h2>
+  </section>
+
+  <% if (!hasCoreData) { %>
+    <section class="reports-placeholder-band card admin-glass-card">
+      <div class="card-body p-4">
+        <div class="reports-placeholder-content">
+          <div class="reports-placeholder-icon"><i class="bi bi-database-x"></i></div>
+          <div>
+            <h3 class="mb-1">Some analytics data is unavailable</h3>
+            <p class="mb-0">This page is structured to support live metrics, charts, and rankings once the reporting payload includes them.</p>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+    </section>
+  <% } %>
 </div>
