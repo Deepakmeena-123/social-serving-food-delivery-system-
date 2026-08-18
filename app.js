@@ -16,7 +16,7 @@ const passport = require('passport');
 const { Strategy: LocalStrategy } = require('passport-local');
 const User = require('./models/user');
 const mongoSanitize = require('express-mongo-sanitize');
-
+const { ensureDefaultAdmin } = require('./utils/seedAdmin');
 
 
 const userRoutes = require('./routes/users');
@@ -125,6 +125,7 @@ const start = async () => {
     try {
         await mongoose.connect(dbUrl);
         console.log('Database connected');
+        await ensureDefaultAdmin();
         app.listen(port, () => {
             console.log(`Serving on port ${port}`)
         })

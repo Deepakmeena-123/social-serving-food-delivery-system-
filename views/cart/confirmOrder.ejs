@@ -1,19 +1,22 @@
 <% layout('layouts/boilerplate')%>
-<div class="container">
-  <h1 class="mb-3">Confirm Selected Order</h1>
-  <p class="text-muted">You can order only the foods you selected from cart.</p>
+<div class="container py-4 customer-checkout-page">
+  <div class="mb-4">
+    <p class="text-muted mb-1">Checkout</p>
+    <h1 class="mb-0">Confirm Selected Order</h1>
+    <p class="text-muted mb-0">Review delivery and payment details before placing your order.</p>
+  </div>
 
   <% for (let item of selectedCart) { %>
-  <div class="card mb-3">
-    <div class="row">
-      <div class="col-md-4" style="display: flex;align-items: center;justify-content: center;">
+  <div class="card mb-3 border-0 shadow-sm">
+    <div class="row g-0">
+      <div class="col-md-3 d-flex align-items-center justify-content-center p-2">
         <%if(item.food.image.url) {%>
         <img class="img-fluid" alt="" src="<%=item.food.image.url%>" />
         <% }else {%>
         <img class="img-fluid" alt="" style="height: 13rem;" src="https://openclipart.org/image/800px/289282" />
         <% } %>
       </div>
-      <div class="col-md-8">
+      <div class="col-md-9">
         <div class="card-body">
           <h5 class="card-title"><%= item.food.name %></h5>
           <p class="card-text mb-1">Restaurant: <%= item.food.restaurant.username %></p>
@@ -25,21 +28,24 @@
   </div>
   <% } %>
 
-  <div class="card mb-3">
+  <div class="card mb-3 border-0 shadow-sm">
     <div class="card-body">
       <strong class="d-block">Subtotal: ₹<%= Number.parseInt(subtotal*100)/100 %></strong>
       <strong class="d-block">Delivery Charges: ₹<%= delivery %></strong>
       <strong class="d-block">Total Amount: ₹<%= total %></strong>
+      <small class="text-muted d-block mt-2">Delivery Address: <%= currentUser.location %></small>
     </div>
   </div>
 
-  <div class="card mb-3">
-    <div class="card-body">
-      <h5 class="mb-3">Choose Payment Method</h5>
-      <form action="/cart/checkout/pay/cod" method="POST" class="d-inline">
+  <div class="card mb-3 border-0 shadow-sm">
+    <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <h5 class="mb-0">Choose Payment Method</h5>
+      <div class="d-flex flex-wrap gap-2">
+      <form action="/cart/checkout/pay/cod" method="POST" class="d-inline-block">
         <button class="btn btn-primary">Cash On Delivery</button>
       </form>
       <button class="btn btn-success" id="selected-online-pay-btn">Online Payment</button>
+      </div>
     </div>
   </div>
 </div>

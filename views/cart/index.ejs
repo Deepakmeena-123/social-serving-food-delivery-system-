@@ -1,13 +1,16 @@
 <% layout('layouts/boilerplate')%>
 <!-- CART PAGE -->
-<div class="container">
-  <h1><%= currentUser.username %>'s Cart</h1>
-  <h2>Location: <%= currentUser.location %></h2>
+<div class="container py-4 customer-cart-page">
+  <div class="mb-4">
+    <p class="text-muted mb-1">Shopping cart</p>
+    <h1 class="mb-0"><%= currentUser.username %>'s Cart</h1>
+    <p class="text-muted mb-0">Delivery Address: <%= currentUser.location %></p>
+  </div>
 
   <% for (let food of cart){%>
-  <div class="card mb-3">
-    <div class="row">
-      <div class="col-md-4" style="display: flex;align-items: center;justify-content: center;">
+  <div class="card mb-3 border-0 shadow-sm customer-cart-item-card">
+    <div class="row g-0">
+      <div class="col-md-3 d-flex align-items-center justify-content-center p-2">
         <%if(food.food.image.url) {%>
         <img class="img-fluid" alt="" src="<%=food.food.image.url%>" />
         <% }else {%>
@@ -19,9 +22,9 @@
         />
         <% } %>
       </div>
-      <div class="col-md-8">
+      <div class="col-md-9">
         <div class="card-body">
-          <div class="mb-2">
+          <div class="mb-2 d-flex justify-content-between align-items-center gap-2 flex-wrap">
             <label class="form-check-label">
               <input
                 type="checkbox"
@@ -34,6 +37,7 @@
               />
               Select this item
             </label>
+            <span class="badge bg-light text-dark">Qty: <%= food.count %></span>
           </div>
           <h5 class="card-title"><%= food.food.name %></h5>
           <p class="card-text">
@@ -48,12 +52,13 @@
             <% if(currentUser.roles === 'customer') {%> ₹<%= 0.8*food.food.price
             %> <% } else { %> ₹<%= 0.6*food.food.price %> <% } %>
           </p>
-          <form action="/cart/<%=food.food._id%>?_method=PUT" method="post">
+          <form action="/cart/<%=food.food._id%>?_method=PUT" method="post" class="d-flex flex-wrap align-items-center gap-2 mb-2">
             <strong>
-              Number Of Plates:
+              Quantity:
               <input
                 type="number"
-                class="mx-2"
+                class="mx-2 form-control d-inline-block"
+                style="max-width: 110px;"
                 id="count"
                 value="<%= food.count %>"
                 aria-label="count"
@@ -62,41 +67,44 @@
                 min="1"
                 max="<%= (food.count + food.food.count)%>"
                 required
-              /><button class="btn btn-primary btn-sm mx-2 mb-1">
+              /><button class="btn btn-primary btn-sm">
                 Save Changes
               </button>
             </strong>
           </form>
-          <form
-            action="/cart/<%=food.food._id%>?_method=DELETE"
-            class="d-inline"
-            method="post"
-          >
-            <button class="btn btn-danger btn sm">Remove</button>
-          </form>
-          <a
-            class="btn btn-primary"
-            href="/restaurants/<%=food.food.restaurant._id%>"
-            >View <%=food.food.restaurant.username%></a
-          >
+          <div class="d-flex flex-wrap gap-2">
+            <form
+              action="/cart/<%=food.food._id%>?_method=DELETE"
+              class="d-inline"
+              method="post"
+            >
+              <button class="btn btn-outline-danger btn-sm">Remove</button>
+            </form>
+            <a
+              class="btn btn-outline-primary btn-sm"
+              href="/restaurants/<%=food.food.restaurant._id%>"
+              >View Restaurant</a
+            >
+          </div>
         </div>
       </div>
     </div>
   </div>
   <% }%>
-  <div class="card mb-3">
-    <div class="row">
-      <div class="col-md-4">
+  <div class="card mb-3 border-0 shadow-sm">
+    <div class="row g-0">
+      <div class="col-md-4 border-end">
         <div class="card-body">
-            <strong class="d-block">Delivery Charges: ₹<span id="selected-delivery">0.00</span></strong>
-          <strong>Total Amount: ₹<span id="selected-total">0.00</span></strong>
+            <strong class="d-block mb-2">Subtotal + Delivery</strong>
+            <div class="text-muted">Delivery Charges: ₹<span id="selected-delivery">0.00</span></div>
+            <h5 class="mt-2 mb-0">Total: ₹<span id="selected-total">0.00</span></h5>
         </div>
       </div>
       <div class="col-md-8">
-        <div class="card-body">
-          <button class="btn btn-primary" id="place-order-btn">Place Order (Selected)</button>
+        <div class="card-body d-flex flex-wrap gap-2">
+          <button class="btn btn-primary" id="place-order-btn">Proceed to Checkout</button>
           <% if(currentUser.roles !== 'restaurant' && currentUser.roles !== 'Admin') {%>
-          <button class="btn btn-primary" id="donate-selected-btn">Donate To NGO (Selected)</button>
+          <button class="btn btn-outline-success" id="donate-selected-btn">Donate Selected Food</button>
           <% } %>
           <a href="/cart/pay/cod" class="btn btn-outline-primary <%= money === 0?'disabled':''%>">Order All (COD)</a>
         </div>

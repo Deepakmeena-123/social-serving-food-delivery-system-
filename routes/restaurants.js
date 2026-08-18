@@ -61,6 +61,82 @@ router.get('/:id', catchAsync(async(req,res) => {
 }
 }))
 
+router.get('/:id/dashboard', catchAsync(async (req, res) => {
+    if(!req.user){
+        req.flash('error','User Must LOGGED IN');
+        return res.redirect('/login');
+    }
+    if(!req.user._id.equals(req.params.id)) {
+        req.flash('error','Not Authorized');
+        return res.redirect('/restaurants');
+    }
+
+    const restaurant = await User.findById(req.params.id).populate({
+        path: 'cart',
+        populate: { path: 'food' }
+    });
+
+    if(!restaurant || restaurant.roles !== 'restaurant') {
+        req.flash('error','Restaurant not found');
+        return res.redirect('/restaurants');
+    }
+
+    const foodIds = restaurant.cart.map(item => item.food && item.food._id).filter(Boolean);
+    const restaurantOrders = await Order.find().populate({ path: 'user' }).populate({ path: 'order.food' });
+    const filteredOrders = restaurantOrders.filter(order =>
+        order.order.some(item => item.food && item.food.restaurant && item.food.restaurant.equals(restaurant._id))
+    );
+
+    const recentOrders = filteredOrders
+        .sort((a, b) => b._id.getTimestamp() - a._id.getTimestamp())
+        .slice(0, 5);
+
+    const Donation = require('../models/donation');
+    const recentDonations = await Donation.find({ donorType: 'Restaurant', donorId: restaurant._id })
+        .sort({ donationDate: -1 })
+        .limit(5);
+
+    const totalFoodItems = restaurant.cart.length;
+    const totalOrders = filteredOrders.length;
+    const totalDonations = await Donation.countDocuments({ donorType: 'Restaurant', donorId: restaurant._id });
+    const pendingOrders = filteredOrders.filter((order) => !['Delivered', 'Cancelled', 'Failed'].includes(order.status)).length;
+
+    res.render('restaurants/dashboard', {
+        restaurant,
+        totalFoodItems,
+        totalOrders,
+        totalDonations,
+        pendingOrders,
+        recentOrders,
+        recentDonations
+    });
+}));
+
+router.get('/:id/orders', catchAsync(async (req, res) => {
+    if(!req.user){
+        req.flash('error','User Must LOGGED IN');
+        return res.redirect('/login');
+    }
+    if(!req.user._id.equals(req.params.id)) {
+        req.flash('error','Not Authorized');
+        return res.redirect('/restaurants');
+    }
+
+    const restaurant = await User.findById(req.params.id);
+    if(!restaurant || restaurant.roles !== 'restaurant') {
+        req.flash('error','Restaurant not found');
+        return res.redirect('/restaurants');
+    }
+
+    const orders = await Order.find().populate({ path: 'user' }).populate({ path: 'order.food' });
+    const restaurantOrders = orders.filter(order =>
+        order.order.some(item => item.food && item.food.restaurant && item.food.restaurant.equals(restaurant._id))
+    );
+
+    const sortedOrders = restaurantOrders.sort((a, b) => b._id.getTimestamp() - a._id.getTimestamp());
+    res.render('restaurants/orders', { restaurant, orders: sortedOrders });
+}));
+
 //Rendering Add Food Item To The Menu Form
 router.get('/:id/add', (req,res) => {
     if(!req.user){

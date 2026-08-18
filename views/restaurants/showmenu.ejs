@@ -1,23 +1,27 @@
 <% layout('layouts/boilerplate')%>
 <!-- Menu of Restaurant -->
-<div class="container mb-1">
-  <h1><%= restaurant.username%></h1>
+<div class="restaurant-menu-page mb-1">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <h1 class="menu-title mb-0"><%= restaurant.username%></h1>
+    <% if(currentUser && currentUser._id && currentUser._id.equals(restaurant._id)) { %>
+      <a class="btn btn-outline-secondary" href="/restaurants/<%= restaurant._id %>/dashboard">Dashboard</a>
+    <% } %>
+  </div>
   <% if(currentUser && restaurant._id.equals(currentUser._id)) { %> <%
   if(restaurant.isOpen){ %>
   <a class="btn btn-primary mb-2" href="/restaurants/<%=restaurant._id%>/add"
     >Add Food
   </a>
   <% } %> <% } %> <% for (let food of restaurant.cart){ %>
-  <div class="card mb-3">
+  <div class="card mb-3 restaurant-menu-card">
     <div class="row">
       <div class="col-md-4">
         <%if(food.food.image.url) {%>
-        <img class="img-fluid" alt="" src="<%=food.food.image.url%>" />
+        <img class="restaurant-menu-image" alt="" src="<%=food.food.image.url%>" />
         <% }else {%>
         <img
-          class="img-fluid"
+          class="restaurant-menu-image"
           alt=""
-          style="width: 14rem;"
           src="https://openclipart.org/image/800px/289282"
         />
         <% } %>
@@ -26,7 +30,7 @@
         <div class="card-body">
           <h5 class="card-title"><%= food.food.name %></h5>
           <p class="card-text"><%= food.food.description %></p>
-          <p class="card-text">
+          <p class="card-text restaurant-price">
             <small class="text-muted">
               <% if(currentUser.roles === 'restaurant' || currentUser.roles ===
               'Admin') {%> ₹ <%= food.food.price %> <% } else { %>
@@ -38,7 +42,7 @@
           </p>
           <strong>Number Of Plates: <%= food.food.count %></strong>
           <% if(currentUser && restaurant._id.equals(currentUser._id)) { %>
-          <div class="mt-2">
+          <div class="mt-2 restaurant-actions">
             <% if(restaurant.isOpen){ %>
             <a
               class="btn btn-info mb-2"
@@ -61,6 +65,8 @@
 
           <form action="/restaurants/<%= food.food._id %>/add" method="post">
             <input
+              class="form-control d-inline-block mb-2"
+              style="max-width: 120px;"
               type="number"
               value="0"
               min="1"

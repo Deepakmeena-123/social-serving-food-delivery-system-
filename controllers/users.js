@@ -48,6 +48,8 @@ module.exports.register = async (req, res, next) => {
                     await userfind.save();
                 }
                 res.redirect(`/restaurants/${req.user._id}`);
+            } else if(req.user.roles === 'NGO') {
+                res.redirect('/ngo/dashboard');
             } else if(req.user.roles === 'Admin') {
                 res.redirect('/admin');
             } else {
@@ -68,7 +70,7 @@ module.exports.register = async (req, res, next) => {
                     userfind.isOpen=false;
                     await userfind.save();
                 }
-                res.redirect('/restaurants')
+                res.redirect('/customer/dashboard')
             }
         })
     } catch (e) {
@@ -88,6 +90,11 @@ module.exports.renderLogin = (req, res) => {
 //Logging User In
 module.exports.login = async (req, res) => {
     req.flash('success', `Welcome back, ${req.user.username}!`);
+
+    if (req.user.roles === 'Admin') {
+        return res.redirect('/admin');
+    }
+
     if(req.user.roles === 'restaurant'){
         const portalTime=await PortalTime.find();
         const start = portalTime?.[0]?.start ?? '00:00';
@@ -106,9 +113,9 @@ module.exports.login = async (req, res) => {
             userfind.isOpen=false;
             await userfind.save();
         }
-        res.redirect(`/restaurants/${req.user._id}`);
-    } else if(req.user.roles === 'Admin') {
-        res.redirect('/admin');
+        return res.redirect(`/restaurants/${req.user._id}`);
+    } else if(req.user.roles === 'NGO') {
+        return res.redirect('/ngo/dashboard');
     } else {
         const portalTime=await PortalTime.find();
         const start = portalTime?.[0]?.start ?? '00:00';
@@ -127,7 +134,7 @@ module.exports.login = async (req, res) => {
             userfind.isOpen=false;
             await userfind.save();
         }
-        res.redirect('/restaurants')
+        return res.redirect('/customer/dashboard')
     }
 }
 

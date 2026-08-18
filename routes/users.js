@@ -14,6 +14,9 @@ const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
 const mapBoxToken = process.env.MAPBOX_TOKEN;
 const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 
+const isNgoUser = (user) => user && user.roles === 'NGO';
+const isCustomerUser = (user) => user && user.roles === 'customer';
+
 //Getting Profile
 router.get('/profile/:id',catchAsync(async (req,res) => {
     const user = await User.findById(req.params.id)
@@ -76,6 +79,99 @@ router.get('/orderhistory',catchAsync( async (req,res) => {
     }
 }))
 
+// Customer Dashboard
+router.get('/customer/dashboard', catchAsync(async (req, res) => {
+    if(!req.user){
+        req.flash('error',"User Must LOGGED IN")
+        return res.redirect('/login')
+    }
+
+    const user = await User.findById(req.user._id).populate({
+        path: 'order',
+        populate: {
+            path: 'NGO'
+        }
+    }).populate({
+        path: 'order',
+        populate: {
+            path: 'order',
+            populate: {
+                path: 'food',
+                populate: {
+                    path: 'restaurant'
+                }
+            }
+        }
+    }).populate({
+        path: 'cart',
+        populate: {
+            path: 'food',
+            populate: {
+                path: 'restaurant'
+            }
+        }
+    })
+
+    if(!isCustomerUser(user)) {
+        req.flash('error','Not Authorized')
+        return res.redirect('/restaurants')
+    }
+
+    const orders = Array.isArray(user.order) ? [...user.order] : []
+    const recentOrders = orders.reverse().slice(0, 5)
+    const donationOrders = orders.filter((order) => order.NGO)
+    const recentDonations = donationOrders.slice(0, 5)
+
+    const totalOrders = orders.length
+    const pendingOrders = orders.filter((order) => !['Success', 'Delivered', 'Cancelled', 'Failed'].includes(order.status)).length
+    const totalDonations = donationOrders.length
+    const cartItems = (user.cart || []).reduce((sum, item) => sum + (item.count || 0), 0)
+
+    res.render('users/customerDashboard', {
+        customer: user,
+        totalOrders,
+        pendingOrders,
+        totalDonations,
+        cartItems,
+        recentOrders,
+        recentDonations
+    })
+}))
+
+// Customer Donation History (orders donated to NGOs)
+router.get('/customer/donations/history', catchAsync(async (req, res) => {
+    if(!req.user){
+        req.flash('error',"User Must LOGGED IN")
+        return res.redirect('/login')
+    }
+
+    const user = await User.findById(req.user._id).populate({
+        path: 'order',
+        populate: {
+            path: 'NGO'
+        }
+    }).populate({
+        path: 'order',
+        populate: {
+            path: 'order',
+            populate: {
+                path: 'food',
+                populate: {
+                    path: 'restaurant'
+                }
+            }
+        }
+    })
+
+    if(!isCustomerUser(user)) {
+        req.flash('error','Not Authorized')
+        return res.redirect('/restaurants')
+    }
+
+    const donationOrders = (user.order || []).filter((order) => order.NGO).reverse()
+    res.render('users/customerDonationHistory', { donationOrders })
+}))
+
 //Donation History of the NGOs
 router.get('/donationhistory',catchAsync( async (req,res) => {
     if(!req.user){
@@ -96,6 +192,39 @@ router.get('/donationhistory',catchAsync( async (req,res) => {
     }
 }))
 
+// NGO Dashboard
+router.get('/ngo/dashboard', catchAsync(async (req, res) => {
+    if(!req.user){
+        req.flash('error',"User Must LOGGED IN")
+        return res.redirect('/login')
+    }
+
+    const user = await User.findById(req.user._id)
+    if(!isNgoUser(user)) {
+        req.flash('error','Not Authorized')
+        return res.redirect('/')
+    }
+
+    const donations = await Donation.find({ ngoId: user._id })
+        .populate('donorId')
+        .sort({ donationDate: -1 })
+
+    const pendingDonations = donations.filter((donation) => donation.status === 'Pending').length
+    const acceptedDonations = donations.filter((donation) => donation.status === 'Accepted').length
+    const receivedDonations = donations.filter((donation) => ['Accepted', 'Completed', 'Received'].includes(donation.status)).length
+    const totalDonations = donations.length
+    const recentDonationRequests = donations.slice(0, 8)
+
+    res.render('users/ngoDashboard', {
+        ngo: user,
+        pendingDonations,
+        acceptedDonations,
+        receivedDonations,
+        totalDonations,
+        recentDonationRequests
+    })
+}))
+
 // Received Donations for NGO
 router.get('/receiveddonations', catchAsync(async (req, res) => {
     if(!req.user){
@@ -104,7 +233,7 @@ router.get('/receiveddonations', catchAsync(async (req, res) => {
     }
 
     const user = await User.findById(req.user._id)
-    if(user.roles !== 'NGO') {
+    if(!isNgoUser(user)) {
         req.flash('error','Not Authorized')
         return res.redirect('/')
     }
@@ -116,6 +245,29 @@ router.get('/receiveddonations', catchAsync(async (req, res) => {
     res.render('users/receivedDonations', { donations })
 }))
 
+// Accepted/Received donations for NGO
+router.get('/receiveddonations/received', catchAsync(async (req, res) => {
+    if(!req.user){
+        req.flash('error',"User Must LOGGED IN")
+        return res.redirect('/login')
+    }
+
+    const user = await User.findById(req.user._id)
+    if(!isNgoUser(user)) {
+        req.flash('error','Not Authorized')
+        return res.redirect('/')
+    }
+
+    const donations = await Donation.find({
+        ngoId: user._id,
+        status: { $in: ['Accepted', 'Completed', 'Received'] }
+    })
+        .populate('donorId')
+        .sort({ donationDate: -1 })
+
+    res.render('users/receivedDonationsList', { donations })
+}))
+
 router.post('/receiveddonations/:id/accept', catchAsync(async (req, res) => {
     if(!req.user){
         req.flash('error',"User Must LOGGED IN")
@@ -123,7 +275,7 @@ router.post('/receiveddonations/:id/accept', catchAsync(async (req, res) => {
     }
 
     const user = await User.findById(req.user._id)
-    if(user.roles !== 'NGO') {
+    if(!isNgoUser(user)) {
         req.flash('error','Not Authorized')
         return res.redirect('/')
     }
@@ -151,7 +303,7 @@ router.post('/receiveddonations/:id/reject', catchAsync(async (req, res) => {
     }
 
     const user = await User.findById(req.user._id)
-    if(user.roles !== 'NGO') {
+    if(!isNgoUser(user)) {
         req.flash('error','Not Authorized')
         return res.redirect('/')
     }
@@ -178,14 +330,30 @@ router.get('/orderhistory/:orderid', catchAsync(async(req,res) => {
         req.flash('error',"User Must LOGGED IN")
         res.redirect('/login')
     } else {
-        const order = await Order.findById(req.params.orderid).populate({path: 'order',
-        populate: {
-            path: 'food',
-            populate: {
-                path: 'restaurant'
-            }
-        }} );
-        res.render('admin/orderFood.ejs', {order})
+        const order = await Order.findById(req.params.orderid)
+            .populate('user')
+            .populate('NGO')
+            .populate({
+                path: 'order',
+                populate: {
+                    path: 'food',
+                    populate: {
+                        path: 'restaurant'
+                    }
+                }
+            });
+
+        if(!order) {
+            req.flash('error', 'Order not found')
+            return res.redirect('/orderhistory')
+        }
+
+        if(req.user.roles !== 'Admin' && order.user && !order.user._id.equals(req.user._id)) {
+            req.flash('error', 'Not Authorized')
+            return res.redirect('/orderhistory')
+        }
+
+        res.render('users/orderDetails', {order})
     }
 }))
 

@@ -56,29 +56,36 @@ body::-webkit-scrollbar-thumb
 .navb-container{
     display: flex;
     justify-content: space-between;
-    height: 64px;
+    height: 74px;
     align-items: center;
 }
 
 .menu-items{
     order: 2;
     display: flex;
+    align-items: center;
+    gap: 0.2rem;
 }
 .logo{
     order: 1;
     font-size: 2.3rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1;
+    letter-spacing: 0.01em;
 }
 
 .menu-items li{
     list-style: none;
-    margin-left: 1.5rem;
-    font-size: 1.3rem;
+    margin-left: 1rem;
+    font-size: 1.02rem;
+    white-space: nowrap;
 }
 
 .navb a{
     color: #444;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
     transition: color 0.3s ease-in-out;
 }
 .navb a:active{
@@ -102,7 +109,7 @@ body::-webkit-scrollbar-thumb
     .navb-container{
         display: block;
         position: relative;
-        height: 64px;
+        height: 70px;
     }
 
     .navb-container input[type="checkbox"]{
@@ -175,9 +182,9 @@ body::-webkit-scrollbar-thumb
 
     .logo{
         position: absolute;
-        top: 10px;
+        top: 14px;
         right: 10px;
-        font-size: 2.5rem;
+        font-size: 2.2rem;
     }
 
     .navb-container input[type="checkbox"]:checked ~ .menu-items{

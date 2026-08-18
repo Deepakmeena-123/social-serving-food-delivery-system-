@@ -16,8 +16,8 @@
           <nav class="nav flex-column restaurant-nav">
             <a class="nav-link" href="/ngo/dashboard"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
             <a class="nav-link" href="/receiveddonations"><i class="bi bi-inbox"></i> Donation Requests</a>
-            <a class="nav-link" href="/receiveddonations/received"><i class="bi bi-check2-square"></i> Received Donations</a>
-            <a class="nav-link active" href="/donationhistory"><i class="bi bi-clock-history"></i> Donation History</a>
+            <a class="nav-link active" href="/receiveddonations/received"><i class="bi bi-check2-square"></i> Received Donations</a>
+            <a class="nav-link" href="/donationhistory"><i class="bi bi-clock-history"></i> Donation History</a>
             <a class="nav-link" href="/profile/<%= currentUser._id %>"><i class="bi bi-person-circle"></i> Profile</a>
             <a class="nav-link text-danger" href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
           </nav>
@@ -27,8 +27,8 @@
 
     <main class="col-lg-9">
       <div class="mb-4">
-        <p class="text-muted mb-1">All donation records</p>
-        <h1 class="mb-0">Donation History</h1>
+        <p class="text-muted mb-1">Accepted and completed</p>
+        <h1 class="mb-0">Received Donations</h1>
       </div>
 
       <div class="card border-0 shadow-sm">
@@ -38,17 +38,18 @@
               <thead class="table-light">
                 <tr>
                   <th>Food</th>
-                  <th>Donor</th>
+                  <th>Donor Name</th>
                   <th>Donor Type</th>
                   <th>Quantity</th>
-                  <th>Status</th>
                   <th>Date</th>
+                  <th>Pickup</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
                 <% if (!donations || donations.length === 0) { %>
                   <tr>
-                    <td colspan="6" class="text-center text-muted py-4">No donations found.</td>
+                    <td colspan="7" class="text-center text-muted py-4">No received donations found.</td>
                   </tr>
                 <% } else { %>
                   <% for (const donation of donations) { %>
@@ -58,20 +59,19 @@
                       <td><%= donation.donorName || (donation.donorId && donation.donorId.username) || 'Unknown' %></td>
                       <td><span class="badge bg-light text-dark"><%= donation.donorType || 'N/A' %></span></td>
                       <td><%= donation.donatedQuantity %></td>
+                      <td><%= donationDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %></td>
+                      <td><%= donation.donorId && donation.donorId.location ? donation.donorId.location : 'N/A' %></td>
                       <td>
                         <% if (donation.status === 'Accepted') { %>
                           <span class="badge bg-success">Accepted</span>
-                        <% } else if (donation.status === 'Rejected') { %>
-                          <span class="badge bg-danger">Rejected</span>
                         <% } else if (donation.status === 'Completed') { %>
                           <span class="badge bg-primary">Completed</span>
                         <% } else if (donation.status === 'Received') { %>
                           <span class="badge bg-info text-dark">Received</span>
                         <% } else { %>
-                          <span class="badge bg-warning text-dark"><%= donation.status || 'Pending' %></span>
+                          <span class="badge bg-secondary"><%= donation.status %></span>
                         <% } %>
                       </td>
-                      <td><%= donationDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %></td>
                     </tr>
                   <% } %>
                 <% } %>

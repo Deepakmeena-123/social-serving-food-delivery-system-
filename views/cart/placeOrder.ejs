@@ -1,8 +1,11 @@
 <% layout('layouts/boilerplate') %>
 <!-- Direct Order Confirmation Page -->
-<div class="container">
-  <h1 class="mb-4">Confirm Your Order</h1>
-  <div class="card mb-4">
+<div class="container py-4 customer-checkout-page">
+  <div class="mb-4">
+    <p class="text-muted mb-1">Direct checkout</p>
+    <h1 class="mb-0">Confirm Your Order</h1>
+  </div>
+  <div class="card mb-4 border-0 shadow-sm">
     <div class="row g-0 align-items-center">
       <div class="col-md-4">
         <img
@@ -25,11 +28,11 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card border-0 shadow-sm">
     <div class="card-body d-flex flex-wrap gap-3 align-items-center justify-content-between">
       <div>
         <h5 class="mb-1">Choose Payment Method</h5>
-        <p class="mb-0 text-muted">Complete this order without adding it to your cart.</p>
+        <p class="mb-0 text-muted">Delivery Address: <%= currentUser.location %></p>
       </div>
       <div class="d-flex flex-wrap gap-2">
         <a href="/cart/direct/pay/cod" class="btn btn-primary">Cash on Delivery</a>

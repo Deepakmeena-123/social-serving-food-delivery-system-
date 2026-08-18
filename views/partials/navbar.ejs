@@ -16,17 +16,25 @@
             <li><a href="/admin">Admin</a></li>
             <li><a href="/profile/<%= currentUser._id %>">Profile</a></li>
         <% } else if(currentUser.roles === 'restaurant') { %>
+            <li><a href="/restaurants/<%=currentUser._id%>/dashboard">Dashboard</a></li>
             <li><a href="/restaurants">Restaurants</a></li>
-            <li><a href="/orderhistory">Order History</a></li>
             <li><a href="/restaurants/<%=currentUser._id%>">My Menu</a></li>
+            <li><a href="/restaurants/<%=currentUser._id%>/orders">Orders</a></li>
             <li><a href="/restaurants/<%=currentUser._id%>/donations">Donations</a></li>
             <li><a href="/restaurants/<%=currentUser._id%>/donations/history">Donation History</a></li>
+            <li><a href="/orderhistory">Order History</a></li>
             <li><a href="/profile/<%= currentUser._id %>">Profile</a></li>
         <% } else if(currentUser.roles === 'NGO') { %>
+            <li><a href="/ngo/dashboard">Dashboard</a></li>
             <li><a href="/receiveddonations">Received Donations</a></li>
             <li><a href="/donationhistory">Donation History</a></li>
             <li><a href="/profile/<%= currentUser._id %>">Profile</a></li>
         <% } else { %>
+            <li><a href="/customer/dashboard">Dashboard</a></li>
+            <li><a href="/restaurants">Restaurants</a></li>
+            <li><a href="/orderhistory">Orders</a></li>
+            <li><a href="/customer/donations/history">Donations</a></li>
+            <li><a href="/cart">Cart</a></li>
             <li><a href="/profile/<%= currentUser._id %>">Profile</a></li>
         <% } %>
         <li><a href="/logout">Logout</a></li>
