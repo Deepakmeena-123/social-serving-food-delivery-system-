@@ -1,37 +1,95 @@
 <% layout('layouts/boilerplate')%>
 <!-- Order History -->
-<div class="container row">
-  <h1 class="text-center">All <%= str %> So Far :</h1>
-  <% for(let order of orders) { %>
-  <div class="card col-4 mx-2 my-2" style="width: 18rem">
-    <div class="card-body">
-      <h5 class="card-title">
-        <strong>Total Amount:</strong>₹<%= order.money %>
-      </h5>
-      <p class="card-text">
-        <strong>Mode of Payment:</strong> <%= order.modeOfPayment %>
-      </p>
-      <p class="card-text"><strong> Status: </strong><%= order.status %></p>
-      <p class="card-text">
-        <strong> Self Pick Up: </strong><%= order.selfpickup %>
-      </p>
-      <p class="card-text">
-        <small class="text-muted d-block">
-          Restaurant: <%= order.order[0].food.restaurant.username %>
-        </small>
-        <% if(order.NGO){ %>
-        <small class="text-muted d-block">
-          To: <%= order.NGO.username %>
-        </small>
-        <% } %>
-        <small class="text-muted d-block">
-          By: <%= order.user.username %>
-        </small>
-      </p>
-      <a href="/orderhistory/<%=order._id%>" class="btn btn-primary"
-        >View Details</a
-      >
+<div class="container py-4 customer-orders-page">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <p class="text-muted mb-1">Order history</p>
+      <h1 class="mb-0"><%= str %></h1>
     </div>
   </div>
-  <% } %>
+
+  <div class="card border-0 shadow-sm d-none d-lg-block">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Order ID</th>
+            <th>Restaurant</th>
+            <th>Items</th>
+            <th>Amount</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (!orders || orders.length === 0) { %>
+            <tr>
+              <td colspan="7" class="text-center text-muted py-4">No orders found.</td>
+            </tr>
+          <% } else { %>
+            <% for (let order of orders) { %>
+              <% const orderDate = new Date(order._id.getTimestamp()); %>
+              <tr>
+                <td>#<%= order._id.toString().slice(-6) %></td>
+                <td><%= order.order && order.order[0] && order.order[0].food && order.order[0].food.restaurant ? order.order[0].food.restaurant.username : 'N/A' %></td>
+                <td><%= order.order ? order.order.length : 0 %></td>
+                <td>₹<%= order.money || 0 %></td>
+                <td><%= order.modeOfPayment || 'N/A' %></td>
+                <td>
+                  <% if (order.status === 'Success' || order.status === 'Delivered') { %>
+                    <span class="badge bg-success"><%= order.status %></span>
+                  <% } else if (order.status === 'Pending') { %>
+                    <span class="badge bg-warning text-dark">Pending</span>
+                  <% } else if (order.status === 'Cancelled' || order.status === 'Failed') { %>
+                    <span class="badge bg-danger"><%= order.status %></span>
+                  <% } else { %>
+                    <span class="badge bg-secondary"><%= order.status %></span>
+                  <% } %>
+                </td>
+                <td><%= orderDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %></td>
+                <td><a href="/orderhistory/<%=order._id%>" class="btn btn-sm btn-primary">View Details</a></td>
+              </tr>
+            <% } %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="d-lg-none row g-3">
+    <% if (!orders || orders.length === 0) { %>
+      <div class="col-12">
+        <div class="card border-0 shadow-sm"><div class="card-body text-center text-muted">No orders found.</div></div>
+      </div>
+    <% } else { %>
+      <% for (let order of orders) { %>
+        <% const orderDate = new Date(order._id.getTimestamp()); %>
+        <div class="col-12">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <strong>#<%= order._id.toString().slice(-6) %></strong>
+                <% if (order.status === 'Success' || order.status === 'Delivered') { %>
+                  <span class="badge bg-success"><%= order.status %></span>
+                <% } else if (order.status === 'Pending') { %>
+                  <span class="badge bg-warning text-dark">Pending</span>
+                <% } else if (order.status === 'Cancelled' || order.status === 'Failed') { %>
+                  <span class="badge bg-danger"><%= order.status %></span>
+                <% } else { %>
+                  <span class="badge bg-secondary"><%= order.status %></span>
+                <% } %>
+              </div>
+              <p class="mb-1"><strong>Restaurant:</strong> <%= order.order && order.order[0] && order.order[0].food && order.order[0].food.restaurant ? order.order[0].food.restaurant.username : 'N/A' %></p>
+              <p class="mb-1"><strong>Amount:</strong> ₹<%= order.money || 0 %></p>
+              <p class="mb-1"><strong>Payment:</strong> <%= order.modeOfPayment || 'N/A' %></p>
+              <p class="mb-3"><strong>Date:</strong> <%= orderDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %></p>
+              <a href="/orderhistory/<%=order._id%>" class="btn btn-primary w-100">View Details</a>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    <% } %>
+  </div>
 </div>

@@ -1,0 +1,86 @@
+.restaurants-page {
+  padding-bottom: 1rem;
+}
+
+.restaurants-kicker {
+  display: inline-block;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6c757d;
+  font-weight: 700;
+}
+
+.restaurants-title {
+  font-size: clamp(1.8rem, 2.8vw, 2.7rem);
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.restaurant-card {
+  border-radius: 0.8rem;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.restaurant-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0.8rem 1.6rem rgba(0, 0, 0, 0.08) !important;
+}
+
+.restaurant-card-image-wrap {
+  height: 180px;
+  background: #f1f3f5;
+  overflow: hidden;
+}
+
+.restaurant-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.restaurant-distance {
+  font-size: 0.95rem;
+  color: #495057;
+}
+
+.restaurants-empty-state {
+  border-radius: 0.8rem;
+}
+
+.restaurant-menu-page .menu-title {
+  font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.restaurant-menu-card {
+  border: 0;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  box-shadow: 0 0.5rem 1.1rem rgba(0, 0, 0, 0.07);
+}
+
+.restaurant-menu-image {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  object-fit: cover;
+  background: #f8f9fa;
+}
+
+.restaurant-price {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.restaurant-actions .btn {
+  min-width: 100px;
+}
+
+@media (max-width: 767.98px) {
+  .restaurant-menu-image {
+    min-height: 180px;
+  }
+}

@@ -1,0 +1,53 @@
+.customer-dashboard,
+.customer-orders-page,
+.customer-cart-page,
+.customer-checkout-page,
+.customer-donation-page,
+.customer-order-details,
+.customer-profile-page {
+  color: #1d2733;
+}
+
+.customer-cart-item-card img,
+.customer-checkout-page img,
+.customer-donation-page img {
+  max-height: 170px;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 0.45rem;
+}
+
+.customer-profile-card {
+  border-radius: 0.9rem;
+}
+
+.customer-profile-avatar {
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 0.35rem 0.9rem rgba(0, 0, 0, 0.12);
+}
+
+.customer-profile-key {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.customer-profile-value {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.customer-summary-card {
+  border-left: 4px solid #198754;
+}
+
+@media (max-width: 767.98px) {
+  .customer-cart-item-card img,
+  .customer-checkout-page img,
+  .customer-donation-page img {
+    max-height: 200px;
+  }
+}

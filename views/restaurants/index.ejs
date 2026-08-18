@@ -1,40 +1,67 @@
 <% layout('layouts/boilerplate')%>
 
-<div class="container">
-    <h1>All Restaurants</h1>
-    <div class="restaurantscardcontainor">
-  <% for (let restaurant of restaurants){%> <% let a=0;let c=0;let
-    latDiff=currentUser.geometry['coordinates'][1]*Math.PI/180-restaurant.geometry['coordinates'][1]*Math.PI/180;let
-    longDiff=currentUser.geometry['coordinates'][0]*Math.PI/180-restaurant.geometry['coordinates'][0]*Math.PI/180%>
-    <% a=Math.sin(latDiff/2)**2 +
-    Math.cos(currentUser.geometry['coordinates'][1]*Math.PI/180)*Math.cos(restaurant.geometry['coordinates'][1]*Math.PI/180)*Math.sin(longDiff/2)**2;
-  %> <% c=2*Math.atan2(a**0.5,(1-a)**0.5); %> <% let d=c*6371; %>
-        <div class="card" style="width: 15rem;margin: 0.5rem; display: inline-block;">
-            <div style="overflow: hidden;height: 12rem; display: grid; place-items: center;">
-            <%if(restaurant.image.url) {%>
-                <img class="card-img-top mx-auto" alt="" src="<%=restaurant.image.url%>" />
-                <% }else {%>
-                <img
-                  class="card-img-top mx-auto"
-                  alt=""
-                  src="https://acadianakarate.com/wp-content/uploads/2017/04/default-image-620x600.jpg"
-                />
-                <% } %>
-            </div>
-            <div class="card-body">
-              <h5 class="card-title"><%= restaurant.username %></h5>
-              <p class="card-text">
-                <%= restaurant.location%>
-              </p>
-              <p>
-                This Restaurant is <%= parseInt(d*100)/100%> kms from your location
-              </p>
-              <a href="/restaurants/<%=restaurant._id%>" class="btn btn-primary">
-                View Food
-              </a>
-            </div>
-        </div>
-    
-    <% }%><% if (restaurants.length===0){%> <div style="font-size: 1.5rem;">There are no registered restaurants yet.</div> <%}%></div>
+<section class="restaurants-page py-3 py-md-4">
+  <div class="restaurants-header mb-4">
+    <p class="restaurants-kicker mb-2">Find nearby kitchens</p>
+    <h1 class="restaurants-title mb-0">All Restaurants</h1>
   </div>
+
+  <% if (restaurants.length === 0) { %>
+    <div class="card border-0 shadow-sm restaurants-empty-state">
+      <div class="card-body py-4 text-center">
+        <h5 class="mb-2">No restaurants registered yet</h5>
+        <p class="text-muted mb-0">Please check again later.</p>
+      </div>
+    </div>
+  <% } %>
+
+  <div class="row g-3 g-lg-4">
+    <% for (let restaurant of restaurants) { %>
+      <% let distance = null; %>
+      <% if (currentUser && currentUser.geometry && currentUser.geometry.coordinates && restaurant.geometry && restaurant.geometry.coordinates) { %>
+        <% const userLat = currentUser.geometry.coordinates[1] * Math.PI / 180; %>
+        <% const userLng = currentUser.geometry.coordinates[0] * Math.PI / 180; %>
+        <% const resLat = restaurant.geometry.coordinates[1] * Math.PI / 180; %>
+        <% const resLng = restaurant.geometry.coordinates[0] * Math.PI / 180; %>
+        <% const latDiff = userLat - resLat; %>
+        <% const lngDiff = userLng - resLng; %>
+        <% const a = Math.sin(latDiff / 2) ** 2 + Math.cos(userLat) * Math.cos(resLat) * Math.sin(lngDiff / 2) ** 2; %>
+        <% const c = 2 * Math.atan2(a ** 0.5, (1 - a) ** 0.5); %>
+        <% distance = Math.round(c * 6371 * 100) / 100; %>
+      <% } %>
+
+      <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+        <article class="card h-100 border-0 shadow-sm restaurant-card">
+          <div class="restaurant-card-image-wrap">
+            <% if (restaurant.image && restaurant.image.url) { %>
+              <img class="restaurant-card-image" alt="<%= restaurant.username %>" src="<%= restaurant.image.url %>" />
+            <% } else { %>
+              <img
+                class="restaurant-card-image"
+                alt="Default restaurant"
+                src="https://acadianakarate.com/wp-content/uploads/2017/04/default-image-620x600.jpg"
+              />
+            <% } %>
+          </div>
+
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title mb-1"><%= restaurant.username %></h5>
+            <p class="text-muted mb-2"><%= restaurant.location || 'Location not updated' %></p>
+            <p class="restaurant-distance mb-3">
+              <% if (distance !== null) { %>
+                <span><%= distance %> km away from your location</span>
+              <% } else { %>
+                <span>Distance unavailable</span>
+              <% } %>
+            </p>
+
+            <div class="mt-auto">
+              <a href="/restaurants/<%= restaurant._id %>" class="btn btn-primary w-100">View Food</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    <% } %>
+  </div>
+</section>
   

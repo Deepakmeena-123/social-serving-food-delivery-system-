@@ -1,0 +1,122 @@
+:root {
+  --restaurant-green: #198754;
+  --restaurant-green-dark: #146c43;
+  --restaurant-orange: #fd7e14;
+  --restaurant-bg: #f4f6f5;
+  --restaurant-text: #1d2733;
+  --restaurant-muted: #667085;
+  --restaurant-border: rgba(17, 24, 39, 0.08);
+  --restaurant-card: #ffffff;
+}
+
+.restaurant-dashboard {
+  color: var(--restaurant-text);
+  background: var(--restaurant-bg);
+}
+
+.ngo-dashboard {
+  color: var(--restaurant-text);
+  background: var(--restaurant-bg);
+}
+
+.restaurant-sidebar {
+  background: var(--restaurant-card);
+  border: 1px solid var(--restaurant-border);
+  border-radius: 1rem;
+}
+
+.restaurant-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.restaurant-brand-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, var(--restaurant-green) 0%, var(--restaurant-orange) 100%);
+}
+
+.restaurant-nav .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: 0.75rem;
+  color: var(--restaurant-text);
+  font-weight: 600;
+}
+
+.restaurant-nav .nav-link.active {
+  background: rgba(25, 135, 84, 0.1);
+  color: var(--restaurant-green-dark);
+}
+
+.restaurant-nav .nav-link:hover {
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.dashboard-stat-card {
+  border-radius: 1rem;
+}
+
+.stat-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.stat-label {
+  color: var(--restaurant-muted);
+  font-weight: 600;
+}
+
+.stat-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.stat-icon.green {
+  background: var(--restaurant-green);
+}
+
+.stat-icon.orange {
+  background: var(--restaurant-orange);
+}
+
+.dashboard-stat-card h3 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--restaurant-text);
+}
+
+.table thead th {
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--restaurant-muted);
+}
+
+.badge {
+  padding: 0.5rem 0.7rem;
+  border-radius: 999px;
+}
+
+@media (max-width: 991.98px) {
+  .restaurant-sidebar {
+    margin-bottom: 1rem;
+  }
+}

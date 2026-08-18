@@ -1,46 +1,63 @@
 <% layout('layouts/boilerplate')%>
 <!-- Profile Page -->
-<div class="row">
-  <div class="col-3">
-    <% if(user.image) { %>
-    <img src="<%= user.image.url%>" class="d-block w-100" alt="" />
-    <% } %>
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title"><%= user.username%></h5>
-        <% if (user.roles === 'NGO') { %>
-        <p class="card-text text-muted mb-0">NGO Profile</p>
-        <% } %>
+<div class="customer-profile-page py-3">
+  <div class="row g-4 align-items-start">
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm customer-profile-card">
+        <div class="card-body">
+          <div class="text-center mb-3">
+            <img src="<%= user.image && user.image.url ? user.image.url : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>" alt="profile" class="customer-profile-avatar mb-2" />
+            <h4 class="mb-0"><%= user.username %></h4>
+            <small class="text-muted"><%= user.roles ? user.roles.toUpperCase() : 'USER' %></small>
+          </div>
+
+          <div class="mb-2">
+            <div class="customer-profile-key">Email</div>
+            <div class="customer-profile-value"><%= user.email || 'Not provided' %></div>
+          </div>
+
+          <div class="mb-2">
+            <div class="customer-profile-key">Phone</div>
+            <div class="customer-profile-value"><%= user.contactNumber || 'Not provided' %></div>
+          </div>
+
+          <div class="mb-2">
+            <div class="customer-profile-key">Location</div>
+            <% if(currentUser && currentUser._id.equals(user._id)) { %>
+              <form action="/edit?_method=PUT" method="post" class="mt-1">
+                <input
+                  class="form-control mb-2"
+                  type="text"
+                  id="location"
+                  name="location"
+                  value="<%= user.location%>"
+                  required
+                />
+                <button class="btn btn-primary btn-sm">Save Changes</button>
+              </form>
+            <% } else { %>
+              <div class="customer-profile-value"><%= user.location || 'Not provided' %></div>
+            <% } %>
+          </div>
+
+          <% if (user.roles === 'NGO') { %>
+            <div class="customer-summary-card p-2 mt-3 bg-light rounded">
+              <div class="small text-muted">Total Food Distributed</div>
+              <strong><%= totalFoodDistributed %></strong>
+            </div>
+          <% } %>
+        </div>
       </div>
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item text-muted">
-          Location: <% if(currentUser && currentUser._id.equals(user._id)) { %>
-          <form action="/edit?_method=PUT" method="post">
-            <input
-              class="form-control mb-2"
-              type="text"
-              id="location"
-              name="location"
-              value="<%= user.location%>"
-              required
-            />
-            <button class="btn btn-primary">Save Changes</button>
-          </form>
-          <% } else { %> <%= user.location %> <% } %>
-        </li>
-        <li class="list-group-item">Role: <%= user.roles.toUpperCase()%></li>
-        <% if (user.roles === 'NGO') { %>
-        <li class="list-group-item">NGO Name: <%= user.username %></li>
-        <li class="list-group-item">Contact Number: <%= user.contactNumber || 'Not provided' %></li>
-        <li class="list-group-item">Email: <%= user.email %></li>
-        <li class="list-group-item">Member Since: <%= user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A' %></li>
-        <li class="list-group-item">Total Food Distributed: <%= totalFoodDistributed %></li>
-        <% } %>
-      </ul>
     </div>
-  </div>
-  <div class="col-6">
-    <div id="map"></div>
+
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h5 class="mb-3">Location Map</h5>
+          <div id="map"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

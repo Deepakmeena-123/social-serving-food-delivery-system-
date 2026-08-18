@@ -1,0 +1,138 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="ngo-dashboard container py-4">
+  <div class="row g-4 align-items-start">
+    <aside class="col-lg-3">
+      <div class="restaurant-sidebar card border-0 shadow-sm h-100">
+        <div class="card-body p-3">
+          <div class="restaurant-brand mb-4">
+            <div class="restaurant-brand-icon">FB</div>
+            <div>
+              <h5 class="mb-0">FoodBridge</h5>
+              <small class="text-muted">NGO Panel</small>
+            </div>
+          </div>
+
+          <nav class="nav flex-column restaurant-nav">
+            <a class="nav-link active" href="/ngo/dashboard"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
+            <a class="nav-link" href="/receiveddonations"><i class="bi bi-inbox"></i> Donation Requests</a>
+            <a class="nav-link" href="/receiveddonations/received"><i class="bi bi-check2-square"></i> Received Donations</a>
+            <a class="nav-link" href="/donationhistory"><i class="bi bi-clock-history"></i> Donation History</a>
+            <a class="nav-link" href="/profile/<%= ngo._id %>"><i class="bi bi-person-circle"></i> Profile</a>
+            <a class="nav-link text-danger" href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
+          </nav>
+        </div>
+      </div>
+    </aside>
+
+    <main class="col-lg-9">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <p class="text-muted mb-1">NGO dashboard</p>
+          <h1 class="mb-0"><%= ngo.username %></h1>
+        </div>
+      </div>
+
+      <div class="row g-4 mb-4">
+        <div class="col-md-6 col-xl-3">
+          <div class="card dashboard-stat-card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <div class="stat-top">
+                <span class="stat-label">Pending Donations</span>
+                <span class="stat-icon orange"><i class="bi bi-hourglass-split"></i></span>
+              </div>
+              <h3 class="mt-3 mb-0"><%= pendingDonations %></h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+          <div class="card dashboard-stat-card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <div class="stat-top">
+                <span class="stat-label">Accepted Donations</span>
+                <span class="stat-icon green"><i class="bi bi-check-circle"></i></span>
+              </div>
+              <h3 class="mt-3 mb-0"><%= acceptedDonations %></h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+          <div class="card dashboard-stat-card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <div class="stat-top">
+                <span class="stat-label">Received Donations</span>
+                <span class="stat-icon green"><i class="bi bi-box-seam"></i></span>
+              </div>
+              <h3 class="mt-3 mb-0"><%= receivedDonations %></h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+          <div class="card dashboard-stat-card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <div class="stat-top">
+                <span class="stat-label">Total Donations</span>
+                <span class="stat-icon orange"><i class="bi bi-gift"></i></span>
+              </div>
+              <h3 class="mt-3 mb-0"><%= totalDonations %></h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-0 py-3">
+          <h5 class="mb-0">Recent Donation Requests</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table mb-0 align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Food Name</th>
+                  <th>Donor Name</th>
+                  <th>Donor Type</th>
+                  <th>Quantity</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (!recentDonationRequests || recentDonationRequests.length === 0) { %>
+                  <tr>
+                    <td colspan="6" class="text-center text-muted py-4">No donation requests found.</td>
+                  </tr>
+                <% } else { %>
+                  <% for (const donation of recentDonationRequests) { %>
+                    <% const donationDate = donation.donationDate ? new Date(donation.donationDate) : new Date(); %>
+                    <tr>
+                      <td><%= donation.foodName || 'N/A' %></td>
+                      <td><%= donation.donorName || (donation.donorId && donation.donorId.username) || 'Unknown' %></td>
+                      <td><span class="badge bg-light text-dark"><%= donation.donorType || 'N/A' %></span></td>
+                      <td><%= donation.donatedQuantity %></td>
+                      <td>
+                        <% if (donation.status === 'Accepted') { %>
+                          <span class="badge bg-success">Accepted</span>
+                        <% } else if (donation.status === 'Rejected') { %>
+                          <span class="badge bg-danger">Rejected</span>
+                        <% } else if (donation.status === 'Completed') { %>
+                          <span class="badge bg-primary">Completed</span>
+                        <% } else { %>
+                          <span class="badge bg-warning text-dark"><%= donation.status || 'Pending' %></span>
+                        <% } %>
+                      </td>
+                      <td><%= donationDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %></td>
+                    </tr>
+                  <% } %>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

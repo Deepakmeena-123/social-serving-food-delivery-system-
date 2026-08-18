@@ -1,82 +1,136 @@
-.login-container {
-    width: 400px;
-    margin: 1rem auto;
-    padding: 36px 48px 48px 48px;
-    background-color: #f2efee;
-    border-radius: 11px;
-    box-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.15);
+.auth-page {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #f7faf7 0%, #f1f5f2 100%);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.login-title {
-    padding: 15px;
-    font-size: 22px;
-    font-weight: 600;
+.auth-shell {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.auth-card {
+    width: min(100%, 520px);
+    padding: 2.25rem 2.1rem 2rem;
+    background: rgba(242, 239, 238, 0.92);
+    border-radius: 1.5rem;
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+    border: 1px solid rgba(25, 135, 84, 0.08);
+}
+
+.auth-brand-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+}
+
+.auth-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    text-decoration: none;
+    color: #1d1d1f;
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+.auth-brand img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.auth-title {
+    padding: 0.5rem 0 1rem;
+    font-size: clamp(2rem, 3vw, 2.5rem);
+    font-weight: 700;
     text-align: center;
+    color: #1d1d1f;
 }
 
 .login-form {
     display: grid;
     grid-template-columns: 1fr;
-    row-gap: 16px;
+    row-gap: 1rem;
 }
 
 .login-form div label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
 }
-.login-form div select{
-    width: 100%;
-    padding: 0.6rem;
-    border-radius: 9px;
-    border: none;
-}
+
+.login-form div select,
 .login-form div input {
     width: 100%;
-    padding: 0.6rem;
-    border-radius: 9px;
-    border: none;
+    padding: 0.9rem 1rem;
+    border-radius: 0.9rem;
+    border: 1px solid rgba(17, 24, 39, 0.08);
+    background: rgba(255, 255, 255, 0.8);
+    color: #111827;
+    font-size: 1rem;
 }
-.login-form div select:focus{
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(253, 242, 233, 0.5);
-}
+
+.login-form div select:focus,
 .login-form div input:focus {
     outline: none;
-    box-shadow: 0 0 0 4px rgba(253, 242, 233, 0.5);
+    box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.12);
+    border-color: rgba(25, 135, 84, 0.3);
 }
 
 .btn--form {
-    background-color: #f48982;
-    color: #fdf2e9;
-    align-self: end;
-    padding: 8px;
-}
-
-.login-btn,
-.btn-link,
-.btn-visited {
-    display: inline-block;
-    text-decoration: none;
-    font-size: 20px;
-    font-weight: 600;
-    border-radius: 9px;
     border: none;
-
+    background: linear-gradient(135deg, #ee7d75 0%, #f29c87 100%);
+    color: #fff;
+    align-self: end;
+    padding: 0.9rem 1rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: 0.9rem;
+    margin-top: 0.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;
-    font-family: inherit;
-
-    transition: all 0.3s;
-}
-
-button {
-    outline: 0px solid #f48982;
 }
 
 .btn--form:hover {
-    background-color: #fdf2e9;
-    color: #f48982;
+    transform: translateY(-1px);
+    box-shadow: 0 12px 22px rgba(238, 125, 117, 0.2);
+    color: #fff;
 }
-#linkInlogin{
-    color: red;
+
+.auth-switch {
+    margin-top: 1.5rem;
+    text-align: center;
+    color: #374151;
+    font-size: 1.02rem;
+}
+
+#linkInlogin {
+    color: #198754;
     text-decoration: underline;
+    font-weight: 700;
+}
+
+#linkInlogin:hover {
+    color: #146c43;
+}
+
+@media (max-width: 575.98px) {
+    .auth-card {
+        padding: 1.5rem 1rem 1.2rem;
+    }
+
+    .auth-brand {
+        font-size: 1.5rem;
+    }
 }
