@@ -1,82 +1,471 @@
-<% layout('layouts/boilerplate')%>
-<!-- Add Food Form -->
-<div class="row">
-  <h1 class="text-center">Add Food</h1>
-  <div class="col-md-6 offset-md-3">
+<% layout('layouts/boilerplate') %>
+
+<div class="add-food-page">
+
+  <div class="add-food-container">
+
+    <!-- ================================
+         PAGE HEADER
+         ================================= -->
+
+    <div class="add-food-header">
+
+      <div class="add-food-icon">
+        <i class="bi bi-plus-circle-fill"></i>
+      </div>
+
+      <div>
+        <h1>Add Food</h1>
+
+        <p>
+          Add a new food item to your restaurant menu.
+        </p>
+      </div>
+
+    </div>
+
+
+    <!-- ================================
+         ADD FOOD FORM
+         ================================= -->
+
     <form
       action="/restaurants/<%= currentUser._id %>"
       method="POST"
       novalidate
-      class="validated-form"
+      class="validated-form add-food-form"
       enctype="multipart/form-data"
     >
-      <div class="mb-3">
-        <label class="form-label" for="title">Name</label>
+
+
+      <!-- ================================
+           FOOD NAME
+           ================================= -->
+
+      <div class="add-food-field">
+
+        <label
+          class="form-label"
+          for="title"
+        >
+          Food Name
+        </label>
+
         <input
           class="form-control"
           type="text"
           id="title"
           name="name"
+          placeholder="e.g. Paneer Butter Masala"
           required
         />
-        <div class="valid-feedback">Looks good!</div>
+
+        <div class="valid-feedback">
+          Looks good!
+        </div>
+
       </div>
-      <div class="mb-3">
-        <label class="form-label" for="price">Price</label>
+
+
+
+      <!-- ================================
+           PRICE
+           ================================= -->
+
+      <div class="add-food-field">
+
+        <label
+          class="form-label"
+          for="price"
+        >
+          Price
+        </label>
+
         <div class="input-group">
-          <span class="input-group-text" id="price-label">₹</span>
+
+          <span
+            class="input-group-text"
+            id="price-label"
+          >
+            ₹
+          </span>
+
           <input
             type="number"
             class="form-control"
             id="price"
             value="0"
+            min="0"
+            step="1"
+            placeholder="Enter price"
             aria-label="price"
             aria-describedby="price-label"
             name="price"
             required
           />
+
         </div>
-        <div class="valid-feedback">Looks good!</div>
+
+        <div class="valid-feedback">
+          Looks good!
+        </div>
+
       </div>
-      <div class="mb-3">
-        <label class="form-label" for="count">Count</label>
+
+
+
+      <!-- ================================
+           COUNT
+           ================================= -->
+
+      <div class="add-food-field">
+
+        <label
+          class="form-label"
+          for="count"
+        >
+          Available Quantity
+        </label>
+
         <input
           type="number"
           class="form-control"
           id="count"
-          placeholder="0.00"
+          min="0"
+          step="1"
+          placeholder="e.g. 20"
           aria-label="count"
-          aria-describedby="count-label"
           name="count"
           required
         />
-        <div class="valid-feedback">Looks good!</div>
+
+        <small class="add-food-help">
+          Enter the number of servings currently available.
+        </small>
+
+        <div class="valid-feedback">
+          Looks good!
+        </div>
+
       </div>
-      <div class="mb-3">
-        <label class="form-label" for="description">Description</label>
+
+
+
+      <!-- ================================
+           DESCRIPTION
+           ================================= -->
+
+      <div class="add-food-field">
+
+        <label
+          class="form-label"
+          for="description"
+        >
+          Description
+        </label>
+
         <textarea
           class="form-control"
-          type="text"
           id="description"
           name="description"
+          rows="4"
+          placeholder="Describe the food, ingredients, or serving details..."
           required
         ></textarea>
-        <div class="valid-feedback">Looks good!</div>
-      </div>
-      <div class="mb-3">
-        <div class="form-file custom-file">
-          <input type="file" class="form-file-input" id="image" name="image" />
-          <label class="form-file-label" for="image">
-            <span class="form-file-text custom-file-label"
-              >Choose image(s)...</span
-            >
-            <span class="form-file-button">Browse</span>
-          </label>
+
+        <div class="valid-feedback">
+          Looks good!
         </div>
+
       </div>
-      <div class="mb-3">
-        <button class="btn btn-success">Add Food</button>
+
+
+
+      <!-- ================================
+           FOOD IMAGE
+           ================================= -->
+
+      <div class="add-food-field">
+
+        <label
+          class="form-label"
+          for="image"
+        >
+          Food Image
+        </label>
+
+
+        <div class="food-image-upload">
+
+          <input
+            type="file"
+            class="food-image-input"
+            id="image"
+            name="image"
+            accept="image/*"
+          />
+
+
+          <label
+            class="food-image-label"
+            for="image"
+          >
+
+            <div class="food-image-upload-icon">
+
+              <i class="bi bi-cloud-arrow-up-fill"></i>
+
+            </div>
+
+
+            <div class="food-image-upload-text">
+
+              <strong>
+                Choose food image
+              </strong>
+
+              <span>
+                PNG, JPG or JPEG
+              </span>
+
+            </div>
+
+
+            <span class="food-image-browse">
+              Browse
+            </span>
+
+          </label>
+
+        </div>
+
+
+        <!-- IMAGE PREVIEW -->
+
+        <div
+          id="foodImagePreviewContainer"
+          class="food-image-preview-container"
+        >
+
+          <img
+            id="foodImagePreview"
+            class="food-image-preview"
+            src=""
+            alt="Food image preview"
+          />
+
+
+          <div class="food-image-preview-info">
+
+            <strong id="foodImageName">
+              Selected image
+            </strong>
+
+            <span>
+              Preview
+            </span>
+
+          </div>
+
+
+          <button
+            type="button"
+            id="removeFoodImage"
+            class="food-image-remove"
+          >
+
+            <i class="bi bi-trash3"></i>
+
+            Remove
+
+          </button>
+
+        </div>
+
       </div>
+
+
+
+      <!-- ================================
+           ACTIONS
+           ================================= -->
+
+      <div class="add-food-actions">
+
+        <a
+          href="javascript:history.back()"
+          class="add-food-cancel"
+        >
+          Cancel
+        </a>
+
+
+        <button
+          type="submit"
+          class="add-food-submit"
+        >
+
+          <i class="bi bi-plus-lg"></i>
+
+          Add Food
+
+        </button>
+
+      </div>
+
+
     </form>
+
   </div>
+
 </div>
+
+
+
+<!-- =====================================================
+     IMAGE PREVIEW SCRIPT
+     ===================================================== -->
+
+<script>
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+      const imageInput =
+        document.getElementById("image");
+
+      const previewContainer =
+        document.getElementById(
+          "foodImagePreviewContainer"
+        );
+
+      const previewImage =
+        document.getElementById(
+          "foodImagePreview"
+        );
+
+      const imageName =
+        document.getElementById(
+          "foodImageName"
+        );
+
+      const removeButton =
+        document.getElementById(
+          "removeFoodImage"
+        );
+
+
+      /*
+       * SHOW IMAGE PREVIEW
+       */
+
+      imageInput.addEventListener(
+        "change",
+        function () {
+
+          const file =
+            this.files &&
+            this.files[0];
+
+
+          if (!file) {
+
+            previewContainer.classList.remove(
+              "show"
+            );
+
+            previewImage.src = "";
+
+            return;
+
+          }
+
+
+          /*
+           * CHECK IMAGE
+           */
+
+          if (
+            !file.type.startsWith(
+              "image/"
+            )
+          ) {
+
+            alert(
+              "Please select a valid image file."
+            );
+
+            this.value = "";
+
+            previewContainer.classList.remove(
+              "show"
+            );
+
+            return;
+
+          }
+
+
+          /*
+           * SHOW FILE NAME
+           */
+
+          imageName.textContent =
+            file.name;
+
+
+          /*
+           * CREATE PREVIEW
+           */
+
+          const reader =
+            new FileReader();
+
+
+          reader.onload =
+            function (event) {
+
+              previewImage.src =
+                event.target.result;
+
+              previewContainer.classList.add(
+                "show"
+              );
+
+            };
+
+
+          reader.readAsDataURL(file);
+
+        }
+      );
+
+
+      /*
+       * REMOVE IMAGE
+       */
+
+      removeButton.addEventListener(
+        "click",
+        function () {
+
+          imageInput.value = "";
+
+          previewImage.src = "";
+
+          imageName.textContent =
+            "Selected image";
+
+          previewContainer.classList.remove(
+            "show"
+          );
+
+        }
+      );
+
+    }
+
+  );
+
+</script>

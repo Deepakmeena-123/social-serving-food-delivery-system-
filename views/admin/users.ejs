@@ -1,241 +1,763 @@
 <% layout('layouts/adminBoilerplate') %>
-<%
-  const getRoleClass = (role) => {
-    if (role === 'restaurant') return 'role-badge-restaurant';
-    if (role === 'NGO') return 'role-badge-ngo';
-    if (role === 'Admin') return 'role-badge-admin';
-    return 'role-badge-customer';
-  };
 
-  const getRoleLabel = (role) => {
-    if (role === 'restaurant') return 'Restaurant';
-    if (role === 'NGO') return 'NGO';
-    if (role === 'Admin') return 'Admin';
-    return 'Customer';
-  };
+<div class="admin-users-clean">
 
-  const userCount = Array.isArray(users) ? users.length : 0;
-%>
+    <!-- PAGE HEADER -->
+    <section class="users-clean-header">
 
-<div class="admin-users-page">
-  <section class="users-hero card admin-glass-card mb-4">
-    <div class="card-body p-4 p-lg-5">
-      <div class="d-flex flex-column flex-xl-row align-items-xl-center justify-content-between gap-4">
         <div>
-          <div class="users-hero-kicker mb-2">
-            <i class="bi bi-people-fill"></i>
-            <span>FoodBridge User Center</span>
-          </div>
-          <h1 class="users-page-title mb-2">Users Management</h1>
-          <p class="users-page-subtitle mb-0">Manage all platform users from one place with search, filters, and quick actions.</p>
-        </div>
-        <a href="/admin" class="btn admin-outline-btn">
-          <i class="bi bi-arrow-left me-2"></i>
-          Back to Dashboard
-        </a>
-      </div>
-    </div>
-  </section>
 
-  <section class="card users-toolbar-card mb-4">
-    <div class="card-body p-3 p-lg-4">
-      <div class="row g-3 align-items-center">
-        <div class="col-xl-5">
-          <label for="usersSearchInput" class="form-label users-toolbar-label mb-2">Search users</label>
-          <div class="input-group users-search-group">
-            <span class="input-group-text"><i class="bi bi-search"></i></span>
-            <input type="text" id="usersSearchInput" class="form-control" placeholder="Search by username or email">
-            <button class="btn btn-outline-secondary" type="button" id="usersClearSearch">Clear</button>
-          </div>
-        </div>
-        <div class="col-xl-7">
-          <div class="users-toolbar-label mb-2 d-none d-xl-block">Filter by role</div>
-          <div class="users-filter-group" id="usersFilterGroup">
-            <button type="button" class="users-filter-btn active" data-filter="all">All Users</button>
-            <button type="button" class="users-filter-btn" data-filter="customer">Customers</button>
-            <button type="button" class="users-filter-btn" data-filter="restaurant">Restaurants</button>
-            <button type="button" class="users-filter-btn" data-filter="NGO">NGOs</button>
-            <button type="button" class="users-filter-btn" data-filter="Admin">Admins</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+            <span class="users-clean-kicker">
+                <i class="bi bi-people-fill"></i>
+                User Management
+            </span>
 
-  <section class="users-table-card card">
-    <div class="card-body p-0">
-      <div class="users-table-header px-4 py-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
-        <div>
-          <h2 class="users-table-title mb-1">Registered Users</h2>
-          <p class="users-table-subtitle mb-0"><%= userCount %> users available in the system.</p>
-        </div>
-        <div class="users-table-legend d-flex flex-wrap gap-2">
-          <span class="legend-pill legend-pill-blue"><i class="bi bi-dot"></i> Customer</span>
-          <span class="legend-pill legend-pill-orange"><i class="bi bi-dot"></i> Restaurant</span>
-          <span class="legend-pill legend-pill-green"><i class="bi bi-dot"></i> NGO</span>
-          <span class="legend-pill legend-pill-dark"><i class="bi bi-dot"></i> Admin</span>
-        </div>
-      </div>
+            <h1 class="users-clean-title">
+                Users
+            </h1>
 
-      <% if (users && users.length) { %>
-        <div class="table-responsive users-table-responsive">
-          <table class="table align-middle mb-0 users-table">
-            <thead>
-              <tr>
-                <th>Profile</th>
-                <th>Name</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Joined Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="usersTableBody">
-              <% users.forEach(user => { %>
-                <tr
-                  class="users-row"
-                  data-role="<%= user.roles %>"
-                  data-search="<%= `${user.username || ''} ${user.email || ''}`.toLowerCase() %>"
+            <p class="users-clean-subtitle">
+                View and manage registered users on FoodBridge.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- SEARCH AND FILTER -->
+    <section class="users-control-card">
+
+        <div class="users-search-wrapper">
+
+            <label
+                for="usersSearchInput"
+                class="users-control-label"
+            >
+                Search Users
+            </label>
+
+            <div class="users-search-box">
+
+                <i class="bi bi-search"></i>
+
+                <input
+                    type="text"
+                    id="usersSearchInput"
+                    class="users-search-input"
+                    placeholder="Search by username or email..."
+                    autocomplete="off"
                 >
-                  <td>
-                    <div class="user-avatar-wrap">
-                      <img
-                        src="<%= user.image && user.image.url ? user.image.url : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' %>"
-                        alt="<%= user.username %>"
-                        class="user-avatar"
-                      />
-                    </div>
-                  </td>
-                  <td>
-                    <div class="user-name-cell">
-                      <strong><%= user.username %></strong>
-                      <span><%= user.location || 'No location provided' %></span>
-                    </div>
-                  </td>
-                  <td><span class="user-mono"><%= user.username %></span></td>
-                  <td><a href="mailto:<%= user.email %>" class="user-email-link"><%= user.email %></a></td>
-                  <td>
-                    <span class="role-badge <%= getRoleClass(user.roles) %>"><%= getRoleLabel(user.roles) %></span>
-                  </td>
-                  <td>
-                    <% if (user.isOpen) { %>
-                      <span class="status-badge status-badge-enabled"><i class="bi bi-check-circle-fill me-1"></i>Enabled</span>
-                    <% } else { %>
-                      <span class="status-badge status-badge-disabled"><i class="bi bi-dash-circle-fill me-1"></i>Disabled</span>
-                    <% } %>
-                  </td>
-                  <td>
-                    <div class="joined-cell">
-                      <i class="bi bi-calendar3"></i>
-                      <span><%= user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A' %></span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="users-actions">
-                      <a href="/admin/users/<%= user._id %>" class="btn btn-sm users-action-btn users-action-view">
-                        <i class="bi bi-eye"></i>
-                        <span>View</span>
-                      </a>
-                      <button type="button" class="btn btn-sm users-action-btn users-action-edit" disabled title="Edit UI not connected to backend">
-                        <i class="bi bi-pencil-square"></i>
-                        <span>Edit</span>
-                      </button>
-                      <button type="button" class="btn btn-sm users-action-btn users-action-delete" disabled title="Delete UI not connected to backend">
-                        <i class="bi bi-trash3"></i>
-                        <span>Delete</span>
-                      </button>
-                      <form action="/admin/users/<%= user._id %>/toggle" method="POST" class="d-inline users-toggle-form">
-                        <button class="btn btn-sm users-action-btn users-action-toggle" title="Toggle status">
-                          <i class="bi <%= user.isOpen ? 'bi-slash-circle' : 'bi-check2-circle' %>"></i>
-                          <span><%= user.isOpen ? 'Disable' : 'Enable' %></span>
-                        </button>
-                      </form>
-                    </div>
-                  </td>
-                </tr>
-              <% }) %>
-            </tbody>
-          </table>
+
+                <button
+                    type="button"
+                    id="usersClearSearch"
+                    class="users-clear-btn"
+                >
+                    Clear
+                </button>
+
+            </div>
+
         </div>
 
-        <div id="usersEmptyState" class="users-empty-state d-none">
-          <div class="users-empty-icon"><i class="bi bi-search-heart"></i></div>
-          <h3>No matching users found</h3>
-          <p>Try a different username, email, or switch back to All Users.</p>
+
+        <div class="users-filter-wrapper">
+
+            <span class="users-control-label">
+                Filter by Role
+            </span>
+
+            <div
+                class="users-filter-group"
+                id="usersFilterGroup"
+            >
+
+                <button
+                    type="button"
+                    class="users-filter-btn active"
+                    data-filter="all"
+                >
+                    All
+                </button>
+
+                <button
+                    type="button"
+                    class="users-filter-btn"
+                    data-filter="customer"
+                >
+                    Customers
+                </button>
+
+                <button
+                    type="button"
+                    class="users-filter-btn"
+                    data-filter="restaurant"
+                >
+                    Restaurants
+                </button>
+
+                <button
+                    type="button"
+                    class="users-filter-btn"
+                    data-filter="NGO"
+                >
+                    NGOs
+                </button>
+
+                <button
+                    type="button"
+                    class="users-filter-btn"
+                    data-filter="Admin"
+                >
+                    Admins
+                </button>
+
+            </div>
+
         </div>
-      <% } else { %>
-        <div class="users-empty-state">
-          <div class="users-empty-icon"><i class="bi bi-people"></i></div>
-          <h3>No users available</h3>
-          <p>When users register, they will appear here with their profile, role, and status.</p>
+
+    </section>
+
+
+    <!-- USER LIST -->
+    <section class="users-list-card">
+
+        <!-- LIST HEADER -->
+        <div class="users-list-header">
+
+            <div>
+
+                <h2>
+                    Registered Users
+                </h2>
+
+                <p>
+                    <span id="visibleUsersCount">
+                        <%= users ? users.length : 0 %>
+                    </span>
+
+                    user(s) found
+                </p>
+
+            </div>
+
+            <div class="users-list-info">
+
+                <i class="bi bi-info-circle"></i>
+
+                <span>
+                    View or change account status
+                </span>
+
+            </div>
+
         </div>
-      <% } %>
-    </div>
-  </section>
+
+
+        <!-- USERS EXIST -->
+        <% if (users && users.length > 0) { %>
+
+
+            <div class="table-responsive users-table-wrapper">
+
+                <table class="users-clean-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                User
+                            </th>
+
+                            <th>
+                                Email
+                            </th>
+
+                            <th>
+                                Role
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Joined
+                            </th>
+
+                            <th class="users-action-column">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="usersTableBody">
+
+
+                        <% users.forEach(user => { %>
+
+                            <tr
+                                class="users-clean-row"
+                                data-role="<%= user.roles %>"
+                                data-search="<%= (user.username || '') + ' ' + (user.email || '') %>"
+                            >
+
+
+                                <!-- USER -->
+
+                                <td>
+
+                                    <div class="users-user-cell">
+
+                                        <div class="users-avatar">
+
+                                            <img
+                                                src="<%= user.image && user.image.url
+                                                    ? user.image.url
+                                                    : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
+                                                %>"
+                                                alt="<%= user.username %>"
+                                            >
+
+                                        </div>
+
+
+                                        <div class="users-user-info">
+
+                                            <strong>
+                                                <%= user.username %>
+                                            </strong>
+
+                                            <span>
+                                                <%= user.location || 'Location not provided' %>
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- EMAIL -->
+
+                                <td>
+
+                                    <a
+                                        href="mailto:<%= user.email %>"
+                                        class="users-email"
+                                    >
+                                        <%= user.email %>
+                                    </a>
+
+                                </td>
+
+
+                                <!-- ROLE -->
+
+                                <td>
+
+                                    <% if (user.roles === 'restaurant') { %>
+
+                                        <span class="users-role-badge role-badge-restaurant">
+                                            Restaurant
+                                        </span>
+
+                                    <% } else if (user.roles === 'NGO') { %>
+
+                                        <span class="users-role-badge role-badge-ngo">
+                                            NGO
+                                        </span>
+
+                                    <% } else if (user.roles === 'Admin') { %>
+
+                                        <span class="users-role-badge role-badge-admin">
+                                            Admin
+                                        </span>
+
+                                    <% } else { %>
+
+                                        <span class="users-role-badge role-badge-customer">
+                                            Customer
+                                        </span>
+
+                                    <% } %>
+
+                                </td>
+
+
+                                <!-- STATUS -->
+
+                                <td>
+
+                                    <% if (user.isOpen) { %>
+
+                                        <span class="users-status users-status-active">
+
+                                            <span class="users-status-dot"></span>
+
+                                            Enabled
+
+                                        </span>
+
+                                    <% } else { %>
+
+                                        <span class="users-status users-status-disabled">
+
+                                            <span class="users-status-dot"></span>
+
+                                            Disabled
+
+                                        </span>
+
+                                    <% } %>
+
+                                </td>
+
+
+                                <!-- JOINED DATE -->
+
+                                <td>
+
+                                    <span class="users-date">
+
+                                        <i class="bi bi-calendar3"></i>
+
+                                        <%= user.createdAt
+                                            ? new Date(user.createdAt).toLocaleDateString(
+                                                'en-IN',
+                                                {
+                                                    year: 'numeric',
+                                                    month: 'short',
+                                                    day: 'numeric'
+                                                }
+                                            )
+                                            : 'N/A'
+                                        %>
+
+                                    </span>
+
+                                </td>
+
+
+                                <!-- ACTIONS -->
+
+                                <td>
+
+                                    <div class="users-actions">
+
+
+                                        <!-- VIEW USER -->
+
+                                        <a
+                                            href="/admin/users/<%= user._id %>"
+                                            class="users-view-btn"
+                                            title="View user"
+                                        >
+
+                                            <i class="bi bi-eye"></i>
+
+                                            <span>
+                                                View
+                                            </span>
+
+                                        </a>
+
+
+                                        <!-- ENABLE / DISABLE -->
+
+                                        <form
+                                            action="/admin/users/<%= user._id %>/toggle"
+                                            method="POST"
+                                            class="users-toggle-form"
+                                        >
+
+                                            <button
+                                                type="submit"
+                                                class="users-toggle-btn <%= user.isOpen
+                                                    ? 'users-disable-btn'
+                                                    : 'users-enable-btn'
+                                                %>"
+                                            >
+
+                                                <% if (user.isOpen) { %>
+
+                                                    <i class="bi bi-person-dash"></i>
+
+                                                    <span>
+                                                        Disable
+                                                    </span>
+
+                                                <% } else { %>
+
+                                                    <i class="bi bi-person-check"></i>
+
+                                                    <span>
+                                                        Enable
+                                                    </span>
+
+                                                <% } %>
+
+                                            </button>
+
+                                        </form>
+
+
+                                    </div>
+
+                                </td>
+
+
+                            </tr>
+
+                        <% }) %>
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- SEARCH EMPTY STATE -->
+
+            <div
+                id="usersEmptyState"
+                class="users-empty-state d-none"
+            >
+
+                <div class="users-empty-icon">
+
+                    <i class="bi bi-search"></i>
+
+                </div>
+
+                <h3>
+                    No users found
+                </h3>
+
+                <p>
+                    Try another username, email address, or role.
+                </p>
+
+                <button
+                    type="button"
+                    id="usersResetFilters"
+                    class="users-reset-btn"
+                >
+                    Reset Filters
+                </button>
+
+            </div>
+
+
+        <% } else { %>
+
+
+            <!-- NO USERS -->
+
+            <div class="users-empty-state">
+
+                <div class="users-empty-icon">
+
+                    <i class="bi bi-people"></i>
+
+                </div>
+
+                <h3>
+                    No users available
+                </h3>
+
+                <p>
+                    Registered users will appear here.
+                </p>
+
+            </div>
+
+
+        <% } %>
+
+
+    </section>
+
 </div>
 
-<script>
-  (function () {
-    const searchInput = document.getElementById('usersSearchInput');
-    const clearButton = document.getElementById('usersClearSearch');
-    const filterGroup = document.getElementById('usersFilterGroup');
-    const rows = Array.from(document.querySelectorAll('.users-row'));
-    const emptyState = document.getElementById('usersEmptyState');
 
-    if (!searchInput || !filterGroup || !rows.length) return;
+
+<!-- =====================================================
+     SEARCH AND FILTER JAVASCRIPT
+     ===================================================== -->
+
+<script>
+
+(function () {
+
+    'use strict';
+
+
+    const searchInput =
+        document.getElementById(
+            'usersSearchInput'
+        );
+
+
+    const clearButton =
+        document.getElementById(
+            'usersClearSearch'
+        );
+
+
+    const filterGroup =
+        document.getElementById(
+            'usersFilterGroup'
+        );
+
+
+    const rows =
+        Array.from(
+            document.querySelectorAll(
+                '.users-clean-row'
+            )
+        );
+
+
+    const emptyState =
+        document.getElementById(
+            'usersEmptyState'
+        );
+
+
+    const resetButton =
+        document.getElementById(
+            'usersResetFilters'
+        );
+
+
+    const visibleUsersCount =
+        document.getElementById(
+            'visibleUsersCount'
+        );
+
+
+    if (
+        !searchInput ||
+        !filterGroup
+    ) {
+        return;
+    }
+
 
     let activeFilter = 'all';
 
-    const normalize = (value) => (value || '').trim().toLowerCase();
 
-    const updateEmptyState = (visibleCount) => {
-      if (!emptyState) return;
-      emptyState.classList.toggle('d-none', visibleCount !== 0);
-    };
+    function normalize(value) {
 
-    const applyFilters = () => {
-      const query = normalize(searchInput.value);
-      let visibleCount = 0;
+        return String(value || '')
+            .trim()
+            .toLowerCase();
 
-      rows.forEach((row) => {
-        const role = row.dataset.role || '';
-        const searchable = row.dataset.search || '';
-        const matchesRole = activeFilter === 'all' || role === activeFilter;
-        const matchesQuery = !query || searchable.includes(query);
-        const shouldShow = matchesRole && matchesQuery;
-
-        row.classList.toggle('d-none', !shouldShow);
-        if (shouldShow) visibleCount += 1;
-      });
-
-      updateEmptyState(visibleCount);
-    };
-
-    filterGroup.addEventListener('click', (event) => {
-      const button = event.target.closest('.users-filter-btn');
-      if (!button) return;
-
-      activeFilter = button.dataset.filter || 'all';
-
-      filterGroup.querySelectorAll('.users-filter-btn').forEach((item) => {
-        item.classList.toggle('active', item === button);
-      });
-
-      applyFilters();
-    });
-
-    searchInput.addEventListener('input', applyFilters);
-
-    if (clearButton) {
-      clearButton.addEventListener('click', () => {
-        searchInput.value = '';
-        applyFilters();
-        searchInput.focus();
-      });
     }
 
+
+    function applyFilters() {
+
+        const searchText =
+            normalize(
+                searchInput.value
+            );
+
+
+        let visibleCount = 0;
+
+
+        rows.forEach(function (row) {
+
+            const role =
+                row.dataset.role || '';
+
+
+            const searchData =
+                normalize(
+                    row.dataset.search
+                );
+
+
+            const roleMatches =
+                activeFilter === 'all' ||
+                role === activeFilter;
+
+
+            const searchMatches =
+                searchText === '' ||
+                searchData.includes(
+                    searchText
+                );
+
+
+            const shouldShow =
+                roleMatches &&
+                searchMatches;
+
+
+            row.classList.toggle(
+                'd-none',
+                !shouldShow
+            );
+
+
+            if (shouldShow) {
+
+                visibleCount++;
+
+            }
+
+        });
+
+
+        if (visibleUsersCount) {
+
+            visibleUsersCount.textContent =
+                visibleCount;
+
+        }
+
+
+        if (emptyState) {
+
+            emptyState.classList.toggle(
+                'd-none',
+                visibleCount !== 0
+            );
+
+        }
+
+    }
+
+
+    /* ROLE FILTER */
+
+    filterGroup.addEventListener(
+        'click',
+        function (event) {
+
+            const button =
+                event.target.closest(
+                    '.users-filter-btn'
+                );
+
+
+            if (!button) {
+                return;
+            }
+
+
+            activeFilter =
+                button.dataset.filter ||
+                'all';
+
+
+            const buttons =
+                filterGroup.querySelectorAll(
+                    '.users-filter-btn'
+                );
+
+
+            buttons.forEach(
+                function (item) {
+
+                    item.classList.toggle(
+                        'active',
+                        item === button
+                    );
+
+                }
+            );
+
+
+            applyFilters();
+
+        }
+    );
+
+
+    /* SEARCH */
+
+    searchInput.addEventListener(
+        'input',
+        applyFilters
+    );
+
+
+    /* CLEAR SEARCH */
+
+    if (clearButton) {
+
+        clearButton.addEventListener(
+            'click',
+            function () {
+
+                searchInput.value = '';
+
+                applyFilters();
+
+                searchInput.focus();
+
+            }
+        );
+
+    }
+
+
+    /* RESET FILTERS */
+
+    if (resetButton) {
+
+        resetButton.addEventListener(
+            'click',
+            function () {
+
+                searchInput.value = '';
+
+                activeFilter = 'all';
+
+
+                const buttons =
+                    filterGroup.querySelectorAll(
+                        '.users-filter-btn'
+                    );
+
+
+                buttons.forEach(
+                    function (button) {
+
+                        button.classList.toggle(
+                            'active',
+                            button.dataset.filter === 'all'
+                        );
+
+                    }
+                );
+
+
+                applyFilters();
+
+            }
+        );
+
+    }
+
+
+    /* INITIAL FILTER */
+
     applyFilters();
-  })();
+
+
+})();
+
 </script>

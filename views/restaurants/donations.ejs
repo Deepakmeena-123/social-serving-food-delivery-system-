@@ -1,48 +1,316 @@
 <% layout('layouts/boilerplate') %>
-<div class="container mt-4">
-  <h1>Donation Center</h1>
-  <p>Select one or more dishes below and specify quantity to donate.</p>
-  <form action="/restaurants/<%= restaurant._id %>/donations" method="POST">
-    <div class="mb-3">
-      <label for="NGO_select">Select NGO to receive donations</label>
-      <select class="form-select" id="NGO_select" name="NGO" required>
-        <option value="">Choose NGO</option>
-        <% for (let ngo of ngos) { %>
-          <option value="<%= ngo._id %>"><%= ngo.username %> - <%= ngo.location %></option>
-        <% } %>
-      </select>
-    </div>
-    <div class="row">
-      <% for(let item of restaurant.cart) { %>
-      <% const food = item.food; %>
-      <div class="col-md-6 mb-3">
-        <div class="card">
-          <div class="row g-0">
-            <div class="col-md-4">
-              <% if(food.image && food.image.url) { %>
-              <img src="<%= food.image.url %>" class="img-fluid" alt="<%= food.name %>">
-              <% } else { %>
-              <img src="https://via.placeholder.com/150" class="img-fluid" alt="no image">
-              <% } %>
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="selected" value="<%= food._id %>" id="sel_<%= food._id %>">
-                  <label class="form-check-label" for="sel_<%= food._id %>"><strong><%= food.name %></strong></label>
-                </div>
-                <p class="mb-1">Available: <strong><%= food.count %></strong> plates</p>
-                <div class="mb-2">
-                  <label for="quantity_<%= food._id %>">Donate quantity</label>
-                  <input type="number" name="quantity_<%= food._id %>" id="quantity_<%= food._id %>" class="form-control" min="1" max="<%= food.count %>" value="1">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+
+<div class="donation-page">
+
+  <div class="donation-container">
+
+    <!-- ==========================================
+         HEADER
+         ========================================== -->
+
+    <div class="donation-header">
+
+      <div class="donation-header-icon">
+        <i class="bi bi-heart-fill"></i>
       </div>
-      <% } %>
+
+      <div>
+        <h1>Donation Center</h1>
+
+        <p>
+          Share available food with an NGO and help reduce food waste.
+        </p>
+      </div>
+
     </div>
-    <button class="btn btn-primary">Donate Selected Food</button>
-  </form>
+
+
+    <!-- ==========================================
+         DONATION FORM
+         ========================================== -->
+
+    <form
+      action="/restaurants/<%= restaurant._id %>/donations"
+      method="POST"
+      class="donation-form"
+    >
+
+
+      <!-- ========================================
+           NGO SELECTION
+           ======================================== -->
+
+      <section class="donation-section">
+
+        <div class="donation-section-heading">
+
+          <div class="donation-step">
+            1
+          </div>
+
+          <div>
+            <h2>Select NGO</h2>
+
+            <p>
+              Choose the organization that will receive your donation.
+            </p>
+          </div>
+
+        </div>
+
+
+        <label
+          for="NGO_select"
+          class="donation-label"
+        >
+          NGO to receive donation
+        </label>
+
+
+        <select
+          class="form-select donation-select"
+          id="NGO_select"
+          name="NGO"
+          required
+        >
+
+          <option value="">
+            Choose an NGO
+          </option>
+
+          <% for (let ngo of ngos) { %>
+
+            <option value="<%= ngo._id %>">
+              <%= ngo.username %> - <%= ngo.location %>
+            </option>
+
+          <% } %>
+
+        </select>
+
+      </section>
+
+
+
+      <!-- ========================================
+           FOOD SELECTION
+           ======================================== -->
+
+      <section class="donation-section">
+
+        <div class="donation-section-heading">
+
+          <div class="donation-step">
+            2
+          </div>
+
+          <div>
+            <h2>Select Food</h2>
+
+            <p>
+              Select the dishes and quantity you want to donate.
+            </p>
+          </div>
+
+        </div>
+
+
+        <% if (!restaurant.cart || restaurant.cart.length === 0) { %>
+
+          <!-- EMPTY STATE -->
+
+          <div class="donation-empty">
+
+            <div class="donation-empty-icon">
+              <i class="bi bi-box-seam"></i>
+            </div>
+
+            <h3>No food available</h3>
+
+            <p>
+              There are currently no food items available for donation.
+            </p>
+
+          </div>
+
+        <% } else { %>
+
+
+          <!-- FOOD GRID -->
+
+          <div class="donation-food-grid">
+
+            <% for(let item of restaurant.cart) { %>
+
+              <% const food = item.food; %>
+
+
+              <article class="donation-food-card">
+
+
+                <!-- FOOD IMAGE -->
+
+                <div class="donation-food-image-wrapper">
+
+                  <% if(food.image && food.image.url) { %>
+
+                    <img
+                      src="<%= food.image.url %>"
+                      class="donation-food-image"
+                      alt="<%= food.name %>"
+                    >
+
+                  <% } else { %>
+
+                    <div class="donation-no-image">
+
+                      <i class="bi bi-image"></i>
+
+                      <span>
+                        No image
+                      </span>
+
+                    </div>
+
+                  <% } %>
+
+
+                  <!-- SELECT BADGE -->
+
+                  <div class="donation-select-badge">
+
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      name="selected"
+                      value="<%= food._id %>"
+                      id="sel_<%= food._id %>"
+                    >
+
+                    <label
+                      for="sel_<%= food._id %>"
+                    >
+                      Select
+                    </label>
+
+                  </div>
+
+                </div>
+
+
+
+                <!-- FOOD DETAILS -->
+
+                <div class="donation-food-body">
+
+                  <h3>
+                    <%= food.name %>
+                  </h3>
+
+
+                  <div class="donation-availability">
+
+                    <i class="bi bi-box-seam"></i>
+
+                    <span>
+                      Available:
+                    </span>
+
+                    <strong>
+                      <%= food.count %>
+                    </strong>
+
+                    <span>
+                      plates
+                    </span>
+
+                  </div>
+
+
+                  <div class="donation-quantity">
+
+                    <label
+                      for="quantity_<%= food._id %>"
+                    >
+                      Donation quantity
+                    </label>
+
+
+                    <div class="donation-quantity-input">
+
+                      <input
+                        type="number"
+                        name="quantity_<%= food._id %>"
+                        id="quantity_<%= food._id %>"
+                        class="form-control"
+                        min="1"
+                        max="<%= food.count %>"
+                        value="1"
+                      >
+
+                      <span>
+                        plates
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </article>
+
+            <% } %>
+
+          </div>
+
+
+          <!-- ======================================
+               DONATION FOOTER
+               ====================================== -->
+
+          <div class="donation-submit-area">
+
+            <div class="donation-impact">
+
+              <div class="donation-impact-icon">
+                <i class="bi bi-heart-fill"></i>
+              </div>
+
+              <div>
+
+                <strong>
+                  Make a difference
+                </strong>
+
+                <span>
+                  Your food donation can help someone in need.
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <button
+              type="submit"
+              class="donation-submit-btn"
+            >
+
+              <i class="bi bi-heart-fill"></i>
+
+              Donate Selected Food
+
+            </button>
+
+          </div>
+
+        <% } %>
+
+      </section>
+
+    </form>
+
+  </div>
+
 </div>

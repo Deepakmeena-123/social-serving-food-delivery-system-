@@ -1,256 +1,350 @@
 <% layout('layouts/adminBoilerplate') %>
-<%
-  const currentDate = new Date().toLocaleDateString('en-IN', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
 
-  const quickActions = [
-    { href: '/admin/users', icon: 'bi-people', title: 'Manage Users', text: 'Review accounts, activity, and access.' },
-    { href: '/admin/restaurants', icon: 'bi-shop', title: 'Manage Restaurants', text: 'Track restaurant profiles and listings.' },
-    { href: '/admin/ngos', icon: 'bi-hospital', title: 'Manage NGOs', text: 'Monitor NGO participation and support.' },
-    { href: '/admin/donations', icon: 'bi-gift', title: 'Manage Donations', text: 'Review donation flow and status updates.' },
-    { href: '/admin/reports', icon: 'bi-bar-chart-line', title: 'View Reports', text: 'Open operational insights and summaries.' }
-  ];
+<div class="admin-dashboard-clean">
 
-  const recentDonations = [
-    { title: 'Donation accepted', meta: 'Fresh food package transferred to NGO', time: '2 mins ago', status: 'Accepted' },
-    { title: 'Donation pending', meta: 'Restaurant donation awaiting review', time: '18 mins ago', status: 'Pending' },
-    { title: 'Donation completed', meta: 'Distributed donation marked successful', time: '1 hour ago', status: 'Distributed' }
-  ];
+    <!-- =====================================================
+         DASHBOARD HEADER
+         ===================================================== -->
 
-  const recentRegistrations = [
-    { title: 'New restaurant signup', meta: 'A new restaurant joined FoodBridge', time: 'Today' },
-    { title: 'NGO registration', meta: 'NGO account created and approved', time: 'Yesterday' },
-    { title: 'User registration', meta: 'Customer account added to the platform', time: '2 days ago' }
-  ];
+    <section class="dashboard-clean-header">
 
-  const recentOrders = [
-    { title: 'Order placed', meta: 'Food order placed from nearby restaurant', time: 'Now' },
-    { title: 'Order confirmed', meta: 'Admin-side order confirmation completed', time: '12 mins ago' },
-    { title: 'Order delivered', meta: 'Delivery completed successfully', time: '45 mins ago' }
-  ];
-%>
+        <div>
 
-<div class="admin-dashboard">
-  <section class="dashboard-hero card admin-glass-card mb-4">
-    <div class="card-body p-4 p-lg-5">
-      <div class="row align-items-center g-4">
-        <div class="col-lg-8">
-          <div class="dashboard-kicker mb-2">
-            <i class="bi bi-stars"></i>
-            <span>FoodBridge Command Center</span>
-          </div>
-          <h1 class="dashboard-title mb-2">Welcome back, Deepak Meena!</h1>
-          <p class="dashboard-subtitle mb-3">
-            Here’s your live snapshot of platform activity, operational health, and moderation workflows.
-          </p>
-          <div class="dashboard-meta d-flex flex-wrap gap-3">
-            <div class="dashboard-meta-pill">
-              <i class="bi bi-calendar3"></i>
-              <span><%= currentDate %></span>
-            </div>
-            <div class="dashboard-meta-pill dashboard-meta-pill-soft">
-              <i class="bi bi-activity"></i>
-              <span>Real-time admin overview</span>
-            </div>
-          </div>
+            <span class="dashboard-clean-kicker">
+                <i class="bi bi-grid-1x2-fill"></i>
+                FoodBridge Admin
+            </span>
+
+            <h1 class="dashboard-clean-title">
+                Dashboard
+            </h1>
+
+            <p class="dashboard-clean-subtitle">
+                Monitor your platform and manage important activities from one place.
+            </p>
+
         </div>
-        <div class="col-lg-4">
-          <div class="dashboard-summary-card">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <div>
-                <p class="summary-label mb-1">Today’s focus</p>
-                <h2 class="summary-value mb-0"><%= pendingDonations %></h2>
-              </div>
-              <div class="summary-icon">
-                <i class="bi bi-inbox-fill"></i>
-              </div>
-            </div>
-            <p class="summary-text mb-0">Pending donations need review, and new activity is being tracked across the platform.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <section class="mb-4">
-    <div class="section-heading d-flex align-items-center justify-content-between mb-3">
-      <div>
-        <h2 class="section-title mb-1">Platform Statistics</h2>
-        <p class="section-subtitle mb-0">Core numbers across users, partners, and donation flow.</p>
-      </div>
-      <span class="section-badge"><i class="bi bi-graph-up-arrow me-1"></i> Live summary</span>
-    </div>
+    </section>
 
-    <div class="row g-3 g-xl-4">
-      <div class="col-6 col-xl-3">
-        <article class="stat-card stat-card-users">
-          <div class="stat-card-icon"><i class="bi bi-people-fill"></i></div>
-          <div class="stat-card-body">
-            <span class="stat-card-label">Total Users</span>
-            <strong class="stat-card-value"><%= totalUsers %></strong>
-          </div>
-        </article>
-      </div>
-      <div class="col-6 col-xl-3">
-        <article class="stat-card stat-card-restaurants">
-          <div class="stat-card-icon"><i class="bi bi-shop-window"></i></div>
-          <div class="stat-card-body">
-            <span class="stat-card-label">Total Restaurants</span>
-            <strong class="stat-card-value"><%= totalRestaurants %></strong>
-          </div>
-        </article>
-      </div>
-      <div class="col-6 col-xl-3">
-        <article class="stat-card stat-card-ngos">
-          <div class="stat-card-icon"><i class="bi bi-building-heart"></i></div>
-          <div class="stat-card-body">
-            <span class="stat-card-label">Total NGOs</span>
-            <strong class="stat-card-value"><%= totalNGOs %></strong>
-          </div>
-        </article>
-      </div>
-      <div class="col-6 col-xl-3">
-        <article class="stat-card stat-card-donations">
-          <div class="stat-card-icon"><i class="bi bi-gift-fill"></i></div>
-          <div class="stat-card-body">
-            <span class="stat-card-label">Total Donations</span>
-            <strong class="stat-card-value"><%= totalDonations %></strong>
-          </div>
-        </article>
-      </div>
-      <div class="col-12 col-xl-6">
-        <article class="stat-card stat-card-pending">
-          <div class="stat-card-icon"><i class="bi bi-hourglass-split"></i></div>
-          <div class="stat-card-body">
-            <span class="stat-card-label">Pending Donations</span>
-            <strong class="stat-card-value"><%= pendingDonations %></strong>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
 
-  <section class="mb-4">
-    <div class="section-heading d-flex align-items-center justify-content-between mb-3">
-      <div>
-        <h2 class="section-title mb-1">Quick Actions</h2>
-        <p class="section-subtitle mb-0">Jump directly into the most common admin tasks.</p>
-      </div>
-    </div>
+    <!-- =====================================================
+         PLATFORM OVERVIEW
+         ===================================================== -->
 
-    <div class="row g-3 g-xl-4">
-      <% quickActions.forEach(action => { %>
-        <div class="col-md-6 col-xl-4">
-          <a href="<%= action.href %>" class="quick-action-card text-decoration-none">
-            <div class="quick-action-icon"><i class="bi <%= action.icon %>"></i></div>
+    <section class="dashboard-clean-section">
+
+        <div class="dashboard-clean-section-heading">
+
             <div>
-              <h3 class="quick-action-title mb-1"><%= action.title %></h3>
-              <p class="quick-action-text mb-0"><%= action.text %></p>
+
+                <h2>
+                    Platform Overview
+                </h2>
+
+                <p>
+                    Current FoodBridge statistics.
+                </p>
+
             </div>
-            <span class="quick-action-arrow"><i class="bi bi-arrow-right"></i></span>
-          </a>
+
         </div>
-      <% }) %>
-    </div>
-  </section>
 
-  <section>
-    <div class="section-heading d-flex align-items-center justify-content-between mb-3">
-      <div>
-        <h2 class="section-title mb-1">Recent Activity</h2>
-        <p class="section-subtitle mb-0">A quick overview of donations, registrations, and orders.</p>
-      </div>
-    </div>
 
-    <div class="row g-3 g-xl-4">
-      <div class="col-lg-4">
-        <div class="activity-card card h-100">
-          <div class="card-body p-4">
-            <div class="activity-card-header">
-              <div>
-                <p class="activity-card-kicker mb-1">Recent Donations</p>
-                <h3 class="activity-card-title mb-0">Donation Flow</h3>
-              </div>
-              <i class="bi bi-gift activity-card-icon"></i>
-            </div>
-            <div class="activity-list mt-4">
-              <% recentDonations.forEach(item => { %>
-                <div class="activity-item">
-                  <div class="activity-item-dot"></div>
-                  <div class="activity-item-body">
-                    <div class="d-flex align-items-center justify-content-between gap-2">
-                      <strong><%= item.title %></strong>
-                      <span class="activity-time"><%= item.time %></span>
-                    </div>
-                    <p class="mb-1"><%= item.meta %></p>
-                    <span class="activity-status"><%= item.status %></span>
-                  </div>
+        <div class="dashboard-stat-grid">
+
+
+            <!-- USERS -->
+
+            <a
+                href="/admin/users"
+                class="dashboard-stat-card dashboard-stat-users"
+            >
+
+                <div class="dashboard-stat-icon">
+                    <i class="bi bi-people-fill"></i>
                 </div>
-              <% }) %>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="col-lg-4">
-        <div class="activity-card card h-100">
-          <div class="card-body p-4">
-            <div class="activity-card-header">
-              <div>
-                <p class="activity-card-kicker mb-1">Recent Registrations</p>
-                <h3 class="activity-card-title mb-0">New Accounts</h3>
-              </div>
-              <i class="bi bi-person-plus activity-card-icon"></i>
-            </div>
-            <div class="activity-list mt-4">
-              <% recentRegistrations.forEach(item => { %>
-                <div class="activity-item">
-                  <div class="activity-item-dot activity-item-dot-orange"></div>
-                  <div class="activity-item-body">
-                    <div class="d-flex align-items-center justify-content-between gap-2">
-                      <strong><%= item.title %></strong>
-                      <span class="activity-time"><%= item.time %></span>
-                    </div>
-                    <p class="mb-0"><%= item.meta %></p>
-                  </div>
-                </div>
-              <% }) %>
-            </div>
-          </div>
-        </div>
-      </div>
+                <div class="dashboard-stat-content">
 
-      <div class="col-lg-4">
-        <div class="activity-card card h-100">
-          <div class="card-body p-4">
-            <div class="activity-card-header">
-              <div>
-                <p class="activity-card-kicker mb-1">Recent Orders</p>
-                <h3 class="activity-card-title mb-0">Order Timeline</h3>
-              </div>
-              <i class="bi bi-bag-check activity-card-icon"></i>
-            </div>
-            <div class="activity-list mt-4">
-              <% recentOrders.forEach(item => { %>
-                <div class="activity-item">
-                  <div class="activity-item-dot activity-item-dot-green"></div>
-                  <div class="activity-item-body">
-                    <div class="d-flex align-items-center justify-content-between gap-2">
-                      <strong><%= item.title %></strong>
-                      <span class="activity-time"><%= item.time %></span>
-                    </div>
-                    <p class="mb-0"><%= item.meta %></p>
-                  </div>
+                    <span>
+                        Total Users
+                    </span>
+
+                    <strong>
+                        <%= totalUsers %>
+                    </strong>
+
                 </div>
-              <% }) %>
-            </div>
-          </div>
+
+                <i class="bi bi-arrow-up-right dashboard-stat-arrow"></i>
+
+            </a>
+
+
+            <!-- RESTAURANTS -->
+
+            <a
+                href="/admin/restaurants"
+                class="dashboard-stat-card dashboard-stat-restaurants"
+            >
+
+                <div class="dashboard-stat-icon">
+                    <i class="bi bi-shop-window"></i>
+                </div>
+
+                <div class="dashboard-stat-content">
+
+                    <span>
+                        Restaurants
+                    </span>
+
+                    <strong>
+                        <%= totalRestaurants %>
+                    </strong>
+
+                </div>
+
+                <i class="bi bi-arrow-up-right dashboard-stat-arrow"></i>
+
+            </a>
+
+
+            <!-- NGOs -->
+
+            <a
+                href="/admin/ngos"
+                class="dashboard-stat-card dashboard-stat-ngos"
+            >
+
+                <div class="dashboard-stat-icon">
+                    <i class="bi bi-building-heart"></i>
+                </div>
+
+                <div class="dashboard-stat-content">
+
+                    <span>
+                        NGOs
+                    </span>
+
+                    <strong>
+                        <%= totalNGOs %>
+                    </strong>
+
+                </div>
+
+                <i class="bi bi-arrow-up-right dashboard-stat-arrow"></i>
+
+            </a>
+
+
+            <!-- DONATIONS -->
+
+            <a
+                href="/admin/donations"
+                class="dashboard-stat-card dashboard-stat-donations"
+            >
+
+                <div class="dashboard-stat-icon">
+                    <i class="bi bi-gift-fill"></i>
+                </div>
+
+                <div class="dashboard-stat-content">
+
+                    <span>
+                        Total Donations
+                    </span>
+
+                    <strong>
+                        <%= totalDonations %>
+                    </strong>
+
+                </div>
+
+                <i class="bi bi-arrow-up-right dashboard-stat-arrow"></i>
+
+            </a>
+
+
         </div>
-      </div>
-    </div>
-  </section>
+
+    </section>
+
+
+    <!-- =====================================================
+         PENDING DONATIONS
+         ===================================================== -->
+
+    <section class="dashboard-clean-section">
+
+        <div class="dashboard-attention-card">
+
+
+            <div class="dashboard-attention-icon">
+
+                <i class="bi bi-hourglass-split"></i>
+
+            </div>
+
+
+            <div class="dashboard-attention-content">
+
+                <span class="dashboard-attention-label">
+                    Needs Attention
+                </span>
+
+
+                <h2>
+
+                    <%= pendingDonations %>
+
+                    pending donation<%= pendingDonations === 1 ? '' : 's' %>
+
+                </h2>
+
+
+                <p>
+                    Review pending donations and update their status when required.
+                </p>
+
+            </div>
+
+
+            <a
+                href="/admin/donations"
+                class="dashboard-attention-button"
+            >
+
+                Review Donations
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         MANAGEMENT
+         ===================================================== -->
+
+    <section class="dashboard-clean-section">
+
+        <div class="dashboard-clean-section-heading">
+
+            <div>
+
+                <h2>
+                    Management
+                </h2>
+
+                <p>
+                    Quickly open the section you want to manage.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-shortcuts">
+
+
+            <!-- USERS -->
+
+            <a
+                href="/admin/users"
+                class="dashboard-shortcut"
+            >
+
+                <i class="bi bi-people"></i>
+
+                <span>
+                    Users
+                </span>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+
+            <!-- RESTAURANTS -->
+
+            <a
+                href="/admin/restaurants"
+                class="dashboard-shortcut"
+            >
+
+                <i class="bi bi-shop"></i>
+
+                <span>
+                    Restaurants
+                </span>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+
+            <!-- NGOs -->
+
+            <a
+                href="/admin/ngos"
+                class="dashboard-shortcut"
+            >
+
+                <i class="bi bi-building"></i>
+
+                <span>
+                    NGOs
+                </span>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+
+            <!-- DONATIONS -->
+
+            <a
+                href="/admin/donations"
+                class="dashboard-shortcut"
+            >
+
+                <i class="bi bi-gift"></i>
+
+                <span>
+                    Donations
+                </span>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+
+            <!-- REPORTS -->
+
+            <a
+                href="/admin/reports"
+                class="dashboard-shortcut"
+            >
+
+                <i class="bi bi-bar-chart-line"></i>
+
+                <span>
+                    Reports
+                </span>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+
+        </div>
+
+    </section>
+
 </div>

@@ -1,352 +1,766 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FoodBridge | Good Food Should Never Go to Waste</title>
-    <meta
-      name="description"
-      content="FoodBridge connects customers, restaurants, and NGOs to reduce food waste and help communities through meaningful food delivery and donation."
-    />
-    <link rel="icon" href="/images/logo.png" type="image/png" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous" />
-    <link rel="stylesheet" href="/stylesheets/home.css" />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <body class="home-page">
-    <header class="home-header">
-      <nav class="home-navbar container" aria-label="Main navigation">
-        <div class="home-navbar-inner">
-          <input type="checkbox" id="home-nav-toggle" aria-label="Toggle navigation" />
-          <label for="home-nav-toggle" class="home-nav-toggle" aria-label="Open navigation">
-            <span></span>
-            <span></span>
-            <span></span>
-          </label>
+  <title>FoodBridge | Good Food, Better Future</title>
 
-          <a href="/" class="home-brand" aria-label="FoodBridge home">
-            <img src="/images/foodbridge-logo.png" alt="FoodBridge logo" />
-            <span>FoodBridge</span>
-          </a>
+  <meta
+    name="description"
+    content="FoodBridge connects people, restaurants and NGOs to reduce food waste and make a positive community impact."
+  />
 
-          <div class="home-menu">
-            <a href="/">Home</a>
-            <a href="/restaurants">Restaurants</a>
+  <link rel="icon" href="/images/logo.png" type="image/png" />
+
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
+    crossorigin="anonymous"
+  />
+
+  <link rel="stylesheet" href="/stylesheets/home.css" />
+</head>
+
+<body class="home-page">
+
+  <!-- ==================== NAVBAR ==================== -->
+
+  <header class="home-header">
+    <nav class="home-navbar container" aria-label="Main navigation">
+
+      <div class="home-navbar-inner">
+
+        <!-- Mobile menu button -->
+        <input type="checkbox" id="home-nav-toggle" />
+
+        <label
+          for="home-nav-toggle"
+          class="home-nav-toggle"
+          aria-label="Open navigation"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+
+        <!-- Logo -->
+        <a href="/" class="home-brand" aria-label="FoodBridge home">
+
+          <img
+            src="/images/foodbridge-logo.png"
+            alt="FoodBridge logo"
+          />
+
+          <span>FoodBridge</span>
+
+        </a>
+
+        <!-- Navigation -->
+        <div class="home-menu">
+
+          <a href="/">Home</a>
+
+          <% if (typeof currentUser === 'undefined' || !currentUser) { %>
+
+            <a href="/login">Login</a>
+
+            <a
+              href="/register"
+              class="home-btn home-btn-primary home-nav-cta"
+            >
+              Join FoodBridge
+            </a>
+
+          <% } else { %>
+
+            <!-- ADMIN -->
+            <% if (currentUser.roles === 'Admin') { %>
+
+              <a href="/admin">Admin</a>
+
+              <a href="/profile/<%= currentUser._id %>">
+                Profile
+              </a>
+
+            <!-- RESTAURANT -->
+            <% } else if (currentUser.roles === 'restaurant') { %>
+
+              <a href="/restaurants/<%= currentUser._id %>">
+                My Menu
+              </a>
+
+              <a href="/profile/<%= currentUser._id %>">
+                Profile
+              </a>
+
+            <!-- NGO -->
+            <% } else if (currentUser.roles === 'NGO') { %>
+
+              <a href="/receiveddonations">
+                Received Donations
+              </a>
+
+              <a href="/profile/<%= currentUser._id %>">
+                Profile
+              </a>
+
+            <!-- CUSTOMER -->
+            <% } else { %>
+
+              <a href="/customer/dashboard">
+                Dashboard
+              </a>
+
+              <a href="/orderhistory">
+                Orders
+              </a>
+
+              <a href="/customer/donations/history">
+                Donations
+              </a>
+
+              <a href="/cart">
+                Cart
+              </a>
+
+              <a href="/profile/<%= currentUser._id %>">
+                Profile
+              </a>
+
+            <% } %>
+
+            <a
+              href="/logout"
+              class="home-btn home-btn-secondary"
+            >
+              Logout
+            </a>
+
+          <% } %>
+
+        </div>
+
+      </div>
+
+    </nav>
+  </header>
+
+
+  <main>
+
+    <!-- ==================== HERO SECTION ==================== -->
+
+    <section class="home-hero">
+
+      <div class="container home-hero-inner">
+
+        <!-- Hero Content -->
+
+        <div class="home-hero-copy">
+
+          <span class="home-kicker">
+            Food with a purpose
+          </span>
+
+          <h1>
+            Good food.
+            <br />
+            <span>Better future.</span>
+          </h1>
+
+          <p>
+            FoodBridge brings food, people and communities together —
+            helping reduce food waste while making meaningful food
+            accessible.
+          </p>
+
+          <div class="home-cta-row">
+
+            <a
+              href="/restaurants"
+              class="home-btn home-btn-primary"
+            >
+              Order Food
+              <span>→</span>
+            </a>
+
 
             <% if (typeof currentUser === 'undefined' || !currentUser) { %>
-              <a href="/login">Login</a>
-              <a href="/register" class="home-btn home-btn-primary home-nav-cta">Join FoodBridge</a>
-            <% } else { %>
-              <% if (currentUser.roles === 'Admin') { %>
-                <a href="/admin">Admin</a>
-                <a href="/profile/<%= currentUser._id %>">Profile</a>
-              <% } else if (currentUser.roles === 'restaurant') { %>
-                <a href="/restaurants/<%= currentUser._id %>">My Menu</a>
-                <a href="/profile/<%= currentUser._id %>">Profile</a>
-              <% } else if (currentUser.roles === 'NGO') { %>
-                <a href="/receiveddonations">Received Donations</a>
-                <a href="/profile/<%= currentUser._id %>">Profile</a>
-              <% } else { %>
-                <a href="/customer/dashboard">Dashboard</a>
-                <a href="/orderhistory">Orders</a>
-                <a href="/customer/donations/history">Donations</a>
-                <a href="/cart">Cart</a>
-                <a href="/profile/<%= currentUser._id %>">Profile</a>
-              <% } %>
-              <a href="/logout" class="home-btn home-btn-secondary">Logout</a>
-            <% } %>
-          </div>
-        </div>
-      </nav>
-    </header>
 
-    <main>
-      <section class="home-hero">
-        <div class="container home-hero-inner">
-          <div class="home-hero-copy">
-            <span class="home-kicker">Food delivery with a purpose</span>
-            <h1>Good Food Should Never Go to Waste.</h1>
+              <a
+                href="/register"
+                class="home-btn home-btn-secondary"
+              >
+                Donate Food
+              </a>
+
+            <% } else if (currentUser.roles === 'restaurant') { %>
+
+              <a
+                href="/restaurants/<%= currentUser._id %>/donations"
+                class="home-btn home-btn-secondary"
+              >
+                Donate Food
+              </a>
+
+            <% } else { %>
+
+              <a
+                href="/register"
+                class="home-btn home-btn-secondary"
+              >
+                Donate Food
+              </a>
+
+            <% } %>
+
+          </div>
+
+
+          <!-- Trust badges -->
+
+          <div class="home-trust-row">
+
+            <span>
+              ♻ Reduce waste
+            </span>
+
+            <span>
+              ♥ Support people
+            </span>
+
+            <span>
+              🤝 Build community
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- Hero Visual -->
+
+        <div class="home-hero-visual">
+
+          <div class="hero-card-main">
+
+            <div class="hero-card-top">
+
+              <div class="hero-logo-circle">
+
+                <img
+                  src="/images/foodbridge-logo.png"
+                  alt="FoodBridge"
+                />
+
+              </div>
+
+              <div>
+
+                <small>
+                  FOODBRIDGE
+                </small>
+
+                <strong>
+                  One platform.
+                  <br />
+                  Many positive impacts.
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <div class="hero-impact-list">
+
+              <div class="hero-impact-item">
+
+                <span class="impact-icon">
+                  🍽️
+                </span>
+
+                <div>
+
+                  <strong>
+                    Order food
+                  </strong>
+
+                  <small>
+                    Enjoy meals from local partners
+                  </small>
+
+                </div>
+
+              </div>
+
+
+              <div class="hero-impact-item">
+
+                <span class="impact-icon">
+                  ♻️
+                </span>
+
+                <div>
+
+                  <strong>
+                    Share surplus
+                  </strong>
+
+                  <small>
+                    Give extra food a second purpose
+                  </small>
+
+                </div>
+
+              </div>
+
+
+              <div class="hero-impact-item">
+
+                <span class="impact-icon">
+                  🤝
+                </span>
+
+                <div>
+
+                  <strong>
+                    Help communities
+                  </strong>
+
+                  <small>
+                    Connect food with people in need
+                  </small>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==================== HOW IT WORKS ==================== -->
+
+    <section class="home-section home-steps">
+
+      <div class="container">
+
+        <div class="section-heading">
+
+          <span class="section-tag">
+            How it works
+          </span>
+
+          <h2>
+            Simple actions. Real impact.
+          </h2>
+
+          <p>
+            FoodBridge makes it easy to turn everyday food
+            choices into something meaningful.
+          </p>
+
+        </div>
+
+
+        <div class="steps-grid">
+
+          <!-- Step 1 -->
+
+          <article class="step-card">
+
+            <span class="step-number">
+              01
+            </span>
+
+            <div class="home-card-icon">
+              🍽️
+            </div>
+
+            <h3>
+              Enjoy Food
+            </h3>
+
             <p>
-              FoodBridge connects customers, restaurants, and NGOs to make food delivery more meaningful —
-              helping people enjoy great food while giving surplus food a second life.
+              Discover available food and place an order
+              through FoodBridge.
             </p>
 
-            <div class="home-cta-row">
-              <a href="/restaurants" class="home-btn home-btn-primary">Order Food</a>
-              <% if (typeof currentUser === 'undefined' || !currentUser) { %>
-                <a href="/register" class="home-btn home-btn-secondary">Donate Food</a>
-              <% } else if (currentUser.roles === 'restaurant') { %>
-                <a href="/restaurants/<%= currentUser._id %>/donations" class="home-btn home-btn-secondary">Donate Food</a>
-              <% } else { %>
-                <a href="/register" class="home-btn home-btn-secondary">Donate Food</a>
-              <% } %>
+          </article>
+
+
+          <!-- Step 2 -->
+
+          <article class="step-card">
+
+            <span class="step-number">
+              02
+            </span>
+
+            <div class="home-card-icon">
+              🥘
             </div>
 
-            <div class="home-trust-row">
-              <span>Restaurants</span>
-              <span>Delivery</span>
-              <span>NGOs</span>
-              <span>Community</span>
-            </div>
-          </div>
+            <h3>
+              Share Surplus
+            </h3>
 
-          <div class="home-hero-visual" aria-label="FoodBridge platform overview">
-            <div class="home-visual-card">
-              <div class="home-logo-badge">
-                <img src="/images/foodbridge-logo.png" alt="FoodBridge logo" />
-              </div>
+            <p>
+              Good food that would otherwise be wasted can
+              be shared with others.
+            </p>
 
-              <div class="home-visual-grid">
-                <div class="home-mini-card">
-                  <span class="mini-label">Customer</span>
-                  <strong>Order Food</strong>
-                </div>
-                <div class="home-mini-card accent">
-                  <span class="mini-label">Restaurant</span>
-                  <strong>Share Surplus</strong>
-                </div>
-                <div class="home-mini-card">
-                  <span class="mini-label">NGO</span>
-                  <strong>Receive Food</strong>
-                </div>
-                <div class="home-mini-card accent soft">
-                  <span class="mini-label">Community</span>
-                  <strong>People Helped</strong>
-                </div>
-              </div>
+          </article>
+
+
+          <!-- Step 3 -->
+
+          <article class="step-card">
+
+            <span class="step-number">
+              03
+            </span>
+
+            <div class="home-card-icon">
+              🤝
             </div>
-          </div>
+
+            <h3>
+              Create Impact
+            </h3>
+
+            <p>
+              NGOs can receive available food and connect
+              it with communities.
+            </p>
+
+          </article>
+
         </div>
-      </section>
 
-      <section class="home-section home-steps">
-        <div class="container">
-          <div class="section-heading text-center">
-            <span class="section-tag">How FoodBridge Works</span>
-            <h2>Connect food, people, and purpose.</h2>
-          </div>
+      </div>
 
-          <div class="row g-4">
-            <div class="col-lg-4 col-md-6">
-              <article class="home-info-card">
-                <div class="home-card-icon">🍽️</div>
-                <h3>Order Food</h3>
-                <p>Discover restaurants, explore meals, place your order, and enjoy great food.</p>
-              </article>
-            </div>
+    </section>
 
-            <div class="col-lg-4 col-md-6">
-              <article class="home-info-card">
-                <div class="home-card-icon">🥘</div>
-                <h3>Share Surplus Food</h3>
-                <p>Restaurants can give surplus food a second purpose instead of letting good food go to waste.</p>
-              </article>
-            </div>
 
-            <div class="col-lg-4 col-md-6">
-              <article class="home-info-card">
-                <div class="home-card-icon">🤝</div>
-                <h3>Receive &amp; Help</h3>
-                <p>NGOs can receive donated food and help connect it with people and communities in need.</p>
-              </article>
-            </div>
-          </div>
-        </div>
-      </section>
+    <!-- ==================== WHY FOODBRIDGE ==================== -->
 
-      <section class="home-section home-features">
-        <div class="container">
-          <div class="section-heading text-center">
-            <span class="section-tag">Why FoodBridge?</span>
-            <h2>More Than Just Food Delivery</h2>
-          </div>
+    <section class="home-section home-value">
 
-          <div class="row g-4">
-            <div class="col-lg-3 col-md-6">
-              <article class="home-feature-card">
-                <div class="home-feature-icon">📦</div>
-                <h3>Food Delivery</h3>
-                <p>Order food from restaurants through one simple platform.</p>
-              </article>
-            </div>
-            <div class="col-lg-3 col-md-6">
-              <article class="home-feature-card">
-                <div class="home-feature-icon">♻️</div>
-                <h3>Reduce Food Waste</h3>
-                <p>Help give surplus food another purpose instead of letting it go to waste.</p>
-              </article>
-            </div>
-            <div class="col-lg-3 col-md-6">
-              <article class="home-feature-card">
-                <div class="home-feature-icon">🌍</div>
-                <h3>Support Communities</h3>
-                <p>Connect available food with organizations helping people in need.</p>
-              </article>
-            </div>
-            <div class="col-lg-3 col-md-6">
-              <article class="home-feature-card">
-                <div class="home-feature-icon">🔗</div>
-                <h3>One Connected Platform</h3>
-                <p>Bring customers, restaurants, and NGOs together through FoodBridge.</p>
-              </article>
-            </div>
-          </div>
-        </div>
-      </section>
+      <div class="container value-layout">
 
-      <section class="home-section home-flow">
-        <div class="container">
-          <div class="section-heading text-center">
-            <span class="section-tag">FoodBridge Flow</span>
-            <h2>From plate to purpose.</h2>
-          </div>
+        <div class="value-copy">
 
-          <div class="home-flow-grid">
-            <div class="flow-card">
-              <div class="flow-icon">🧑‍🍳</div>
-              <span>Customer</span>
-              <small>Order Food</small>
-            </div>
-            <div class="flow-arrow">↓</div>
-            <div class="flow-card">
-              <div class="flow-icon">🏪</div>
-              <span>Restaurant</span>
-              <small>Prepare / Sell Food</small>
-            </div>
-            <div class="flow-arrow">↓</div>
-            <div class="flow-card">
-              <div class="flow-icon">🥗</div>
-              <span>Restaurant</span>
-              <small>Surplus Food</small>
-            </div>
-            <div class="flow-arrow">↓</div>
-            <div class="flow-card accent-flow">
-              <div class="flow-icon">🚚</div>
-              <span>FoodBridge</span>
-              <small>Connect</small>
-            </div>
-            <div class="flow-arrow">↓</div>
-            <div class="flow-card">
-              <div class="flow-icon">🤝</div>
-              <span>NGO</span>
-              <small>Receive Food</small>
-            </div>
-            <div class="flow-arrow">↓</div>
-            <div class="flow-card">
-              <div class="flow-icon">💚</div>
-              <span>Community</span>
-              <small>People Helped</small>
-            </div>
-          </div>
-        </div>
-      </section>
+          <span class="section-tag">
+            Why FoodBridge?
+          </span>
 
-      <section class="home-section home-impact">
-        <div class="container">
-          <div class="section-heading text-center">
-            <span class="section-tag">Our Impact</span>
-            <h2>Building a healthier food ecosystem.</h2>
-          </div>
+          <h2>
+            More than a food delivery platform.
+          </h2>
 
-          <div class="row g-4">
-            <div class="col-lg-3 col-md-6">
-              <article class="home-impact-card">
-                <span class="impact-label">Meals Shared</span>
-                <strong>Community support</strong>
-              </article>
-            </div>
-            <div class="col-lg-3 col-md-6">
-              <article class="home-impact-card">
-                <span class="impact-label">Restaurants</span>
-                <strong>Connected partners</strong>
-              </article>
-            </div>
-            <div class="col-lg-3 col-md-6">
-              <article class="home-impact-card">
-                <span class="impact-label">NGOs</span>
-                <strong>Helping communities</strong>
-              </article>
-            </div>
-            <div class="col-lg-3 col-md-6">
-              <article class="home-impact-card">
-                <span class="impact-label">Donations</span>
-                <strong>Meaningful actions</strong>
-              </article>
-            </div>
-          </div>
-        </div>
-      </section>
+          <p>
+            FoodBridge is designed around a simple idea:
+            food should create value, not waste. The platform
+            connects food delivery with donation so that
+            different people can contribute in different ways.
+          </p>
 
-      <section class="home-section home-roles">
-        <div class="container">
-          <div class="section-heading text-center">
-            <span class="section-tag">There’s a Place for Everyone</span>
-            <h2>Join the FoodBridge ecosystem.</h2>
-          </div>
-
-          <div class="row g-4">
-            <div class="col-lg-4 col-md-6">
-              <article class="home-role-card">
-                <div class="home-role-icon">🛒</div>
-                <h3>Customer</h3>
-                <p>Order food and make meaningful donations.</p>
-                <a href="/restaurants" class="home-role-link">Explore Food</a>
-              </article>
-            </div>
-            <div class="col-lg-4 col-md-6">
-              <article class="home-role-card">
-                <div class="home-role-icon">🏪</div>
-                <h3>Restaurant</h3>
-                <p>Serve customers and donate surplus food.</p>
-                <a href="/register" class="home-role-link">Register</a>
-              </article>
-            </div>
-            <div class="col-lg-4 col-md-6">
-              <article class="home-role-card">
-                <div class="home-role-icon">🤝</div>
-                <h3>NGO</h3>
-                <p>Receive food and help communities.</p>
-                <a href="/register" class="home-role-link">Partner with Us</a>
-              </article>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="home-cta-section">
-        <div class="container">
-          <div class="home-cta-box">
-            <div>
-              <span class="section-tag section-tag-light">Be Part of the Bridge</span>
-              <h2>Whether you're looking for great food, running a restaurant, or helping your community — there's a place for you on FoodBridge.</h2>
-            </div>
-            <a href="/register" class="home-btn home-btn-primary home-btn-cta">Join FoodBridge</a>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer class="home-footer">
-      <div class="container home-footer-inner">
-        <div>
-          <a href="/" class="home-brand footer-brand">
-            <img src="/images/foodbridge-logo.png" alt="FoodBridge logo" />
-            <span>FoodBridge</span>
+          <a
+            href="/register"
+            class="text-link"
+          >
+            Become part of the community →
           </a>
-          <p>Connecting food, people and communities.</p>
+
         </div>
 
-        <div class="footer-links">
-          <a href="/">Home</a>
-          <a href="/restaurants">Restaurants</a>
-          <a href="/register">Signup</a>
-          <a href="/login">Login</a>
+
+        <div class="value-grid">
+
+          <div class="value-item">
+
+            <span>
+              01
+            </span>
+
+            <strong>
+              Affordable food
+            </strong>
+
+            <p>
+              Make food ordering simple and accessible.
+            </p>
+
+          </div>
+
+
+          <div class="value-item">
+
+            <span>
+              02
+            </span>
+
+            <strong>
+              Less waste
+            </strong>
+
+            <p>
+              Give surplus food a useful second life.
+            </p>
+
+          </div>
+
+
+          <div class="value-item">
+
+            <span>
+              03
+            </span>
+
+            <strong>
+              Community support
+            </strong>
+
+            <p>
+              Connect available food with organizations.
+            </p>
+
+          </div>
+
+
+          <div class="value-item">
+
+            <span>
+              04
+            </span>
+
+            <strong>
+              One connected platform
+            </strong>
+
+            <p>
+              Bring different participants together.
+            </p>
+
+          </div>
+
         </div>
+
       </div>
 
-      <div class="container home-footer-bottom">
-        <p>© FoodBridge</p>
+    </section>
+
+
+    <!-- ==================== ROLES ==================== -->
+
+    <section class="home-section home-roles">
+
+      <div class="container">
+
+        <div class="section-heading text-center">
+
+          <span class="section-tag">
+            Be part of it
+          </span>
+
+          <h2>
+            Everyone has a role.
+          </h2>
+
+        </div>
+
+
+        <div class="role-grid">
+
+          <!-- Customer -->
+
+          <article class="role-card">
+
+            <div class="role-icon">
+              🛒
+            </div>
+
+            <h3>
+              Customer
+            </h3>
+
+            <p>
+              Order food and contribute through meaningful
+              donations.
+            </p>
+
+            <a href="/register">
+              Get started →
+            </a>
+
+          </article>
+
+
+          <!-- Restaurant -->
+
+          <article class="role-card">
+
+            <div class="role-icon">
+              🏪
+            </div>
+
+            <h3>
+              Restaurant
+            </h3>
+
+            <p>
+              Serve customers and give surplus food
+              another purpose.
+            </p>
+
+            <a href="/register">
+              Join as a restaurant →
+            </a>
+
+          </article>
+
+
+          <!-- NGO -->
+
+          <article class="role-card">
+
+            <div class="role-icon">
+              🤝
+            </div>
+
+            <h3>
+              NGO
+            </h3>
+
+            <p>
+              Receive available food and support people
+              in your community.
+            </p>
+
+            <a href="/register">
+              Partner with us →
+            </a>
+
+          </article>
+
+        </div>
+
       </div>
-    </footer>
-  </body>
+
+    </section>
+
+
+    <!-- ==================== FINAL CTA ==================== -->
+
+    <section class="home-cta-section">
+
+      <div class="container">
+
+        <div class="home-cta-box">
+
+          <div>
+
+            <span class="section-tag section-tag-light">
+              FoodBridge
+            </span>
+
+            <h2>
+              Let's make every meal matter.
+            </h2>
+
+            <p>
+              Join a platform where food can connect people
+              and create positive change.
+            </p>
+
+          </div>
+
+
+          <a
+            href="/register"
+            class="home-btn home-btn-light"
+          >
+            Join FoodBridge →
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- ==================== FOOTER ==================== -->
+
+  <footer class="home-footer">
+
+    <div class="container home-footer-inner">
+
+      <div>
+
+        <a
+          href="/"
+          class="home-brand footer-brand"
+        >
+
+          <img
+            src="/images/foodbridge-logo.png"
+            alt="FoodBridge logo"
+          />
+
+          <span>
+            FoodBridge
+          </span>
+
+        </a>
+
+        <p>
+          Connecting food, people and communities.
+        </p>
+
+      </div>
+
+
+      <div class="footer-links">
+
+        <a href="/">
+          Home
+        </a>
+
+        <a href="/register">
+          Signup
+        </a>
+
+        <a href="/login">
+          Login
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <div class="container home-footer-bottom">
+
+      <p>
+        © FoodBridge. All rights reserved.
+      </p>
+
+    </div>
+
+  </footer>
+
+</body>
 </html>

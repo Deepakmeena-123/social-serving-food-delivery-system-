@@ -1,161 +1,477 @@
 <% layout('layouts/adminBoilerplate') %>
+
 <%
-  const defaultProfileImage = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
-  const profileImage = admin.image && admin.image.url ? admin.image.url : defaultProfileImage;
-  const adminName = admin.username || 'Admin';
-  const adminRole = admin.roles || 'Admin';
-  const adminInitials = adminName
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join('')
-    .toUpperCase() || 'A';
-  const createdAt = admin.createdAt ? new Date(admin.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
+  /*
+   * =========================================================
+   * ADMIN PROFILE
+   * UI ONLY
+   * =========================================================
+   */
+
+  const defaultProfileImage =
+    'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
+
+
+  const profileImage =
+    admin &&
+    admin.image &&
+    admin.image.url
+      ? admin.image.url
+      : defaultProfileImage;
+
+
+  const adminName =
+    admin && admin.username
+      ? admin.username
+      : 'Admin';
+
+
+  const adminEmail =
+    admin && admin.email
+      ? admin.email
+      : 'Not provided';
+
+
+  const adminRole =
+    admin && admin.roles
+      ? admin.roles
+      : 'Admin';
+
+
+  const adminLocation =
+    admin && admin.location
+      ? admin.location
+      : 'Not provided';
+
+
+  const adminContact =
+    admin && admin.contactNumber
+      ? admin.contactNumber
+      : 'Not provided';
+
+
+  const createdAt =
+    admin && admin.createdAt
+      ? new Date(
+          admin.createdAt
+        ).toLocaleDateString(
+          'en-IN',
+          {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }
+        )
+      : 'Not available';
+
+
+  const adminInitials =
+    adminName
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(function (part) {
+        return part.charAt(0);
+      })
+      .join('')
+      .toUpperCase() || 'A';
+
 %>
 
-<div class="admin-profile-page">
-  <section class="profile-hero card admin-glass-card mb-4">
-    <div class="card-body p-4 p-lg-5">
-      <div class="row align-items-center g-4">
-        <div class="col-xl-8">
-          <div class="profile-hero-kicker mb-2">
-            <i class="bi bi-person-badge-fill"></i>
-            <span>FoodBridge Admin Center</span>
-          </div>
-          <h1 class="profile-page-title mb-2"><%= adminName %></h1>
-          <div class="profile-hero-meta d-flex flex-wrap gap-3 mb-3">
-            <span class="profile-role-badge"><i class="bi bi-shield-lock-fill me-1"></i><%= adminRole %></span>
-            <span class="profile-hero-email"><i class="bi bi-envelope-fill me-2"></i><%= admin.email %></span>
-          </div>
-          <p class="profile-page-subtitle mb-0">Manage your FoodBridge account, keep your profile updated, and review your platform oversight summary.</p>
-        </div>
 
-        <div class="col-xl-4">
-          <div class="profile-avatar-card card h-100">
-            <div class="card-body p-4 text-center">
-              <div class="profile-avatar-wrap mb-3">
-                <img src="<%= profileImage %>" alt="<%= adminName %>" class="profile-avatar" />
-                <span class="profile-avatar-initials"><%= adminInitials %></span>
-              </div>
-              <h2 class="profile-avatar-name mb-1"><%= adminName %></h2>
-              <p class="profile-avatar-text mb-0"><%= admin.email %></p>
-            </div>
-          </div>
-        </div>
+<div class="fb-profile-page">
+
+
+  <!-- =====================================================
+       PROFILE HEADER
+       ===================================================== -->
+
+  <section class="fb-profile-header">
+
+
+    <div class="fb-profile-header-left">
+
+
+      <div class="fb-profile-kicker">
+
+        <i class="bi bi-person-badge-fill"></i>
+
+        <span>
+          Admin Profile
+        </span>
+
       </div>
+
+
+      <h1>
+        My Profile
+      </h1>
+
+
+      <p>
+        Manage and review the account information used for your FoodBridge admin access.
+      </p>
+
+
     </div>
+
+
+    <div class="fb-profile-header-status">
+
+      <span></span>
+
+      Active Account
+
+    </div>
+
+
   </section>
 
-  <section class="mb-4">
-    <div class="row g-3 g-xl-4">
-      <div class="col-xl-7">
-        <div class="profile-info-card card admin-glass-card h-100">
-          <div class="card-body p-4 p-lg-5">
-            <div class="section-heading d-flex align-items-center justify-content-between mb-3">
-              <div>
-                <h2 class="section-title mb-1">Profile Information</h2>
-                <p class="section-subtitle mb-0">Your account details as stored in FoodBridge.</p>
-              </div>
-            </div>
 
-            <div class="profile-details-list">
-              <div class="profile-detail-row">
-                <span>Username</span>
-                <strong><%= admin.username %></strong>
-              </div>
-              <div class="profile-detail-row">
-                <span>Email</span>
-                <strong><a href="mailto:<%= admin.email %>"><%= admin.email %></a></strong>
-              </div>
-              <div class="profile-detail-row">
-                <span>Role</span>
-                <strong><span class="profile-role-badge profile-role-badge-inline"><%= adminRole %></span></strong>
-              </div>
-              <div class="profile-detail-row">
-                <span>Account Created Date</span>
-                <strong><%= createdAt %></strong>
-              </div>
-              <div class="profile-detail-row">
-                <span>Location</span>
-                <strong><%= admin.location || 'Not provided' %></strong>
-              </div>
-              <div class="profile-detail-row">
-                <span>Contact Number</span>
-                <strong><%= admin.contactNumber || 'Not provided' %></strong>
-              </div>
-            </div>
 
-            <div class="profile-actions mt-4">
-              <button type="button" class="btn profile-action-btn profile-action-edit" disabled title="Edit profile route is not connected in the current frontend-only task">
-                <i class="bi bi-pencil-square"></i>
-                <span>Edit Profile</span>
-              </button>
-              <button type="button" class="btn profile-action-btn profile-action-password" disabled title="Change password route is not connected in the current frontend-only task">
-                <i class="bi bi-key-fill"></i>
-                <span>Change Password</span>
-              </button>
-            </div>
+  <!-- =====================================================
+       PROFILE MAIN
+       ===================================================== -->
+
+  <section class="fb-profile-layout">
+
+
+    <!-- =================================================
+         PROFILE CARD
+         ================================================= -->
+
+    <article class="fb-profile-card">
+
+
+      <div class="fb-profile-cover"></div>
+
+
+      <div class="fb-profile-card-body">
+
+
+        <!-- AVATAR -->
+
+        <div class="fb-profile-avatar-area">
+
+
+          <div class="fb-profile-avatar">
+
+            <img
+              src="<%= profileImage %>"
+              alt="<%= adminName %>"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            />
+
+
+            <span style="display:none;">
+              <%= adminInitials %>
+            </span>
+
           </div>
+
+
+          <div class="fb-profile-basic">
+
+
+            <h2>
+              <%= adminName %>
+            </h2>
+
+
+            <span class="fb-profile-role">
+
+              <i class="bi bi-shield-lock-fill"></i>
+
+              <%= adminRole %>
+
+            </span>
+
+
+          </div>
+
+
         </div>
+
+
+
+        <!-- EMAIL -->
+
+        <div class="fb-profile-email">
+
+          <i class="bi bi-envelope-fill"></i>
+
+          <span>
+            <%= adminEmail %>
+          </span>
+
+        </div>
+
+
       </div>
 
-      <div class="col-xl-5">
-        <div class="profile-summary-card card admin-glass-card h-100">
-          <div class="card-body p-4 p-lg-5">
-            <div class="section-heading d-flex align-items-center justify-content-between mb-3">
-              <div>
-                <h2 class="section-title mb-1">Activity Summary</h2>
-                <p class="section-subtitle mb-0">Quick platform totals tied to your admin dashboard.</p>
-              </div>
-            </div>
 
-            <div class="row g-3">
-              <div class="col-6">
-                <article class="profile-stat-card profile-stat-users">
-                  <div class="profile-stat-icon"><i class="bi bi-people-fill"></i></div>
-                  <div class="profile-stat-body">
-                    <span class="profile-stat-label">Total Users</span>
-                    <strong class="profile-stat-value">—</strong>
-                  </div>
-                </article>
-              </div>
-              <div class="col-6">
-                <article class="profile-stat-card profile-stat-restaurants">
-                  <div class="profile-stat-icon"><i class="bi bi-shop-window"></i></div>
-                  <div class="profile-stat-body">
-                    <span class="profile-stat-label">Total Restaurants</span>
-                    <strong class="profile-stat-value">—</strong>
-                  </div>
-                </article>
-              </div>
-              <div class="col-6">
-                <article class="profile-stat-card profile-stat-ngos">
-                  <div class="profile-stat-icon"><i class="bi bi-building-heart"></i></div>
-                  <div class="profile-stat-body">
-                    <span class="profile-stat-label">Total NGOs</span>
-                    <strong class="profile-stat-value">—</strong>
-                  </div>
-                </article>
-              </div>
-              <div class="col-6">
-                <article class="profile-stat-card profile-stat-donations">
-                  <div class="profile-stat-icon"><i class="bi bi-gift-fill"></i></div>
-                  <div class="profile-stat-body">
-                    <span class="profile-stat-label">Total Donations</span>
-                    <strong class="profile-stat-value">—</strong>
-                  </div>
-                </article>
-              </div>
-            </div>
+    </article>
 
-            <div class="profile-summary-note mt-4">
-              <i class="bi bi-info-circle-fill"></i>
-              <p class="mb-0">Summary cards are styled for FoodBridge reporting and can be wired to live totals without changing this page structure.</p>
-            </div>
-          </div>
+
+
+    <!-- =================================================
+         ACCOUNT INFORMATION
+         ================================================= -->
+
+    <article class="fb-account-card">
+
+
+      <div class="fb-account-card-header">
+
+
+        <div>
+
+          <h2>
+            Account Information
+          </h2>
+
+
+          <p>
+            Details stored for your administrator account.
+          </p>
+
         </div>
+
+
+        <div class="fb-account-card-icon">
+
+          <i class="bi bi-person-vcard-fill"></i>
+
+        </div>
+
+
       </div>
-    </div>
+
+
+
+      <div class="fb-account-details">
+
+
+        <!-- USERNAME -->
+
+        <div class="fb-account-detail">
+
+
+          <div class="fb-account-detail-icon">
+
+            <i class="bi bi-person"></i>
+
+          </div>
+
+
+          <div class="fb-account-detail-content">
+
+            <span>
+              Username
+            </span>
+
+
+            <strong>
+              <%= adminName %>
+            </strong>
+
+          </div>
+
+
+        </div>
+
+
+
+        <!-- EMAIL -->
+
+        <div class="fb-account-detail">
+
+
+          <div class="fb-account-detail-icon">
+
+            <i class="bi bi-envelope"></i>
+
+          </div>
+
+
+          <div class="fb-account-detail-content">
+
+            <span>
+              Email Address
+            </span>
+
+
+            <strong>
+              <%= adminEmail %>
+            </strong>
+
+          </div>
+
+
+        </div>
+
+
+
+        <!-- ROLE -->
+
+        <div class="fb-account-detail">
+
+
+          <div class="fb-account-detail-icon">
+
+            <i class="bi bi-shield-check"></i>
+
+          </div>
+
+
+          <div class="fb-account-detail-content">
+
+            <span>
+              Account Role
+            </span>
+
+
+            <strong>
+              <%= adminRole %>
+            </strong>
+
+          </div>
+
+
+        </div>
+
+
+
+        <!-- LOCATION -->
+
+        <div class="fb-account-detail">
+
+
+          <div class="fb-account-detail-icon">
+
+            <i class="bi bi-geo-alt"></i>
+
+          </div>
+
+
+          <div class="fb-account-detail-content">
+
+            <span>
+              Location
+            </span>
+
+
+            <strong>
+              <%= adminLocation %>
+            </strong>
+
+          </div>
+
+
+        </div>
+
+
+
+        <!-- CONTACT -->
+
+        <div class="fb-account-detail">
+
+
+          <div class="fb-account-detail-icon">
+
+            <i class="bi bi-telephone"></i>
+
+          </div>
+
+
+          <div class="fb-account-detail-content">
+
+            <span>
+              Contact Number
+            </span>
+
+
+            <strong>
+              <%= adminContact %>
+            </strong>
+
+          </div>
+
+
+        </div>
+
+
+
+        <!-- CREATED -->
+
+        <div class="fb-account-detail">
+
+
+          <div class="fb-account-detail-icon">
+
+            <i class="bi bi-calendar3"></i>
+
+          </div>
+
+
+          <div class="fb-account-detail-content">
+
+            <span>
+              Account Created
+            </span>
+
+
+            <strong>
+              <%= createdAt %>
+            </strong>
+
+          </div>
+
+
+        </div>
+
+
+      </div>
+
+
+    </article>
+
+
   </section>
+
+
+
+  <!-- =====================================================
+       SECURITY INFORMATION
+       ===================================================== -->
+
+  <section class="fb-profile-security">
+
+
+    <div class="fb-profile-security-icon">
+
+      <i class="bi bi-shield-lock-fill"></i>
+
+    </div>
+
+
+    <div>
+
+      <h3>
+        Account Security
+      </h3>
+
+
+      <p>
+        Your administrator account controls access to FoodBridge's
+        management area. Keep your login credentials secure and
+        avoid sharing your password with others.
+      </p>
+
+    </div>
+
+
+  </section>
+
+
 </div>

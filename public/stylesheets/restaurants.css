@@ -84,3 +84,1847 @@
     min-height: 180px;
   }
 }
+
+/* =========================================================
+   FOODBRIDGE - ADD FOOD PAGE
+   ========================================================= */
+
+.add-food-page {
+    width: 100%;
+    min-height: calc(100vh - 80px);
+    padding: 35px 20px 50px;
+    background: #f8faf9;
+}
+
+.add-food-container {
+    width: min(100%, 720px);
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.add-food-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.add-food-icon {
+    width: 50px;
+    height: 50px;
+
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 50px;
+
+    border-radius: 13px;
+
+    background: #ecfdf5;
+    color: #198754;
+
+    font-size: 21px;
+}
+
+.add-food-header h1 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 30px;
+    font-weight: 800;
+}
+
+.add-food-header p {
+    margin: 4px 0 0;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   FORM CARD
+   ========================================================= */
+
+.add-food-form {
+    padding: 28px;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 16px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 8px 25px
+        rgba(
+            15,
+            23,
+            42,
+            0.05
+        );
+}
+
+
+/* =========================================================
+   FORM FIELDS
+   ========================================================= */
+
+.add-food-field {
+    margin-bottom: 19px;
+}
+
+.add-food-field .form-label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #334155;
+
+    font-size: 12px;
+
+    font-weight: 750;
+}
+
+.add-food-field .form-control {
+    min-height: 50px;
+
+    border:
+        1px solid
+        #dbe2e8;
+
+    border-radius: 9px;
+
+    color: #0f172a;
+
+    background: #ffffff;
+
+    font-size: 13px;
+}
+
+.add-food-field .form-control::placeholder {
+    color: #94a3b8;
+}
+
+.add-food-field .form-control:focus {
+    border-color: #198754;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(
+            25,
+            135,
+            84,
+            0.10
+        );
+}
+
+.add-food-field textarea.form-control {
+    min-height: 105px;
+
+    resize: vertical;
+}
+
+
+/* =========================================================
+   PRICE
+   ========================================================= */
+
+.add-food-field .input-group-text {
+    min-width: 45px;
+
+    justify-content: center;
+
+    border-color: #dbe2e8;
+
+    background: #f8fafc;
+
+    color: #475569;
+
+    font-weight: 700;
+}
+
+.add-food-help {
+    display: block;
+
+    margin-top: 5px;
+
+    color: #94a3b8;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   IMAGE UPLOAD
+   ========================================================= */
+
+.food-image-upload {
+    position: relative;
+
+    width: 100%;
+}
+
+.food-image-input {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    padding: 0;
+    margin: -1px;
+
+    overflow: hidden;
+
+    clip: rect(
+        0,
+        0,
+        0,
+        0
+    );
+
+    white-space: nowrap;
+
+    border: 0;
+}
+
+.food-image-label {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    width: 100%;
+
+    min-height: 76px;
+
+    padding: 10px 12px;
+
+    border:
+        1.5px dashed
+        #cbd5e1;
+
+    border-radius: 11px;
+
+    background: #f8fafc;
+
+    cursor: pointer;
+
+    transition:
+        border-color .2s ease,
+        background .2s ease;
+}
+
+.food-image-label:hover {
+    border-color: #198754;
+
+    background: #f0fdf4;
+}
+
+.food-image-input:focus
++ .food-image-label {
+    border-color: #198754;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(
+            25,
+            135,
+            84,
+            0.10
+        );
+}
+
+.food-image-upload-icon {
+    width: 45px;
+    height: 45px;
+
+    flex: 0 0 45px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 10px;
+
+    background: #ecfdf5;
+
+    color: #198754;
+
+    font-size: 18px;
+}
+
+.food-image-upload-text {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+    flex: 1;
+
+    min-width: 0;
+}
+
+.food-image-upload-text strong {
+    color: #334155;
+
+    font-size: 12px;
+}
+
+.food-image-upload-text span {
+    color: #94a3b8;
+
+    font-size: 10px;
+}
+
+.food-image-browse {
+    padding:
+        8px
+        13px;
+
+    border-radius: 7px;
+
+    background: #198754;
+
+    color: #ffffff;
+
+    font-size: 10px;
+
+    font-weight: 750;
+}
+
+
+/* =========================================================
+   IMAGE PREVIEW
+   ========================================================= */
+
+.food-image-preview-container {
+    display: none;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 12px;
+
+    padding: 10px;
+
+    border:
+        1px solid
+        #dbe2e8;
+
+    border-radius: 11px;
+
+    background: #f8fafc;
+}
+
+.food-image-preview-container.show {
+    display: flex;
+}
+
+.food-image-preview {
+    width: 70px;
+    height: 70px;
+
+    flex: 0 0 70px;
+
+    object-fit: cover;
+
+    border-radius: 9px;
+
+    border:
+        2px solid
+        #ffffff;
+
+    box-shadow:
+        0 3px 10px
+        rgba(
+            15,
+            23,
+            42,
+            0.10
+        );
+}
+
+.food-image-preview-info {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    flex: 1;
+
+    min-width: 0;
+}
+
+.food-image-preview-info strong {
+    overflow: hidden;
+
+    color: #334155;
+
+    font-size: 11px;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.food-image-preview-info span {
+    color: #198754;
+
+    font-size: 9px;
+
+    font-weight: 700;
+}
+
+.food-image-remove {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    padding:
+        7px
+        9px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #fff1f2;
+
+    color: #be123c;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.food-image-remove:hover {
+    background: #ffe4e6;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+   ========================================================= */
+
+.add-food-actions {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    padding-top: 8px;
+
+    margin-top: 8px;
+
+    border-top:
+        1px solid
+        #eef2f5;
+}
+
+.add-food-cancel {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 43px;
+
+    padding:
+        0
+        17px;
+
+    border:
+        1px solid
+        #dbe2e8;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #64748b;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+.add-food-cancel:hover {
+    background: #f8fafc;
+
+    color: #334155;
+}
+
+.add-food-submit {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    min-height: 43px;
+
+    padding:
+        0
+        18px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #198754;
+
+    color: #ffffff;
+
+    font-size: 11px;
+
+    font-weight: 750;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        transform .2s ease;
+}
+
+.add-food-submit:hover {
+    background: #157347;
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .add-food-page {
+        padding:
+            20px
+            12px
+            35px;
+    }
+
+    .add-food-form {
+        padding: 19px;
+    }
+
+    .add-food-header h1 {
+        font-size: 26px;
+    }
+
+    .food-image-label {
+        min-height: 68px;
+    }
+
+    .food-image-upload-icon {
+        width: 38px;
+        height: 38px;
+
+        flex-basis: 38px;
+    }
+
+    .food-image-browse {
+        padding:
+            7px
+            10px;
+    }
+
+    .food-image-preview-container {
+        align-items: flex-start;
+    }
+
+    .food-image-remove {
+        font-size: 0;
+    }
+
+    .food-image-remove i {
+        font-size: 13px;
+    }
+
+    .add-food-actions {
+        flex-direction: column-reverse;
+    }
+
+    .add-food-submit,
+    .add-food-cancel {
+        width: 100%;
+    }
+
+}
+
+/* =========================================================
+   FOODBRIDGE - RESTAURANT MENU
+   COMPACT FOOD CARD UI
+   ========================================================= */
+
+
+/* Main menu card */
+
+.restaurant-menu-page .restaurant-menu-card {
+    width: 100%;
+
+    margin-bottom: 18px !important;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 6px 18px
+        rgba(15, 23, 42, 0.06);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.restaurant-menu-page
+.restaurant-menu-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 25px
+        rgba(15, 23, 42, 0.09);
+}
+
+
+/* Remove Bootstrap row spacing problems */
+
+.restaurant-menu-card > .row {
+
+    margin: 0;
+
+    display: flex;
+
+    align-items: stretch;
+}
+
+
+/* =========================================================
+   FOOD IMAGE
+   ========================================================= */
+
+.restaurant-menu-card
+.col-md-4 {
+
+    width: 30%;
+
+    flex: 0 0 30%;
+
+    max-width: 30%;
+
+    padding: 0;
+}
+
+
+.restaurant-menu-image {
+
+    display: block;
+
+    width: 100%;
+
+    height: 235px;
+
+    min-height: 235px;
+
+    object-fit: cover;
+
+    background: #f8fafc;
+}
+
+
+/* =========================================================
+   FOOD INFORMATION
+   ========================================================= */
+
+.restaurant-menu-card
+.col-md-8 {
+
+    width: 70%;
+
+    flex: 0 0 70%;
+
+    max-width: 70%;
+
+    padding: 0;
+}
+
+
+.restaurant-menu-card .card-body {
+
+    height: 100%;
+
+    min-height: 235px;
+
+    padding:
+        24px
+        28px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+}
+
+
+/* Food name */
+
+.restaurant-menu-card
+.card-title {
+
+    margin-bottom: 8px;
+
+    color: #0f172a;
+
+    font-size: 22px;
+
+    font-weight: 750;
+}
+
+
+/* Description */
+
+.restaurant-menu-card
+.card-text {
+
+    margin-bottom: 12px;
+
+    color: #64748b;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   PRICE
+   ========================================================= */
+
+.restaurant-menu-card
+.restaurant-price {
+
+    margin-bottom: 10px;
+
+    color: #198754;
+
+    font-size: 16px;
+
+    font-weight: 700;
+}
+
+
+.restaurant-menu-card
+.restaurant-price small {
+
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   PLATES
+   ========================================================= */
+
+.restaurant-menu-card
+.card-body > strong {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    width: fit-content;
+
+    margin-bottom: 14px;
+
+    padding:
+        6px
+        10px;
+
+    border-radius: 7px;
+
+    background: #f0fdf4;
+
+    color: #166534;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.restaurant-menu-card
+.restaurant-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 0 !important;
+}
+
+
+.restaurant-menu-card
+.restaurant-actions .btn {
+
+    min-width: 90px;
+
+    margin-bottom: 0 !important;
+
+    border-radius: 7px;
+
+    font-size: 12px;
+
+    font-weight: 650;
+}
+
+
+/* Edit */
+
+.restaurant-menu-card
+.restaurant-actions
+.btn-info {
+
+    background: #0ea5b7;
+
+    border-color: #0ea5b7;
+
+    color: #ffffff;
+}
+
+
+.restaurant-menu-card
+.restaurant-actions
+.btn-info:hover {
+
+    background: #0c8fa0;
+
+    border-color: #0c8fa0;
+}
+
+
+/* Remove */
+
+.restaurant-menu-card
+.restaurant-actions
+.btn-danger {
+
+    background: #dc3545;
+
+    border-color: #dc3545;
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   CUSTOMER / NGO ACTIONS
+   ========================================================= */
+
+.restaurant-menu-card
+.card-body form
+.form-control {
+
+    width: 120px;
+
+    border-radius: 7px;
+
+    font-size: 12px;
+}
+
+
+.restaurant-menu-card
+.card-body form
+.btn {
+
+    border-radius: 7px;
+
+    font-size: 12px;
+
+    font-weight: 650;
+
+    margin-bottom: 0 !important;
+}
+
+
+/* =========================================================
+   RESTAURANT HEADER
+   ========================================================= */
+
+.restaurant-menu-page
+.menu-title {
+
+    color: #0f172a;
+
+    font-size:
+        clamp(
+            1.8rem,
+            3vw,
+            2.4rem
+        );
+
+    font-weight: 800;
+}
+
+
+.restaurant-menu-page
+> .d-flex {
+
+    padding:
+        8px
+        0
+        4px;
+}
+
+
+/* Add Food */
+
+.restaurant-menu-page
+.btn-primary {
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+    font-weight: 650;
+
+    padding:
+        9px
+        16px;
+}
+
+
+/* Dashboard */
+
+.restaurant-menu-page
+.btn-outline-secondary {
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+    padding:
+        8px
+        15px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .restaurant-menu-card > .row {
+
+        display: block;
+    }
+
+
+    .restaurant-menu-card
+    .col-md-4 {
+
+        width: 100%;
+
+        max-width: 100%;
+
+        flex: none;
+    }
+
+
+    .restaurant-menu-card
+    .col-md-8 {
+
+        width: 100%;
+
+        max-width: 100%;
+
+        flex: none;
+    }
+
+
+    .restaurant-menu-image {
+
+        width: 100%;
+
+        height: 220px;
+
+        min-height: 220px;
+    }
+
+
+    .restaurant-menu-card
+    .card-body {
+
+        min-height: auto;
+
+        padding:
+            18px;
+    }
+
+
+    .restaurant-menu-card
+    .card-title {
+
+        font-size: 20px;
+    }
+
+
+    .restaurant-menu-card
+    .card-text {
+
+        font-size: 13px;
+    }
+
+
+    .restaurant-menu-card
+    .restaurant-actions {
+
+        flex-wrap: wrap;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .restaurant-menu-image {
+
+        height: 190px;
+
+        min-height: 190px;
+    }
+
+
+    .restaurant-menu-card
+    .card-body {
+
+        padding:
+            16px;
+    }
+
+
+    .restaurant-menu-card
+    .restaurant-actions .btn {
+
+        min-width: 85px;
+    }
+}
+
+/* =========================================================
+   FOODBRIDGE - DONATION CENTER
+   ========================================================= */
+
+.donation-page {
+    width: 100%;
+    min-height: calc(100vh - 80px);
+
+    padding: 35px 20px 55px;
+
+    background: #f8faf9;
+}
+
+.donation-container {
+    width: min(100%, 1100px);
+
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.donation-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 28px;
+}
+
+.donation-header-icon {
+    width: 52px;
+    height: 52px;
+
+    flex: 0 0 52px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 14px;
+
+    background: #ecfdf5;
+
+    color: #198754;
+
+    font-size: 21px;
+}
+
+.donation-header h1 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 32px;
+
+    font-weight: 800;
+}
+
+.donation-header p {
+    margin: 5px 0 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.donation-form {
+    width: 100%;
+}
+
+
+/* =========================================================
+   SECTION
+   ========================================================= */
+
+.donation-section {
+    margin-bottom: 22px;
+
+    padding: 24px;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 16px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 6px 20px
+        rgba(15, 23, 42, 0.05);
+}
+
+.donation-section-heading {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 20px;
+}
+
+.donation-step {
+    width: 36px;
+    height: 36px;
+
+    flex: 0 0 36px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 10px;
+
+    background: #198754;
+
+    color: #ffffff;
+
+    font-size: 13px;
+
+    font-weight: 800;
+}
+
+.donation-section-heading h2 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 19px;
+
+    font-weight: 750;
+}
+
+.donation-section-heading p {
+    margin: 3px 0 0;
+
+    color: #64748b;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   NGO SELECT
+   ========================================================= */
+
+.donation-label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #334155;
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+.donation-select {
+    min-height: 48px;
+
+    border:
+        1px solid
+        #dbe2e8;
+
+    border-radius: 9px;
+
+    color: #334155;
+
+    background-color: #ffffff;
+
+    font-size: 13px;
+}
+
+.donation-select:focus {
+    border-color: #198754;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(
+            25,
+            135,
+            84,
+            0.10
+        );
+}
+
+
+/* =========================================================
+   FOOD GRID
+   ========================================================= */
+
+.donation-food-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap: 16px;
+}
+
+
+/* =========================================================
+   FOOD CARD
+   ========================================================= */
+
+.donation-food-card {
+    display: flex;
+
+    overflow: hidden;
+
+    min-height: 185px;
+
+    border:
+        1px solid
+        #e2e8f0;
+
+    border-radius: 13px;
+
+    background: #ffffff;
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        border-color .2s ease;
+}
+
+.donation-food-card:hover {
+    transform: translateY(-2px);
+
+    border-color: #cbd5e1;
+
+    box-shadow:
+        0 8px 20px
+        rgba(
+            15,
+            23,
+            42,
+            0.08
+        );
+}
+
+
+/* =========================================================
+   FOOD IMAGE
+   ========================================================= */
+
+.donation-food-image-wrapper {
+    position: relative;
+
+    width: 42%;
+
+    min-width: 160px;
+
+    overflow: hidden;
+
+    background: #f1f5f9;
+}
+
+.donation-food-image {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    min-height: 185px;
+
+    object-fit: cover;
+}
+
+.donation-no-image {
+    width: 100%;
+    height: 100%;
+
+    min-height: 185px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+}
+
+.donation-no-image i {
+    font-size: 25px;
+}
+
+
+/* =========================================================
+   SELECT BADGE
+   ========================================================= */
+
+.donation-select-badge {
+    position: absolute;
+
+    top: 10px;
+    left: 10px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding:
+        6px
+        9px;
+
+    border-radius: 7px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.94
+        );
+
+    box-shadow:
+        0 2px 8px
+        rgba(
+            15,
+            23,
+            42,
+            0.12
+        );
+
+    backdrop-filter: blur(5px);
+}
+
+.donation-select-badge
+.form-check-input {
+    margin: 0;
+
+    width: 16px;
+    height: 16px;
+
+    cursor: pointer;
+}
+
+.donation-select-badge
+.form-check-input:checked {
+    background-color: #198754;
+
+    border-color: #198754;
+}
+
+.donation-select-badge label {
+    margin: 0;
+
+    color: #334155;
+
+    font-size: 10px;
+
+    font-weight: 750;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   FOOD BODY
+   ========================================================= */
+
+.donation-food-body {
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 18px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+}
+
+.donation-food-body h3 {
+    margin: 0 0 9px;
+
+    color: #0f172a;
+
+    font-size: 17px;
+
+    font-weight: 750;
+}
+
+
+/* =========================================================
+   AVAILABILITY
+   ========================================================= */
+
+.donation-availability {
+    display: flex;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 4px;
+
+    margin-bottom: 17px;
+
+    color: #64748b;
+
+    font-size: 11px;
+}
+
+.donation-availability i {
+    margin-right: 2px;
+
+    color: #198754;
+}
+
+.donation-availability strong {
+    color: #166534;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   QUANTITY
+   ========================================================= */
+
+.donation-quantity label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #475569;
+
+    font-size: 10px;
+
+    font-weight: 700;
+}
+
+.donation-quantity-input {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+}
+
+.donation-quantity-input .form-control {
+    width: 100%;
+
+    min-height: 40px;
+
+    border:
+        1px solid
+        #dbe2e8;
+
+    border-radius: 7px;
+
+    font-size: 12px;
+}
+
+.donation-quantity-input .form-control:focus {
+    border-color: #198754;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(
+            25,
+            135,
+            84,
+            0.08
+        );
+}
+
+.donation-quantity-input span {
+    color: #94a3b8;
+
+    font-size: 10px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.donation-empty {
+    padding: 45px 20px;
+
+    text-align: center;
+
+    border:
+        1px dashed
+        #cbd5e1;
+
+    border-radius: 12px;
+
+    background: #f8fafc;
+}
+
+.donation-empty-icon {
+    width: 48px;
+    height: 48px;
+
+    margin: 0 auto 10px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 12px;
+
+    background: #f1f5f9;
+
+    color: #94a3b8;
+
+    font-size: 20px;
+}
+
+.donation-empty h3 {
+    margin: 0 0 5px;
+
+    color: #334155;
+
+    font-size: 15px;
+}
+
+.donation-empty p {
+    margin: 0;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   SUBMIT AREA
+   ========================================================= */
+
+.donation-submit-area {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-top: 20px;
+
+    padding:
+        16px
+        18px;
+
+    border:
+        1px solid
+        #dcefe4;
+
+    border-radius: 12px;
+
+    background: #f5fbf7;
+}
+
+
+/* =========================================================
+   IMPACT MESSAGE
+   ========================================================= */
+
+.donation-impact {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.donation-impact-icon {
+    width: 38px;
+    height: 38px;
+
+    flex: 0 0 38px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 9px;
+
+    background: #dcfce7;
+
+    color: #198754;
+
+    font-size: 14px;
+}
+
+.donation-impact div:last-child {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+.donation-impact strong {
+    color: #166534;
+
+    font-size: 11px;
+}
+
+.donation-impact span {
+    color: #64748b;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   SUBMIT BUTTON
+   ========================================================= */
+
+.donation-submit-btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    min-height: 43px;
+
+    padding:
+        0
+        18px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #198754;
+
+    color: #ffffff;
+
+    font-size: 11px;
+
+    font-weight: 750;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    transition:
+        background .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.donation-submit-btn:hover {
+    background: #157347;
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 12px
+        rgba(
+            25,
+            135,
+            84,
+            0.18
+        );
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .donation-food-grid {
+        grid-template-columns:
+            1fr;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .donation-page {
+        padding:
+            22px
+            12px
+            40px;
+    }
+
+    .donation-section {
+        padding: 17px;
+    }
+
+    .donation-header h1 {
+        font-size: 27px;
+    }
+
+    .donation-header p {
+        font-size: 11px;
+    }
+
+    .donation-food-card {
+        flex-direction: column;
+    }
+
+    .donation-food-image-wrapper {
+        width: 100%;
+
+        min-width: 0;
+
+        height: 190px;
+    }
+
+    .donation-food-image,
+    .donation-no-image {
+        min-height: 190px;
+    }
+
+    .donation-food-body {
+        padding: 16px;
+    }
+
+    .donation-submit-area {
+        align-items: stretch;
+
+        flex-direction: column;
+    }
+
+    .donation-submit-btn {
+        width: 100%;
+    }
+
+}
+
+
+@media (max-width: 400px) {
+
+    .donation-section-heading {
+        align-items: flex-start;
+    }
+
+    .donation-section-heading h2 {
+        font-size: 17px;
+    }
+
+    .donation-section-heading p {
+        font-size: 10px;
+    }
+
+}

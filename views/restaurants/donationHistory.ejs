@@ -1,28 +1,1188 @@
 <% layout('layouts/boilerplate') %>
-<div class="container mt-4">
-  <h1>Donation History</h1>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Food Name</th>
-        <th>Donated Quantity</th>
-        <th>Donation Date</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% if(!donations || donations.length === 0) { %>
-        <tr><td colspan="4">No donations found.</td></tr>
+
+<%
+  /*
+   * =========================================================
+   * FOODBRIDGE - DONATION HISTORY
+   * UI ONLY
+   *
+   * Existing backend data is used:
+   * donations
+   * d.foodName
+   * d.donatedQuantity
+   * d.donationDate
+   * d.status
+   *
+   * No backend functionality is changed.
+   * =========================================================
+   */
+
+  const donationList = Array.isArray(donations)
+    ? donations
+    : [];
+
+  const totalDonations = donationList.length;
+
+  const totalQuantity = donationList.reduce(
+    (total, donation) => {
+      const quantity =
+        Number(donation.donatedQuantity) || 0;
+
+      return total + quantity;
+    },
+    0
+  );
+
+  const completedCount =
+    donationList.filter(
+      donation =>
+        donation.status === 'Completed'
+    ).length;
+
+  const pendingCount =
+    donationList.filter(
+      donation =>
+        !donation.status ||
+        donation.status === 'Pending'
+    ).length;
+%>
+
+
+<style>
+
+/* =========================================================
+   FOODBRIDGE - DONATION HISTORY PAGE
+   ========================================================= */
+
+.donation-history-page {
+    min-height: calc(100vh - 80px);
+
+    padding:
+        35px
+        20px
+        55px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f8faf9 0%,
+            #f4f8f6 100%
+        );
+}
+
+
+.donation-history-container {
+    width: min(100%, 1100px);
+
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.donation-history-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 28px;
+}
+
+
+.donation-history-header-icon {
+    width: 52px;
+    height: 52px;
+
+    flex: 0 0 52px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 14px;
+
+    background: #ecfdf5;
+
+    color: #198754;
+
+    font-size: 21px;
+}
+
+
+.donation-history-header h1 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 32px;
+
+    font-weight: 800;
+}
+
+
+.donation-history-header p {
+    margin: 5px 0 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   SUMMARY CARDS
+   ========================================================= */
+
+.donation-history-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            1fr
+        );
+
+    gap: 15px;
+
+    margin-bottom: 24px;
+}
+
+
+.donation-history-stat {
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 18px;
+
+    border:
+        1px solid
+        #e2e8f0;
+
+    border-radius: 13px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 5px 16px
+        rgba(
+            15,
+            23,
+            42,
+            0.045
+        );
+}
+
+
+.donation-history-stat-icon {
+    width: 42px;
+    height: 42px;
+
+    flex: 0 0 42px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 11px;
+
+    background: #ecfdf5;
+
+    color: #198754;
+
+    font-size: 17px;
+}
+
+
+.donation-history-stat:nth-child(2)
+.donation-history-stat-icon {
+    background: #fff7ed;
+
+    color: #ea580c;
+}
+
+
+.donation-history-stat:nth-child(3)
+.donation-history-stat-icon {
+    background: #eff6ff;
+
+    color: #2563eb;
+}
+
+
+.donation-history-stat-content {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+.donation-history-stat-label {
+    color: #64748b;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: .04em;
+}
+
+
+.donation-history-stat-value {
+    color: #0f172a;
+
+    font-size: 23px;
+
+    line-height: 1;
+
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   HISTORY CARD
+   ========================================================= */
+
+.donation-history-card {
+    overflow: hidden;
+
+    border:
+        1px solid
+        #e2e8f0;
+
+    border-radius: 16px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 7px 22px
+        rgba(
+            15,
+            23,
+            42,
+            0.055
+        );
+}
+
+
+/* =========================================================
+   CARD HEADER
+   ========================================================= */
+
+.donation-history-card-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding:
+        20px
+        22px;
+
+    border-bottom:
+        1px solid
+        #eef2f5;
+}
+
+
+.donation-history-card-title {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+.donation-history-card-title-icon {
+    width: 34px;
+    height: 34px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 9px;
+
+    background: #f0fdf4;
+
+    color: #198754;
+
+    font-size: 14px;
+}
+
+
+.donation-history-card-header h2 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 17px;
+
+    font-weight: 750;
+}
+
+
+.donation-history-card-header p {
+    margin: 2px 0 0;
+
+    color: #94a3b8;
+
+    font-size: 10px;
+}
+
+
+.donation-history-count {
+    padding:
+        6px
+        10px;
+
+    border-radius: 999px;
+
+    background: #f1f5f9;
+
+    color: #475569;
+
+    font-size: 10px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.donation-history-table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+.donation-history-table {
+    width: 100%;
+
+    margin: 0;
+
+    border-collapse: collapse;
+
+    min-width: 650px;
+}
+
+
+.donation-history-table thead th {
+    padding:
+        13px
+        20px;
+
+    border-bottom:
+        1px solid
+        #e2e8f0;
+
+    background: #f8fafc;
+
+    color: #64748b;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    text-align: left;
+
+    text-transform: uppercase;
+
+    letter-spacing: .05em;
+
+    white-space: nowrap;
+}
+
+
+.donation-history-table tbody td {
+    padding:
+        15px
+        20px;
+
+    border-bottom:
+        1px solid
+        #f1f5f9;
+
+    color: #334155;
+
+    font-size: 12px;
+
+    vertical-align: middle;
+}
+
+
+.donation-history-table tbody tr {
+    transition:
+        background .2s ease;
+}
+
+
+.donation-history-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+
+.donation-history-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================================================
+   FOOD NAME
+   ========================================================= */
+
+.donation-food-name {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    color: #0f172a;
+
+    font-weight: 700;
+}
+
+
+.donation-food-icon {
+    width: 34px;
+    height: 34px;
+
+    flex: 0 0 34px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 9px;
+
+    background: #fff7ed;
+
+    color: #ea580c;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   QUANTITY
+   ========================================================= */
+
+.donation-quantity-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    padding:
+        6px
+        9px;
+
+    border-radius: 7px;
+
+    background: #f0fdf4;
+
+    color: #166534;
+
+    font-size: 10px;
+
+    font-weight: 750;
+}
+
+
+/* =========================================================
+   DATE
+   ========================================================= */
+
+.donation-history-date {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    color: #475569;
+
+    white-space: nowrap;
+}
+
+
+.donation-history-date i {
+    color: #198754;
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.donation-history-status {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    padding:
+        6px
+        9px;
+
+    border-radius: 999px;
+
+    font-size: 9px;
+
+    font-weight: 750;
+
+    white-space: nowrap;
+}
+
+
+.donation-status-completed {
+    background: #dcfce7;
+
+    color: #166534;
+}
+
+
+.donation-status-accepted {
+    background: #dbeafe;
+
+    color: #1d4ed8;
+}
+
+
+.donation-status-pending {
+    background: #fef3c7;
+
+    color: #92400e;
+}
+
+
+.donation-status-rejected {
+    background: #fee2e2;
+
+    color: #b91c1c;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.donation-history-empty {
+    padding:
+        55px
+        20px;
+
+    text-align: center;
+}
+
+
+.donation-history-empty-icon {
+    width: 64px;
+    height: 64px;
+
+    margin:
+        0 auto
+        14px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 18px;
+
+    background: #ecfdf5;
+
+    color: #198754;
+
+    font-size: 24px;
+}
+
+
+.donation-history-empty h3 {
+    margin: 0 0 6px;
+
+    color: #334155;
+
+    font-size: 17px;
+
+    font-weight: 750;
+}
+
+
+.donation-history-empty p {
+    width: min(
+        100%,
+        430px
+    );
+
+    margin: 0 auto;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   FOOTER NOTE
+   ========================================================= */
+
+.donation-history-note {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-top: 15px;
+
+    padding:
+        12px
+        15px;
+
+    border:
+        1px solid
+        #dcefe4;
+
+    border-radius: 10px;
+
+    background: #f5fbf7;
+
+    color: #64748b;
+
+    font-size: 10px;
+}
+
+
+.donation-history-note i {
+    color: #198754;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .donation-history-page {
+        padding:
+            22px
+            12px
+            40px;
+    }
+
+
+    .donation-history-header h1 {
+        font-size: 27px;
+    }
+
+
+    .donation-history-summary {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .donation-history-card-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .donation-history-count {
+        align-self: flex-start;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .donation-history-header {
+        align-items: flex-start;
+    }
+
+
+    .donation-history-header-icon {
+        width: 45px;
+        height: 45px;
+
+        flex-basis: 45px;
+    }
+
+
+    .donation-history-header h1 {
+        font-size: 24px;
+    }
+
+
+    .donation-history-header p {
+        font-size: 10px;
+    }
+
+
+    .donation-history-stat {
+        padding: 15px;
+    }
+
+
+    .donation-history-card-header {
+        padding:
+            16px;
+    }
+
+}
+
+</style>
+
+
+<div class="donation-history-page">
+
+  <div class="donation-history-container">
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="donation-history-header">
+
+      <div class="donation-history-header-icon">
+        <i class="bi bi-heart-fill"></i>
+      </div>
+
+      <div>
+
+        <h1>
+          Donation History
+        </h1>
+
+        <p>
+          Track the food donations you've made through FoodBridge.
+        </p>
+
+      </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         SUMMARY
+         ===================================================== -->
+
+    <section class="donation-history-summary">
+
+
+      <!-- TOTAL DONATIONS -->
+
+      <article class="donation-history-stat">
+
+        <div class="donation-history-stat-icon">
+
+          <i class="bi bi-gift-fill"></i>
+
+        </div>
+
+        <div class="donation-history-stat-content">
+
+          <span class="donation-history-stat-label">
+            Total Donations
+          </span>
+
+          <strong class="donation-history-stat-value">
+            <%= totalDonations %>
+          </strong>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- TOTAL FOOD -->
+
+      <article class="donation-history-stat">
+
+        <div class="donation-history-stat-icon">
+
+          <i class="bi bi-box-seam-fill"></i>
+
+        </div>
+
+        <div class="donation-history-stat-content">
+
+          <span class="donation-history-stat-label">
+            Food Donated
+          </span>
+
+          <strong class="donation-history-stat-value">
+            <%= totalQuantity %>
+          </strong>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- COMPLETED -->
+
+      <article class="donation-history-stat">
+
+        <div class="donation-history-stat-icon">
+
+          <i class="bi bi-check-circle-fill"></i>
+
+        </div>
+
+        <div class="donation-history-stat-content">
+
+          <span class="donation-history-stat-label">
+            Completed
+          </span>
+
+          <strong class="donation-history-stat-value">
+            <%= completedCount %>
+          </strong>
+
+        </div>
+
+      </article>
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         HISTORY
+         ===================================================== -->
+
+    <section class="donation-history-card">
+
+
+      <!-- CARD HEADER -->
+
+      <div class="donation-history-card-header">
+
+        <div class="donation-history-card-title">
+
+          <div class="donation-history-card-title-icon">
+
+            <i class="bi bi-clock-history"></i>
+
+          </div>
+
+          <div>
+
+            <h2>
+              Recent Donations
+            </h2>
+
+            <p>
+              Your food-sharing activity
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <span class="donation-history-count">
+
+          <%= totalDonations %>
+
+          <%= totalDonations === 1
+            ? 'donation'
+            : 'donations'
+          %>
+
+        </span>
+
+      </div>
+
+
+
+      <!-- =================================================
+           DATA
+           ================================================= -->
+
+      <% if (
+        !donations ||
+        donations.length === 0
+      ) { %>
+
+
+        <!-- EMPTY STATE -->
+
+        <div class="donation-history-empty">
+
+          <div class="donation-history-empty-icon">
+
+            <i class="bi bi-heart"></i>
+
+          </div>
+
+
+          <h3>
+            No donations yet
+          </h3>
+
+
+          <p>
+            Your donation history will appear here once
+            you share food with an NGO through FoodBridge.
+          </p>
+
+        </div>
+
+
       <% } else { %>
-        <% for(const d of donations) { %>
-          <tr>
-            <td><%= d.foodName %></td>
-            <td><%= d.donatedQuantity %></td>
-            <td><%= d.donationDate.toLocaleString() %></td>
-            <td><%= d.status %></td>
-          </tr>
-        <% } %>
+
+
+        <!-- TABLE -->
+
+        <div class="donation-history-table-wrapper">
+
+          <table class="donation-history-table">
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Food Name
+                </th>
+
+                <th>
+                  Donated Quantity
+                </th>
+
+                <th>
+                  Donation Date
+                </th>
+
+                <th>
+                  Status
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+
+              <% for (const d of donations) { %>
+
+                <tr>
+
+
+                  <!-- FOOD -->
+
+                  <td>
+
+                    <div class="donation-food-name">
+
+                      <div class="donation-food-icon">
+
+                        <i class="bi bi-egg-fried"></i>
+
+                      </div>
+
+                      <span>
+                        <%= d.foodName || 'Food item' %>
+                      </span>
+
+                    </div>
+
+                  </td>
+
+
+
+                  <!-- QUANTITY -->
+
+                  <td>
+
+                    <span
+                      class="donation-quantity-badge"
+                    >
+
+                      <i class="bi bi-box-seam"></i>
+
+                      <%= d.donatedQuantity || 0 %>
+
+                      <span>
+                        plates
+                      </span>
+
+                    </span>
+
+                  </td>
+
+
+
+                  <!-- DATE -->
+
+                  <td>
+
+                    <div class="donation-history-date">
+
+                      <i class="bi bi-calendar3"></i>
+
+                      <span>
+
+                        <%= d.donationDate
+                          ? new Date(
+                              d.donationDate
+                            ).toLocaleDateString(
+                              'en-IN',
+                              {
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric'
+                              }
+                            )
+                          : 'N/A'
+                        %>
+
+                      </span>
+
+                    </div>
+
+                  </td>
+
+
+
+                  <!-- STATUS -->
+
+                  <td>
+
+                    <% if (
+                      d.status === 'Completed'
+                    ) { %>
+
+                      <span
+                        class="donation-history-status donation-status-completed"
+                      >
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                        Completed
+
+                      </span>
+
+
+                    <% } else if (
+                      d.status === 'Accepted'
+                    ) { %>
+
+                      <span
+                        class="donation-history-status donation-status-accepted"
+                      >
+
+                        <i class="bi bi-check2-circle"></i>
+
+                        Accepted
+
+                      </span>
+
+
+                    <% } else if (
+                      d.status === 'Rejected'
+                    ) { %>
+
+                      <span
+                        class="donation-history-status donation-status-rejected"
+                      >
+
+                        <i class="bi bi-x-circle-fill"></i>
+
+                        Rejected
+
+                      </span>
+
+
+                    <% } else { %>
+
+                      <span
+                        class="donation-history-status donation-status-pending"
+                      >
+
+                        <i class="bi bi-hourglass-split"></i>
+
+                        <%= d.status || 'Pending' %>
+
+                      </span>
+
+                    <% } %>
+
+                  </td>
+
+
+                </tr>
+
+              <% } %>
+
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+
       <% } %>
-    </tbody>
-  </table>
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         INFORMATION
+         ===================================================== -->
+
+    <div class="donation-history-note">
+
+      <i class="bi bi-info-circle-fill"></i>
+
+      <span>
+        Donation status is updated as your food donation
+        moves through the FoodBridge distribution process.
+      </span>
+
+    </div>
+
+
+  </div>
+
 </div>

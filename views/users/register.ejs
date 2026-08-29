@@ -1,5 +1,8 @@
 <% layout('layouts/authBoilerplate') %>
+
 <div class="auth-card">
+
+  <!-- BRAND -->
   <div class="auth-brand-row">
     <a href="/" class="auth-brand" aria-label="FoodBridge home">
       <img src="/images/foodbridge-logo.png" alt="FoodBridge logo" />
@@ -7,56 +10,436 @@
     </a>
   </div>
 
+
+  <!-- TITLE -->
   <h2 class="auth-title">Sign Up</h2>
 
-  <form class="login-form validated-form" action="/register" method="POST" enctype="multipart/form-data" novalidate>
+
+  <!-- FORM -->
+  <form
+    class="login-form validated-form"
+    action="/register"
+    method="POST"
+    enctype="multipart/form-data"
+    novalidate
+  >
+
+    <!-- USERNAME -->
     <div>
-      <label for="username">Username</label>
-      <input id="username" type="text" class="form-control" placeholder="Username" name="username" required />
-      <div class="valid-feedback">Looks good!</div>
-    </div>
-    <div>
-      <label for="email">Email</label>
-      <input class="form-control" id="email" type="email" placeholder="me@example.com" name="email" required />
-      <div class="valid-feedback">Looks good!</div>
-    </div>
-    <div>
-      <label for="password">Password</label>
-      <input class="form-control" id="password" type="password" placeholder="Password" name="password" required />
-      <div class="valid-feedback">Looks good!</div>
-    </div>
-    <div>
-      <label for="roles">Select</label>
-      <select id="roles" name="option" class="form-select">
-        <option value="customer">Customer</option>
-        <option value="restaurant">Restaurant</option>
-        <option value="NGO">NGO</option>
-      </select>
-      <div class="valid-feedback">Looks good!</div>
-    </div>
-    <div>
-      <label for="location">Enter location</label>
-      <input class="form-control" type="text" id="location" name="location" placeholder="Location" required />
-      <div class="valid-feedback">Looks good!</div>
-    </div>
-    <div>
-      <label for="contactNumber">Contact Number</label>
-      <input class="form-control" type="tel" id="contactNumber" name="contactNumber" placeholder="Contact number" />
-      <div class="valid-feedback">Looks good!</div>
-    </div>
-    <div class="mb-3">
-      <div class="form-file custom-file">
-        <input type="file" class="form-file-input" id="image" name="image" />
-        <label class="form-file-label d-flex" for="image">
-          <span class="form-file-text custom-file-label" style="width: 60%;">Choose image...</span>
-          <span class="form-file-button" style="width: 40%;">Browse</span>
-        </label>
+      <label for="username">
+        Username
+      </label>
+
+      <input
+        id="username"
+        type="text"
+        class="form-control"
+        placeholder="Username"
+        name="username"
+        required
+      />
+
+      <div class="valid-feedback">
+        Looks good!
       </div>
     </div>
-    <button class="login-btn btn--form" type="submit" value="Log in">Sign Up</button>
+
+
+    <!-- EMAIL -->
+    <div>
+      <label for="email">
+        Email
+      </label>
+
+      <input
+        id="email"
+        type="email"
+        class="form-control"
+        placeholder="me@example.com"
+        name="email"
+        required
+      />
+
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+    </div>
+
+
+    <!-- PASSWORD -->
+    <div>
+      <label for="password">
+        Password
+      </label>
+
+      <input
+        id="password"
+        type="password"
+        class="form-control"
+        placeholder="Password"
+        name="password"
+        required
+      />
+
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+    </div>
+
+
+    <!-- ROLE -->
+    <div>
+      <label for="roles">
+        Select Role
+      </label>
+
+      <select
+        id="roles"
+        name="option"
+        class="form-select"
+        required
+      >
+
+        <option value="customer" selected>
+          Customer
+        </option>
+
+        <option value="restaurant">
+          Restaurant
+        </option>
+
+        <option value="NGO">
+          NGO
+        </option>
+
+      </select>
+
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+    </div>
+
+
+    <!-- LOCATION -->
+    <div>
+      <label for="location">
+        Enter Location
+      </label>
+
+      <input
+        id="location"
+        type="text"
+        class="form-control"
+        name="location"
+        placeholder="Location"
+        required
+      />
+
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+    </div>
+
+
+    <!-- CONTACT -->
+    <div>
+      <label for="contactNumber">
+        Contact Number
+      </label>
+
+      <input
+        id="contactNumber"
+        type="tel"
+        class="form-control"
+        name="contactNumber"
+        placeholder="Contact number"
+      />
+
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+    </div>
+
+
+    <!-- PROFILE IMAGE -->
+    <div class="mb-3">
+
+      <label for="image">
+        Profile Image
+      </label>
+
+
+      <div class="form-file custom-file">
+
+        <input
+          type="file"
+          class="form-file-input"
+          id="image"
+          name="image"
+          accept="image/*"
+        />
+
+
+        <label
+          class="form-file-label d-flex"
+          for="image"
+        >
+
+          <span
+            id="imageFileName"
+            class="form-file-text custom-file-label"
+          >
+            Choose image...
+          </span>
+
+
+          <span class="form-file-button">
+            Browse
+          </span>
+
+        </label>
+
+      </div>
+
+
+      <!-- IMAGE PREVIEW -->
+
+      <div
+        id="imagePreviewContainer"
+        class="image-preview-container"
+      >
+
+        <img
+          id="imagePreview"
+          class="image-preview"
+          src=""
+          alt="Selected profile preview"
+        />
+
+
+        <p class="image-preview-text">
+          Profile image preview
+        </p>
+
+
+        <button
+          type="button"
+          id="removeImage"
+          class="remove-image-btn"
+        >
+          Remove image
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- SUBMIT -->
+    <button
+      class="login-btn btn--form"
+      type="submit"
+    >
+      Sign Up
+    </button>
+
   </form>
 
+
+  <!-- IMAGE + ROLE JAVASCRIPT -->
+
+  <script>
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      function () {
+
+        const roleSelect =
+          document.getElementById("roles");
+
+        const imageInput =
+          document.getElementById("image");
+
+        const imageFileName =
+          document.getElementById("imageFileName");
+
+        const previewContainer =
+          document.getElementById(
+            "imagePreviewContainer"
+          );
+
+        const imagePreview =
+          document.getElementById(
+            "imagePreview"
+          );
+
+        const removeImage =
+          document.getElementById(
+            "removeImage"
+          );
+
+
+        /*
+         * ROLE
+         */
+
+        function updateRoleDisplay() {
+
+          if (roleSelect.value) {
+
+            roleSelect.style.color =
+              "#111827";
+
+          }
+
+        }
+
+
+        roleSelect.addEventListener(
+          "change",
+          updateRoleDisplay
+        );
+
+
+        updateRoleDisplay();
+
+
+        /*
+         * IMAGE PREVIEW
+         */
+
+        imageInput.addEventListener(
+          "change",
+          function () {
+
+            const file =
+              this.files &&
+              this.files[0];
+
+
+            if (!file) {
+
+              imageFileName.textContent =
+                "Choose image...";
+
+              previewContainer.classList.remove(
+                "show"
+              );
+
+              imagePreview.src = "";
+
+              return;
+
+            }
+
+
+            /*
+             * CHECK IMAGE TYPE
+             */
+
+            if (
+              !file.type.startsWith(
+                "image/"
+              )
+            ) {
+
+              alert(
+                "Please choose a valid image file."
+              );
+
+              this.value = "";
+
+              imageFileName.textContent =
+                "Choose image...";
+
+              previewContainer.classList.remove(
+                "show"
+              );
+
+              imagePreview.src = "";
+
+              return;
+
+            }
+
+
+            /*
+             * SHOW FILE NAME
+             */
+
+            imageFileName.textContent =
+              file.name;
+
+
+            /*
+             * CREATE PREVIEW
+             */
+
+            const reader =
+              new FileReader();
+
+
+            reader.onload =
+              function (event) {
+
+                imagePreview.src =
+                  event.target.result;
+
+                previewContainer.classList.add(
+                  "show"
+                );
+
+              };
+
+
+            reader.readAsDataURL(file);
+
+          }
+        );
+
+
+        /*
+         * REMOVE IMAGE
+         */
+
+        removeImage.addEventListener(
+          "click",
+          function () {
+
+            imageInput.value = "";
+
+            imageFileName.textContent =
+              "Choose image...";
+
+            imagePreview.src = "";
+
+            previewContainer.classList.remove(
+              "show"
+            );
+
+          }
+        );
+
+      }
+
+    );
+
+  </script>
+
+
+  <!-- LOGIN LINK -->
+
   <div class="auth-switch">
-    Already a user? <a href="/login" id="linkInlogin">Login</a>
+
+    Already a user?
+
+    <a
+      href="/login"
+      id="linkInlogin"
+    >
+      Login
+    </a>
+
   </div>
+
 </div>

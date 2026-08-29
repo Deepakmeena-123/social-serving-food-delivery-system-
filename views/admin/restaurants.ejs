@@ -1,66 +1,56 @@
 <% layout('layouts/adminBoilerplate') %>
+
 <%
   const restaurantsList = Array.isArray(restaurants) ? restaurants : [];
+
   const totalRestaurants = restaurantsList.length;
-  const activeRestaurants = restaurantsList.filter((restaurant) => restaurant.isOpen).length;
-  const totalFoodItems = restaurantsList.reduce((sum, restaurant) => {
-    const count = Number(
-      restaurant.foodItemsCount ||
-      restaurant.foodCount ||
-      restaurant.foodsCount ||
-      restaurant.menuCount ||
-      (Array.isArray(restaurant.foodItems) ? restaurant.foodItems.length : 0) ||
-      (Array.isArray(restaurant.foods) ? restaurant.foods.length : 0) ||
-      (Array.isArray(restaurant.menu) ? restaurant.menu.length : 0)
-    );
 
-    return sum + (Number.isNaN(count) ? 0 : count);
-  }, 0);
-  const totalRestaurantDonations = restaurantsList.reduce((sum, restaurant) => {
-    const count = Number(
-      restaurant.donationsCount ||
-      restaurant.donationCount ||
-      (Array.isArray(restaurant.donations) ? restaurant.donations.length : 0) ||
-      (Array.isArray(restaurant.donationHistory) ? restaurant.donationHistory.length : 0)
-    );
+  const activeRestaurants = restaurantsList.filter(
+    (restaurant) => restaurant.isOpen
+  ).length;
 
-    return sum + (Number.isNaN(count) ? 0 : count);
-  }, 0);
-  const featuredRestaurant = restaurantsList[0] || null;
-  const defaultRestaurantImage = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
+  const inactiveRestaurants = totalRestaurants - activeRestaurants;
 
-  const getRestaurantImage = (restaurant) => (restaurant && restaurant.image && restaurant.image.url ? restaurant.image.url : defaultRestaurantImage);
+  const defaultRestaurantImage =
+    'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
+
+  const getRestaurantImage = (restaurant) => {
+    if (
+      restaurant &&
+      restaurant.image &&
+      restaurant.image.url
+    ) {
+      return restaurant.image.url;
+    }
+
+    return defaultRestaurantImage;
+  };
+
   const getRestaurantName = (restaurant) => {
-    if (!restaurant) return 'No restaurant selected';
-    return restaurant.ownerName || restaurant.contactName || restaurant.username || 'Unnamed restaurant';
+    if (!restaurant) return 'Unnamed Restaurant';
+
+    return (
+      restaurant.ownerName ||
+      restaurant.contactName ||
+      restaurant.username ||
+      'Unnamed Restaurant'
+    );
   };
+
   const getRestaurantOwner = (restaurant) => {
-    if (!restaurant) return 'No owner information';
-    return restaurant.ownerName || restaurant.contactName || restaurant.username || 'Owner not available';
+    if (!restaurant) return 'Owner not available';
+
+    return (
+      restaurant.ownerName ||
+      restaurant.contactName ||
+      restaurant.username ||
+      'Owner not available'
+    );
   };
-  const getFoodCount = (restaurant) => {
-    if (!restaurant) return 0;
-    return Number(
-      restaurant.foodItemsCount ||
-      restaurant.foodCount ||
-      restaurant.foodsCount ||
-      restaurant.menuCount ||
-      (Array.isArray(restaurant.foodItems) ? restaurant.foodItems.length : 0) ||
-      (Array.isArray(restaurant.foods) ? restaurant.foods.length : 0) ||
-      (Array.isArray(restaurant.menu) ? restaurant.menu.length : 0)
-    ) || 0;
-  };
-  const getDonationCount = (restaurant) => {
-    if (!restaurant) return 0;
-    return Number(
-      restaurant.donationsCount ||
-      restaurant.donationCount ||
-      (Array.isArray(restaurant.donations) ? restaurant.donations.length : 0) ||
-      (Array.isArray(restaurant.donationHistory) ? restaurant.donationHistory.length : 0)
-    ) || 0;
-  };
+
   const getSearchText = (restaurant) => {
     if (!restaurant) return '';
+
     return [
       restaurant.username,
       restaurant.ownerName,
@@ -75,364 +65,663 @@
   };
 %>
 
-<div class="admin-restaurants-page">
-  <section class="restaurants-hero card admin-glass-card mb-4">
-    <div class="card-body p-4 p-lg-5">
-      <div class="row align-items-center g-4">
-        <div class="col-xl-7">
-          <div class="restaurants-hero-kicker mb-2">
-            <i class="bi bi-shop-window"></i>
-            <span>FoodBridge Restaurant Hub</span>
-          </div>
-          <h1 class="restaurants-page-title mb-2">Restaurant Management</h1>
-          <p class="restaurants-page-subtitle mb-3">Manage all registered restaurants on the platform.</p>
-          <div class="restaurants-meta d-flex flex-wrap gap-3">
-            <div class="restaurants-meta-pill">
-              <i class="bi bi-shop"></i>
-              <span><%= totalRestaurants %> restaurant records</span>
-            </div>
-            <div class="restaurants-meta-pill restaurants-meta-pill-soft">
-              <i class="bi bi-lightning-charge-fill"></i>
-              <span><%= activeRestaurants %> active today</span>
-            </div>
-          </div>
-        </div>
 
-        <div class="col-xl-5">
-          <div class="restaurant-profile-card card h-100">
-            <div class="card-body p-4">
-              <% if (featuredRestaurant) { %>
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                  <span class="restaurant-profile-kicker">Featured Restaurant</span>
-                  <span class="restaurant-profile-status <%= featuredRestaurant.isOpen ? 'is-open' : 'is-closed' %>">
-                    <i class="bi <%= featuredRestaurant.isOpen ? 'bi-check-circle-fill' : 'bi-dash-circle-fill' %>"></i>
-                    <span><%= featuredRestaurant.isOpen ? 'Active' : 'Inactive' %></span>
-                  </span>
-                </div>
-                <div class="restaurant-profile-top">
-                  <img
-                    src="<%= getRestaurantImage(featuredRestaurant) %>"
-                    alt="<%= getRestaurantName(featuredRestaurant) %>"
-                    class="restaurant-profile-avatar"
-                  />
-                  <div class="restaurant-profile-title-wrap">
-                    <h2 class="restaurant-profile-title mb-1"><%= getRestaurantName(featuredRestaurant) %></h2>
-                    <p class="restaurant-profile-subtitle mb-0"><%= featuredRestaurant.location || 'Location not provided' %></p>
-                  </div>
-                </div>
-                <div class="restaurant-profile-details">
-                  <div class="restaurant-profile-row">
-                    <span>Contact</span>
-                    <strong><%= featuredRestaurant.contactNumber || 'Not provided' %></strong>
-                  </div>
-                  <div class="restaurant-profile-row">
-                    <span>Total Foods</span>
-                    <strong><%= getFoodCount(featuredRestaurant) %></strong>
-                  </div>
-                  <div class="restaurant-profile-row">
-                    <span>Total Donations</span>
-                    <strong><%= getDonationCount(featuredRestaurant) %></strong>
-                  </div>
-                  <div class="restaurant-profile-row">
-                    <span>Joined</span>
-                    <strong><%= featuredRestaurant.createdAt ? new Date(featuredRestaurant.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A' %></strong>
-                  </div>
-                </div>
-              <% } else { %>
-                <div class="restaurant-profile-empty">
-                  <div class="restaurant-profile-empty-icon"><i class="bi bi-shop-window"></i></div>
-                  <h2 class="mb-2">No featured restaurant</h2>
-                  <p class="mb-0">Once restaurants register, the first active profile will appear here with quick details.</p>
-                </div>
-              <% } %>
-            </div>
-          </div>
-        </div>
+<div class="restaurant-management-page">
+
+  <!-- =====================================================
+       PAGE HEADER
+       ===================================================== -->
+
+  <section class="restaurant-management-header">
+
+    <div>
+      <div class="restaurant-management-kicker">
+        <i class="bi bi-shop"></i>
+        <span>Restaurant Management</span>
       </div>
+
+      <h1>Restaurants</h1>
+
+      <p>
+        Manage registered restaurants, review their details,
+        and control their availability.
+      </p>
     </div>
+
   </section>
 
-  <section class="mb-4">
-    <div class="section-heading d-flex align-items-center justify-content-between mb-3">
+
+  <!-- =====================================================
+       SUMMARY CARDS
+       ===================================================== -->
+
+  <section class="restaurant-summary-grid">
+
+    <div class="restaurant-summary-card">
+      <div class="restaurant-summary-icon">
+        <i class="bi bi-shop-window"></i>
+      </div>
+
       <div>
-        <h2 class="section-title mb-1">Restaurant Statistics</h2>
-        <p class="section-subtitle mb-0">Live totals across active listings and donation activity.</p>
+        <span>Total Restaurants</span>
+        <strong><%= totalRestaurants %></strong>
       </div>
-      <span class="section-badge"><i class="bi bi-graph-up-arrow me-1"></i> FoodBridge summary</span>
     </div>
 
-    <div class="row g-3 g-xl-4">
-      <div class="col-6 col-xl-3">
-        <article class="stat-card stat-card-restaurants">
-          <div class="stat-card-icon"><i class="bi bi-shop-window"></i></div>
-          <div class="stat-card-body">
-            <span class="stat-card-label">Total Restaurants</span>
-            <strong class="stat-card-value"><%= totalRestaurants %></strong>
-          </div>
-        </article>
+
+    <div class="restaurant-summary-card restaurant-summary-active">
+      <div class="restaurant-summary-icon">
+        <i class="bi bi-check-circle"></i>
       </div>
-      <div class="col-6 col-xl-3">
-        <article class="stat-card stat-card-active-restaurants">
-          <div class="stat-card-icon"><i class="bi bi-check2-circle"></i></div>
-          <div class="stat-card-body">
-            <span class="stat-card-label">Active Restaurants</span>
-            <strong class="stat-card-value"><%= activeRestaurants %></strong>
-          </div>
-        </article>
-      </div>
-      <div class="col-6 col-xl-3">
-        <article class="stat-card stat-card-food-items">
-          <div class="stat-card-icon"><i class="bi bi-basket2-fill"></i></div>
-          <div class="stat-card-body">
-            <span class="stat-card-label">Total Food Items</span>
-            <strong class="stat-card-value"><%= totalFoodItems %></strong>
-          </div>
-        </article>
-      </div>
-      <div class="col-6 col-xl-3">
-        <article class="stat-card stat-card-restaurant-donations">
-          <div class="stat-card-icon"><i class="bi bi-gift-fill"></i></div>
-          <div class="stat-card-body">
-            <span class="stat-card-label">Restaurant Donations</span>
-            <strong class="stat-card-value"><%= totalRestaurantDonations %></strong>
-          </div>
-        </article>
+
+      <div>
+        <span>Active</span>
+        <strong><%= activeRestaurants %></strong>
       </div>
     </div>
+
+
+    <div class="restaurant-summary-card restaurant-summary-inactive">
+      <div class="restaurant-summary-icon">
+        <i class="bi bi-dash-circle"></i>
+      </div>
+
+      <div>
+        <span>Inactive</span>
+        <strong><%= inactiveRestaurants %></strong>
+      </div>
+    </div>
+
   </section>
 
-  <section class="card restaurants-toolbar-card mb-4 admin-glass-card">
-    <div class="card-body p-3 p-lg-4">
-      <div class="row g-3 align-items-end">
-        <div class="col-xl-4">
-          <label for="restaurantNameSearchInput" class="form-label restaurants-toolbar-label mb-2">Search restaurant name</label>
-          <div class="input-group restaurants-search-group">
-            <span class="input-group-text"><i class="bi bi-search"></i></span>
-            <input type="text" id="restaurantNameSearchInput" class="form-control" placeholder="Search by restaurant name">
-            <button class="btn btn-outline-secondary" type="button" id="restaurantClearNameSearch">Clear</button>
-          </div>
-        </div>
-        <div class="col-xl-4">
-          <label for="restaurantOwnerSearchInput" class="form-label restaurants-toolbar-label mb-2">Search owner name</label>
-          <div class="input-group restaurants-search-group">
-            <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
-            <input type="text" id="restaurantOwnerSearchInput" class="form-control" placeholder="Search by owner name">
-            <button class="btn btn-outline-secondary" type="button" id="restaurantClearOwnerSearch">Clear</button>
-          </div>
-        </div>
-        <div class="col-xl-4">
-          <div class="restaurants-toolbar-label mb-2">Filter by status</div>
-          <div class="restaurants-filter-group" id="restaurantsFilterGroup">
-            <button type="button" class="restaurants-filter-btn active" data-filter="all">All Restaurants</button>
-            <button type="button" class="restaurants-filter-btn" data-filter="active">Active</button>
-            <button type="button" class="restaurants-filter-btn" data-filter="inactive">Inactive</button>
-          </div>
-        </div>
+
+  <!-- =====================================================
+       SEARCH + FILTER
+       ===================================================== -->
+
+  <section class="restaurant-management-controls">
+
+    <div class="restaurant-search-wrapper">
+
+      <label for="restaurantSearchInput">
+        Search Restaurants
+      </label>
+
+      <div class="restaurant-search-box">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="text"
+          id="restaurantSearchInput"
+          placeholder="Search by restaurant, owner, email or location..."
+          autocomplete="off"
+        />
+
+        <button
+          type="button"
+          id="restaurantClearSearch"
+          class="restaurant-clear-search"
+        >
+          Clear
+        </button>
+
       </div>
+
     </div>
+
+
+    <div class="restaurant-filter-wrapper">
+
+      <span>Filter</span>
+
+      <div
+        class="restaurant-filter-buttons"
+        id="restaurantFilterButtons"
+      >
+
+        <button
+          type="button"
+          class="restaurant-filter-button active"
+          data-filter="all"
+        >
+          All
+          <span><%= totalRestaurants %></span>
+        </button>
+
+        <button
+          type="button"
+          class="restaurant-filter-button"
+          data-filter="active"
+        >
+          Active
+          <span><%= activeRestaurants %></span>
+        </button>
+
+        <button
+          type="button"
+          class="restaurant-filter-button"
+          data-filter="inactive"
+        >
+          Inactive
+          <span><%= inactiveRestaurants %></span>
+        </button>
+
+      </div>
+
+    </div>
+
   </section>
 
-  <section class="card restaurants-table-card admin-glass-card">
-    <div class="card-body p-0">
-      <div class="restaurants-table-header px-4 py-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
-        <div>
-          <h2 class="restaurants-table-title mb-1">Registered Restaurants</h2>
-          <p class="restaurants-table-subtitle mb-0"><%= totalRestaurants %> restaurants available in the system.</p>
-        </div>
-        <div class="restaurants-table-legend d-flex flex-wrap gap-2">
-          <span class="legend-pill legend-pill-green"><i class="bi bi-dot"></i> Active</span>
-          <span class="legend-pill legend-pill-red"><i class="bi bi-dot"></i> Inactive</span>
-          <span class="legend-pill legend-pill-orange"><i class="bi bi-dot"></i> FoodBridge</span>
-        </div>
+
+  <!-- =====================================================
+       RESTAURANT LIST
+       ===================================================== -->
+
+  <section class="restaurant-list-card">
+
+    <div class="restaurant-list-header">
+
+      <div>
+        <h2>Registered Restaurants</h2>
+
+        <p>
+          Review restaurant accounts and manage their availability.
+        </p>
       </div>
 
-      <% if (restaurantsList.length) { %>
-        <div class="table-responsive restaurants-table-responsive">
-          <table class="table align-middle mb-0 restaurants-table">
-            <thead>
-              <tr>
-                <th>Restaurant Image/Logo</th>
-                <th>Restaurant Name</th>
-                <th>Owner</th>
-                <th>Email</th>
-                <th>Food Items Count</th>
-                <th>Donations Count</th>
-                <th>Status</th>
-                <th>Joined Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="restaurantsTableBody">
-              <% restaurantsList.forEach((restaurant) => { %>
-                <tr
-                  class="restaurant-row"
-                  data-status="<%= restaurant.isOpen ? 'active' : 'inactive' %>"
-                  data-search="<%= getSearchText(restaurant) %>"
-                >
-                  <td>
-                    <div class="restaurant-logo-wrap">
+      <div class="restaurant-result-count">
+        <i class="bi bi-shop"></i>
+
+        <span id="restaurantResultCount">
+          <%= totalRestaurants %>
+        </span>
+
+        <span>restaurants</span>
+      </div>
+
+    </div>
+
+
+    <% if (restaurantsList.length > 0) { %>
+
+      <div class="restaurant-table-wrapper">
+
+        <table class="restaurant-management-table">
+
+          <thead>
+            <tr>
+              <th>Restaurant</th>
+              <th>Owner</th>
+              <th>Contact</th>
+              <th>Location</th>
+              <th>Status</th>
+              <th class="restaurant-actions-heading">
+                Actions
+              </th>
+            </tr>
+          </thead>
+
+
+          <tbody id="restaurantTableBody">
+
+            <% restaurantsList.forEach((restaurant) => { %>
+
+              <tr
+                class="restaurant-management-row"
+                data-status="<%= restaurant.isOpen ? 'active' : 'inactive' %>"
+                data-search="<%= getSearchText(restaurant) %>"
+              >
+
+                <!-- Restaurant -->
+                <td>
+
+                  <div class="restaurant-main-info">
+
+                    <div class="restaurant-management-image">
+
                       <img
                         src="<%= getRestaurantImage(restaurant) %>"
                         alt="<%= getRestaurantName(restaurant) %>"
-                        class="restaurant-logo"
                       />
+
                     </div>
-                  </td>
-                  <td>
-                    <div class="restaurant-name-cell">
-                      <strong><%= getRestaurantName(restaurant) %></strong>
-                      <span><%= restaurant.location || 'Location not provided' %></span>
+
+
+                    <div class="restaurant-name-info">
+
+                      <strong>
+                        <%= getRestaurantName(restaurant) %>
+                      </strong>
+
+                      <span>
+                        <%=
+                          restaurant.username ||
+                          'Restaurant account'
+                        %>
+                      </span>
+
                     </div>
-                  </td>
-                  <td>
-                    <div class="restaurant-owner-cell">
-                      <span class="restaurant-owner-name"><%= getRestaurantOwner(restaurant) %></span>
-                      <span class="restaurant-owner-meta"><%= restaurant.contactNumber || 'No contact number' %></span>
-                    </div>
-                  </td>
-                  <td>
+
+                  </div>
+
+                </td>
+
+
+                <!-- Owner -->
+                <td>
+
+                  <div class="restaurant-owner-info">
+
+                    <strong>
+                      <%= getRestaurantOwner(restaurant) %>
+                    </strong>
+
+                    <span>
+                      <i class="bi bi-person"></i>
+                      Owner
+                    </span>
+
+                  </div>
+
+                </td>
+
+
+                <!-- Contact -->
+                <td>
+
+                  <div class="restaurant-contact-info">
+
                     <% if (restaurant.email) { %>
-                      <a href="mailto:<%= restaurant.email %>" class="restaurant-email-link"><%= restaurant.email %></a>
-                    <% } else { %>
-                      <span class="restaurant-muted">Email not provided</span>
-                    <% } %>
-                  </td>
-                  <td>
-                    <span class="restaurant-count-pill restaurant-count-food"><i class="bi bi-basket2-fill"></i><%= getFoodCount(restaurant) %></span>
-                  </td>
-                  <td>
-                    <span class="restaurant-count-pill restaurant-count-donations"><i class="bi bi-gift-fill"></i><%= getDonationCount(restaurant) %></span>
-                  </td>
-                  <td>
-                    <% if (restaurant.isOpen) { %>
-                      <span class="restaurant-status-badge restaurant-status-active"><i class="bi bi-check-circle-fill me-1"></i>Active</span>
-                    <% } else { %>
-                      <span class="restaurant-status-badge restaurant-status-inactive"><i class="bi bi-dash-circle-fill me-1"></i>Inactive</span>
-                    <% } %>
-                  </td>
-                  <td>
-                    <div class="restaurant-joined-cell">
-                      <i class="bi bi-calendar3"></i>
-                      <span><%= restaurant.createdAt ? new Date(restaurant.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A' %></span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="restaurants-actions">
-                      <a href="/admin/restaurants/<%= restaurant._id %>" class="btn btn-sm restaurant-action-btn restaurant-action-view">
-                        <i class="bi bi-eye"></i>
-                        <span>View</span>
+
+                      <a
+                        href="mailto:<%= restaurant.email %>"
+                        class="restaurant-email"
+                      >
+                        <i class="bi bi-envelope"></i>
+                        <%= restaurant.email %>
                       </a>
-                      <button type="button" class="btn btn-sm restaurant-action-btn restaurant-action-edit" disabled title="Edit UI is not connected to a backend route">
-                        <i class="bi bi-pencil-square"></i>
-                        <span>Edit</span>
-                      </button>
-                      <button type="button" class="btn btn-sm restaurant-action-btn restaurant-action-delete" disabled title="Delete UI is not connected to a backend route">
-                        <i class="bi bi-trash3"></i>
-                        <span>Delete</span>
-                      </button>
-                      <form action="/admin/restaurants/<%= restaurant._id %>/toggle" method="POST" class="d-inline restaurants-toggle-form">
-                        <button class="btn btn-sm restaurant-action-btn restaurant-action-toggle" title="Toggle restaurant status">
-                          <i class="bi <%= restaurant.isOpen ? 'bi-slash-circle' : 'bi-check2-circle' %>"></i>
-                          <span><%= restaurant.isOpen ? 'Disable' : 'Enable' %></span>
+
+                    <% } else { %>
+
+                      <span class="restaurant-not-available">
+                        Email not available
+                      </span>
+
+                    <% } %>
+
+
+                    <% if (restaurant.contactNumber) { %>
+
+                      <span class="restaurant-phone">
+                        <i class="bi bi-telephone"></i>
+                        <%= restaurant.contactNumber %>
+                      </span>
+
+                    <% } %>
+
+                  </div>
+
+                </td>
+
+
+                <!-- Location -->
+                <td>
+
+                  <div class="restaurant-location">
+
+                    <i class="bi bi-geo-alt"></i>
+
+                    <span>
+                      <%= restaurant.location || 'Location not provided' %>
+                    </span>
+
+                  </div>
+
+                </td>
+
+
+                <!-- Status -->
+                <td>
+
+                  <% if (restaurant.isOpen) { %>
+
+                    <span class="restaurant-status active">
+                      <span class="restaurant-status-dot"></span>
+                      Active
+                    </span>
+
+                  <% } else { %>
+
+                    <span class="restaurant-status inactive">
+                      <span class="restaurant-status-dot"></span>
+                      Inactive
+                    </span>
+
+                  <% } %>
+
+                </td>
+
+
+                <!-- Actions -->
+                <td>
+
+                  <div class="restaurant-management-actions">
+
+                    <!-- View -->
+                    <a
+                      href="/admin/restaurants/<%= restaurant._id %>"
+                      class="restaurant-view-button"
+                      title="View restaurant details"
+                    >
+                      <i class="bi bi-eye"></i>
+                      <span>View</span>
+                    </a>
+
+
+                    <!-- Enable / Disable -->
+                    <form
+                      action="/admin/restaurants/<%= restaurant._id %>/toggle"
+                      method="POST"
+                      class="restaurant-toggle-form"
+                    >
+
+                      <% if (restaurant.isOpen) { %>
+
+                        <button
+                          type="submit"
+                          class="restaurant-toggle-button disable"
+                          title="Disable restaurant"
+                        >
+                          <i class="bi bi-slash-circle"></i>
+                          <span>Disable</span>
                         </button>
-                      </form>
-                    </div>
-                  </td>
-                </tr>
-              <% }) %>
-            </tbody>
-          </table>
+
+                      <% } else { %>
+
+                        <button
+                          type="submit"
+                          class="restaurant-toggle-button enable"
+                          title="Enable restaurant"
+                        >
+                          <i class="bi bi-check-circle"></i>
+                          <span>Enable</span>
+                        </button>
+
+                      <% } %>
+
+                    </form>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            <% }) %>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- Empty result after search/filter -->
+      <div
+        id="restaurantEmptySearchState"
+        class="restaurant-empty-state"
+        style="display: none;"
+      >
+
+        <div class="restaurant-empty-icon">
+          <i class="bi bi-search"></i>
         </div>
 
-        <div id="restaurantsEmptyState" class="restaurant-empty-state d-none">
-          <div class="restaurant-empty-icon"><i class="bi bi-search-heart"></i></div>
-          <h3>No matching restaurants found</h3>
-          <p>Try another restaurant name, owner name, or switch back to All Restaurants.</p>
+        <h3>No restaurants found</h3>
+
+        <p>
+          No restaurant matches your current search or filter.
+        </p>
+
+        <button
+          type="button"
+          id="restaurantResetFilters"
+          class="restaurant-reset-button"
+        >
+          Reset Filters
+        </button>
+
+      </div>
+
+
+    <% } else { %>
+
+
+      <!-- No restaurants in database -->
+      <div class="restaurant-empty-state">
+
+        <div class="restaurant-empty-icon">
+          <i class="bi bi-shop-window"></i>
         </div>
-      <% } else { %>
-        <div class="restaurant-empty-state">
-          <div class="restaurant-empty-icon"><i class="bi bi-shop-window"></i></div>
-          <h3>No restaurants available</h3>
-          <p>Registered restaurants will appear here with their profile image, contact details, and quick actions.</p>
-        </div>
-      <% } %>
-    </div>
+
+        <h3>No restaurants available</h3>
+
+        <p>
+          Registered restaurants will appear here when they
+          join the FoodBridge platform.
+        </p>
+
+      </div>
+
+
+    <% } %>
+
   </section>
+
 </div>
 
-<script>
-  (function () {
-    const nameInput = document.getElementById('restaurantNameSearchInput');
-    const ownerInput = document.getElementById('restaurantOwnerSearchInput');
-    const clearNameButton = document.getElementById('restaurantClearNameSearch');
-    const clearOwnerButton = document.getElementById('restaurantClearOwnerSearch');
-    const filterGroup = document.getElementById('restaurantsFilterGroup');
-    const rows = Array.from(document.querySelectorAll('.restaurant-row'));
-    const emptyState = document.getElementById('restaurantsEmptyState');
 
-    if (!nameInput || !ownerInput || !filterGroup || !rows.length) return;
+<!-- =====================================================
+     SEARCH + FILTER JAVASCRIPT
+     ===================================================== -->
+
+<script>
+
+  (function () {
+
+    const searchInput =
+      document.getElementById('restaurantSearchInput');
+
+    const clearButton =
+      document.getElementById('restaurantClearSearch');
+
+    const filterButtons =
+      document.getElementById('restaurantFilterButtons');
+
+    const rows =
+      Array.from(
+        document.querySelectorAll('.restaurant-management-row')
+      );
+
+    const emptyState =
+      document.getElementById('restaurantEmptySearchState');
+
+    const resultCount =
+      document.getElementById('restaurantResultCount');
+
+    const resetButton =
+      document.getElementById('restaurantResetFilters');
+
+
+    if (!searchInput || !filterButtons || !rows.length) {
+      return;
+    }
+
 
     let activeFilter = 'all';
 
-    const normalize = (value) => (value || '').trim().toLowerCase();
 
-    const updateEmptyState = (visibleCount) => {
-      if (!emptyState) return;
-      emptyState.classList.toggle('d-none', visibleCount !== 0);
+    const normalize = (value) => {
+      return (value || '').trim().toLowerCase();
     };
 
-    const applyFilters = () => {
-      const nameQuery = normalize(nameInput.value);
-      const ownerQuery = normalize(ownerInput.value);
+
+    const updateResults = () => {
+
+      const query =
+        normalize(searchInput.value);
+
       let visibleCount = 0;
 
-      rows.forEach((row) => {
-        const status = row.dataset.status || 'inactive';
-        const searchable = row.dataset.search || '';
-        const matchesStatus = activeFilter === 'all' || status === activeFilter;
-        const matchesName = !nameQuery || searchable.includes(nameQuery);
-        const matchesOwner = !ownerQuery || searchable.includes(ownerQuery);
-        const shouldShow = matchesStatus && matchesName && matchesOwner;
 
-        row.classList.toggle('d-none', !shouldShow);
-        if (shouldShow) visibleCount += 1;
+      rows.forEach((row) => {
+
+        const status =
+          row.dataset.status || 'inactive';
+
+        const searchable =
+          row.dataset.search || '';
+
+        const matchesSearch =
+          !query || searchable.includes(query);
+
+        const matchesFilter =
+          activeFilter === 'all' ||
+          status === activeFilter;
+
+        const shouldShow =
+          matchesSearch && matchesFilter;
+
+
+        row.style.display =
+          shouldShow ? '' : 'none';
+
+
+        if (shouldShow) {
+          visibleCount++;
+        }
+
       });
 
-      updateEmptyState(visibleCount);
+
+      if (resultCount) {
+        resultCount.textContent = visibleCount;
+      }
+
+
+      if (emptyState) {
+
+        emptyState.style.display =
+          visibleCount === 0 ? 'flex' : 'none';
+
+      }
+
     };
 
-    filterGroup.addEventListener('click', (event) => {
-      const button = event.target.closest('.restaurants-filter-btn');
-      if (!button) return;
 
-      activeFilter = button.dataset.filter || 'all';
+    /* Search */
+    searchInput.addEventListener(
+      'input',
+      updateResults
+    );
 
-      filterGroup.querySelectorAll('.restaurants-filter-btn').forEach((item) => {
-        item.classList.toggle('active', item === button);
-      });
 
-      applyFilters();
-    });
+    /* Clear search */
+    if (clearButton) {
 
-    nameInput.addEventListener('input', applyFilters);
-    ownerInput.addEventListener('input', applyFilters);
+      clearButton.addEventListener(
+        'click',
+        () => {
 
-    if (clearNameButton) {
-      clearNameButton.addEventListener('click', () => {
-        nameInput.value = '';
-        applyFilters();
-        nameInput.focus();
-      });
+          searchInput.value = '';
+
+          updateResults();
+
+          searchInput.focus();
+
+        }
+      );
+
     }
 
-    if (clearOwnerButton) {
-      clearOwnerButton.addEventListener('click', () => {
-        ownerInput.value = '';
-        applyFilters();
-        ownerInput.focus();
-      });
+
+    /* Filter buttons */
+    filterButtons.addEventListener(
+      'click',
+      (event) => {
+
+        const button =
+          event.target.closest(
+            '.restaurant-filter-button'
+          );
+
+
+        if (!button) {
+          return;
+        }
+
+
+        activeFilter =
+          button.dataset.filter || 'all';
+
+
+        filterButtons
+          .querySelectorAll(
+            '.restaurant-filter-button'
+          )
+          .forEach((item) => {
+
+            item.classList.toggle(
+              'active',
+              item === button
+            );
+
+          });
+
+
+        updateResults();
+
+      }
+    );
+
+
+    /* Reset */
+    if (resetButton) {
+
+      resetButton.addEventListener(
+        'click',
+        () => {
+
+          searchInput.value = '';
+
+          activeFilter = 'all';
+
+
+          filterButtons
+            .querySelectorAll(
+              '.restaurant-filter-button'
+            )
+            .forEach((button) => {
+
+              button.classList.toggle(
+                'active',
+                button.dataset.filter === 'all'
+              );
+
+            });
+
+
+          updateResults();
+
+        }
+      );
+
     }
 
-    applyFilters();
+
+    updateResults();
+
   })();
+
 </script>
