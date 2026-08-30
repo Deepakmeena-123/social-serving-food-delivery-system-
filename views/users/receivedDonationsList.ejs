@@ -44,12 +44,13 @@
                   <th>Date</th>
                   <th>Pickup</th>
                   <th>Status</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 <% if (!donations || donations.length === 0) { %>
                   <tr>
-                    <td colspan="7" class="text-center text-muted py-4">No received donations found.</td>
+                    <td colspan="8" class="text-center text-muted py-4">No received donations found.</td>
                   </tr>
                 <% } else { %>
                   <% for (const donation of donations) { %>
@@ -70,6 +71,15 @@
                           <span class="badge bg-info text-dark">Received</span>
                         <% } else { %>
                           <span class="badge bg-secondary"><%= donation.status %></span>
+                        <% } %>
+                      </td>
+                      <td>
+                        <% if (donation.status === 'Accepted') { %>
+                          <form action="/receiveddonations/<%= donation._id %>/complete" method="POST">
+                            <button class="btn btn-sm btn-primary">Mark Completed</button>
+                          </form>
+                        <% } else { %>
+                          <span class="text-muted small">—</span>
                         <% } %>
                       </td>
                     </tr>

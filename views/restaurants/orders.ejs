@@ -45,17 +45,21 @@
                   <th>Items</th>
                   <th>Amount</th>
                   <th>Payment</th>
+                  <th>Payment Status</th>
                   <th>Status</th>
                   <th>Date</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 <% if (!orders || orders.length === 0) { %>
                   <tr>
-                    <td colspan="7" class="text-center text-muted py-4">No orders found.</td>
+                    <td colspan="9" class="text-center text-muted py-4">No orders found.</td>
                   </tr>
                 <% } else { %>
                   <% for (const order of orders) { %>
+                    <% const paymentStatus = order.paymentStatus || (order.modeOfPayment === 'COD' ? 'COD' : order.status === 'Success' ? 'Paid' : order.status === 'Failed' ? 'Failed' : 'Pending'); %>
+                    <% const canManageOrder = order.modeOfPayment !== 'ONLINE' || paymentStatus === 'Paid'; %>
                     <tr>
                       <td>#<%= order._id.toString().slice(-6) %></td>
                       <td><%= order.user ? order.user.username : 'Customer' %></td>
@@ -69,6 +73,7 @@
                       </td>
                       <td>₹<%= order.money || 0 %></td>
                       <td><%= order.modeOfPayment || 'N/A' %></td>
+                      <td><span class="badge <%= paymentStatus === 'Paid' || paymentStatus === 'COD' ? 'bg-success' : paymentStatus === 'Failed' ? 'bg-danger' : 'bg-warning text-dark' %>"><%= paymentStatus %></span></td>
                       <td>
                         <% if (order.status === 'Delivered') { %>
                           <span class="badge bg-success">Delivered</span>
@@ -76,11 +81,29 @@
                           <span class="badge bg-warning text-dark">Pending</span>
                         <% } else if (order.status === 'Cancelled') { %>
                           <span class="badge bg-danger">Cancelled</span>
+                        <% } else if (order.status === 'Rejected') { %>
+                          <span class="badge bg-danger">Rejected</span>
+                        <% } else if (order.status === 'OutForDelivery') { %>
+                          <span class="badge bg-info text-dark">Out for Delivery</span>
                         <% } else { %>
                           <span class="badge bg-secondary"><%= order.status %></span>
                         <% } %>
                       </td>
                       <td><%= order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A' %></td>
+                      <td>
+                        <% if (canManageOrder && order.status === 'Pending') { %>
+                          <div class="d-flex gap-1">
+                            <form action="/restaurants/<%= restaurant._id %>/orders/<%= order._id %>/status" method="POST"><input type="hidden" name="status" value="Confirmed"><button class="btn btn-sm btn-success">Confirm</button></form>
+                            <form action="/restaurants/<%= restaurant._id %>/orders/<%= order._id %>/status" method="POST"><input type="hidden" name="status" value="Rejected"><button class="btn btn-sm btn-outline-danger">Reject</button></form>
+                          </div>
+                        <% } else if (canManageOrder && order.status === 'Confirmed') { %>
+                          <form action="/restaurants/<%= restaurant._id %>/orders/<%= order._id %>/status" method="POST"><input type="hidden" name="status" value="Preparing"><button class="btn btn-sm btn-primary">Start Preparing</button></form>
+                        <% } else if (canManageOrder && order.status === 'Preparing') { %>
+                          <form action="/restaurants/<%= restaurant._id %>/orders/<%= order._id %>/status" method="POST"><input type="hidden" name="status" value="OutForDelivery"><button class="btn btn-sm btn-primary">Out for Delivery</button></form>
+                        <% } else { %>
+                          <span class="text-muted small">—</span>
+                        <% } %>
+                      </td>
                     </tr>
                   <% } %>
                 <% } %>

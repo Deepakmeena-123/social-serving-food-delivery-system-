@@ -31,19 +31,22 @@
           <% } else { %>
             <% for (let order of orders) { %>
               <% const orderDate = new Date(order._id.getTimestamp()); %>
+              <% const paymentStatus = order.paymentStatus || (order.modeOfPayment === 'COD' ? 'COD' : order.status === 'Success' ? 'Paid' : order.status === 'Failed' ? 'Failed' : 'Pending'); %>
               <tr>
                 <td>#<%= order._id.toString().slice(-6) %></td>
                 <td><%= order.order && order.order[0] && order.order[0].food && order.order[0].food.restaurant ? order.order[0].food.restaurant.username : 'N/A' %></td>
                 <td><%= order.order ? order.order.length : 0 %></td>
                 <td>₹<%= order.money || 0 %></td>
-                <td><%= order.modeOfPayment || 'N/A' %></td>
+                <td><%= order.modeOfPayment || 'N/A' %> · <%= paymentStatus %></td>
                 <td>
-                  <% if (order.status === 'Success' || order.status === 'Delivered') { %>
-                    <span class="badge bg-success"><%= order.status %></span>
+                  <% if (order.status === 'Delivered') { %>
+                    <span class="badge bg-success">Delivered</span>
                   <% } else if (order.status === 'Pending') { %>
                     <span class="badge bg-warning text-dark">Pending</span>
-                  <% } else if (order.status === 'Cancelled' || order.status === 'Failed') { %>
+                  <% } else if (order.status === 'Rejected' || order.status === 'Cancelled') { %>
                     <span class="badge bg-danger"><%= order.status %></span>
+                  <% } else if (order.status === 'OutForDelivery') { %>
+                    <span class="badge bg-info text-dark">Out for Delivery</span>
                   <% } else { %>
                     <span class="badge bg-secondary"><%= order.status %></span>
                   <% } %>
@@ -66,24 +69,27 @@
     <% } else { %>
       <% for (let order of orders) { %>
         <% const orderDate = new Date(order._id.getTimestamp()); %>
+        <% const paymentStatus = order.paymentStatus || (order.modeOfPayment === 'COD' ? 'COD' : order.status === 'Success' ? 'Paid' : order.status === 'Failed' ? 'Failed' : 'Pending'); %>
         <div class="col-12">
           <div class="card border-0 shadow-sm">
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-start mb-2">
                 <strong>#<%= order._id.toString().slice(-6) %></strong>
-                <% if (order.status === 'Success' || order.status === 'Delivered') { %>
-                  <span class="badge bg-success"><%= order.status %></span>
+                <% if (order.status === 'Delivered') { %>
+                  <span class="badge bg-success">Delivered</span>
                 <% } else if (order.status === 'Pending') { %>
                   <span class="badge bg-warning text-dark">Pending</span>
-                <% } else if (order.status === 'Cancelled' || order.status === 'Failed') { %>
+                <% } else if (order.status === 'Rejected' || order.status === 'Cancelled') { %>
                   <span class="badge bg-danger"><%= order.status %></span>
+                <% } else if (order.status === 'OutForDelivery') { %>
+                  <span class="badge bg-info text-dark">Out for Delivery</span>
                 <% } else { %>
                   <span class="badge bg-secondary"><%= order.status %></span>
                 <% } %>
               </div>
               <p class="mb-1"><strong>Restaurant:</strong> <%= order.order && order.order[0] && order.order[0].food && order.order[0].food.restaurant ? order.order[0].food.restaurant.username : 'N/A' %></p>
               <p class="mb-1"><strong>Amount:</strong> ₹<%= order.money || 0 %></p>
-              <p class="mb-1"><strong>Payment:</strong> <%= order.modeOfPayment || 'N/A' %></p>
+              <p class="mb-1"><strong>Payment:</strong> <%= order.modeOfPayment || 'N/A' %> · <%= paymentStatus %></p>
               <p class="mb-3"><strong>Date:</strong> <%= orderDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %></p>
               <a href="/orderhistory/<%=order._id%>" class="btn btn-primary w-100">View Details</a>
             </div>

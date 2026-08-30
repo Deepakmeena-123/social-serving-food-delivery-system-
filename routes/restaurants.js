@@ -9,6 +9,20 @@ const { storage } = require('../cloudinary');
 const upload = multer({ storage });
 const catchAsync = require('../utils/catchAsync');
 
+const RESTAURANT_ORDER_TRANSITIONS = {
+    Pending: ['Confirmed', 'Rejected'],
+    Confirmed: ['Preparing'],
+    Preparing: ['OutForDelivery']
+};
+
+const ACTIVE_ORDER_STATUSES = new Set(['Pending', 'Confirmed', 'Preparing', 'OutForDelivery']);
+
+function restaurantOwnsEntireOrder(order, restaurantId) {
+    return order.order.length > 0 && order.order.every((item) =>
+        item.food && item.food.restaurant && item.food.restaurant.equals(restaurantId)
+    );
+}
+
 // All restaurant Route
 router.get('/',catchAsync(async (req,res) => {
     if(!req.user){
@@ -99,7 +113,9 @@ router.get('/:id/dashboard', catchAsync(async (req, res) => {
     const totalFoodItems = restaurant.cart.length;
     const totalOrders = filteredOrders.length;
     const totalDonations = await Donation.countDocuments({ donorType: 'Restaurant', donorId: restaurant._id });
-    const pendingOrders = filteredOrders.filter((order) => !['Delivered', 'Cancelled', 'Failed'].includes(order.status)).length;
+    const pendingOrders = filteredOrders.filter((order) =>
+        ACTIVE_ORDER_STATUSES.has(order.status) && order.paymentStatus !== 'Failed'
+    ).length;
 
     res.render('restaurants/dashboard', {
         restaurant,
@@ -135,6 +151,45 @@ router.get('/:id/orders', catchAsync(async (req, res) => {
 
     const sortedOrders = restaurantOrders.sort((a, b) => b._id.getTimestamp() - a._id.getTimestamp());
     res.render('restaurants/orders', { restaurant, orders: sortedOrders });
+}));
+
+// Restaurant order lifecycle. Ownership and the next state are both enforced here,
+// rather than trusting the form submitted by the browser.
+router.post('/:id/orders/:orderid/status', catchAsync(async (req, res) => {
+    if (!req.user) {
+        req.flash('error', 'User Must LOGGED IN');
+        return res.redirect('/login');
+    }
+    if (req.user.roles !== 'restaurant' || !req.user._id.equals(req.params.id)) {
+        req.flash('error', 'Not Authorized');
+        return res.redirect('/restaurants');
+    }
+
+    const order = await Order.findById(req.params.orderid).populate('order.food');
+    if (!order) {
+        req.flash('error', 'Order not found');
+        return res.redirect(`/restaurants/${req.params.id}/orders`);
+    }
+    if (!restaurantOwnsEntireOrder(order, req.user._id)) {
+        req.flash('error', 'You can only update orders belonging to your restaurant');
+        return res.redirect(`/restaurants/${req.params.id}/orders`);
+    }
+
+    if (order.modeOfPayment === 'ONLINE' && order.paymentStatus !== 'Paid') {
+        req.flash('error', 'Online payment has not been completed for this order');
+        return res.redirect(`/restaurants/${req.params.id}/orders`);
+    }
+
+    const nextStatus = req.body.status;
+    if (!RESTAURANT_ORDER_TRANSITIONS[order.status]?.includes(nextStatus)) {
+        req.flash('error', 'Invalid order status transition');
+        return res.redirect(`/restaurants/${req.params.id}/orders`);
+    }
+
+    order.status = nextStatus;
+    await order.save();
+    req.flash('success', `Order marked as ${nextStatus}`);
+    return res.redirect(`/restaurants/${req.params.id}/orders`);
 }));
 
 //Rendering Add Food Item To The Menu Form

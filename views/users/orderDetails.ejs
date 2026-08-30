@@ -17,6 +17,10 @@
           <strong><%= order.modeOfPayment || 'N/A' %></strong>
         </div>
         <div class="col-md-4">
+          <p class="mb-1 text-muted">Payment Status</p>
+          <strong><%= order.paymentStatus || (order.modeOfPayment === 'COD' ? 'COD' : order.status === 'Success' ? 'Paid' : order.status === 'Failed' ? 'Failed' : 'Pending') %></strong>
+        </div>
+        <div class="col-md-4">
           <p class="mb-1 text-muted">Status</p>
           <strong><%= order.status || 'N/A' %></strong>
         </div>
@@ -43,6 +47,12 @@
       </div>
     </div>
   </div>
+
+  <% if (currentUser && currentUser.roles === 'customer' && order.status === 'OutForDelivery') { %>
+    <form action="/orderhistory/<%= order._id %>/received" method="POST" class="mb-4">
+      <button class="btn btn-success">I Received My Order</button>
+    </form>
+  <% } %>
 
   <div class="card border-0 shadow-sm">
     <div class="card-header bg-white border-0 py-3">

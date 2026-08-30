@@ -27,6 +27,11 @@ const DonationSchema = new Schema({
         ref: 'user'
     },
     ngoName: String,
+    // Links customer donation payments to their source order without changing old records.
+    sourceOrder: {
+        type: Schema.Types.ObjectId,
+        ref: 'order'
+    },
     donationDate: {
         type: Date,
         default: Date.now

@@ -60,6 +60,7 @@
                     <% const items = order.order || []; %>
                     <% const quantity = items.reduce((sum, item) => sum + (item.count || 0), 0); %>
                     <% const orderDate = new Date(order._id.getTimestamp()); %>
+                    <% const donationStatus = order.donationStatus || order.status; %>
                     <tr>
                       <td>#<%= order._id.toString().slice(-6) %></td>
                       <td><%= order.NGO ? order.NGO.username : 'N/A' %></td>
@@ -68,14 +69,16 @@
                       <td><%= orderDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %></td>
                       <td>₹<%= order.money || 0 %></td>
                       <td>
-                        <% if (order.status === 'Success' || order.status === 'Delivered') { %>
-                          <span class="badge bg-success"><%= order.status %></span>
-                        <% } else if (order.status === 'Pending') { %>
+                        <% if (donationStatus === 'Completed') { %>
+                          <span class="badge bg-success">Completed</span>
+                        <% } else if (donationStatus === 'Accepted') { %>
+                          <span class="badge bg-primary">Accepted</span>
+                        <% } else if (donationStatus === 'Pending') { %>
                           <span class="badge bg-warning text-dark">Pending</span>
-                        <% } else if (order.status === 'Cancelled' || order.status === 'Failed') { %>
-                          <span class="badge bg-danger"><%= order.status %></span>
+                        <% } else if (donationStatus === 'Rejected' || donationStatus === 'Cancelled' || donationStatus === 'Failed') { %>
+                          <span class="badge bg-danger"><%= donationStatus %></span>
                         <% } else { %>
-                          <span class="badge bg-secondary"><%= order.status %></span>
+                          <span class="badge bg-secondary"><%= donationStatus %></span>
                         <% } %>
                       </td>
                     </tr>

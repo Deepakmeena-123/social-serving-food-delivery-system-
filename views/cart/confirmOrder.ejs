@@ -72,6 +72,11 @@
           },
         };
         const rzp1 = new Razorpay(options);
+        rzp1.on('payment.failed', function (response) {
+          axios.post('/cart/payment/failed', {
+            razorpay_order_id: response.error && response.error.metadata && response.error.metadata.order_id,
+          }, { headers });
+        });
         rzp1.open();
       });
   };

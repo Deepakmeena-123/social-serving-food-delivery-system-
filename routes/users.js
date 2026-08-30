@@ -16,6 +16,7 @@ const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 
 const isNgoUser = (user) => user && user.roles === 'NGO';
 const isCustomerUser = (user) => user && user.roles === 'customer';
+const ACTIVE_ORDER_STATUSES = new Set(['Pending', 'Confirmed', 'Preparing', 'OutForDelivery']);
 
 //Getting Profile
 router.get('/profile/:id',catchAsync(async (req,res) => {
@@ -51,30 +52,11 @@ router.get('/orderhistory',catchAsync( async (req,res) => {
         req.flash('error',"User Must LOGGED IN")
         res.redirect('/login')
     } else {
-        const user = await User.findById(req.user._id).populate({
-            path: 'order',
-            populate: {
-                path: 'NGO'
-            }
-        }).populate({
-            path:'order',
-            populate: {
-                path: 'user'
-            }
-        }).populate({
-            path: 'order',
-            populate: {
-                path: 'order',
-                populate: {
-                    path: 'food',
-                    populate:{
-                        path: 'restaurant'
-                    }
-                }
-            }
-        })
-        const orders = user.order
-        console.log(orders)
+        const orders = await Order.find({ user: req.user._id })
+            .populate('NGO')
+            .populate('user')
+            .populate({ path: 'order', populate: { path: 'food', populate: { path: 'restaurant' } } })
+            .sort({ createdAt: -1, _id: -1 })
         res.render('order',{ orders, str: "Orders" })
     }
 }))
@@ -123,7 +105,9 @@ router.get('/customer/dashboard', catchAsync(async (req, res) => {
     const recentDonations = donationOrders.slice(0, 5)
 
     const totalOrders = orders.length
-    const pendingOrders = orders.filter((order) => !['Success', 'Delivered', 'Cancelled', 'Failed'].includes(order.status)).length
+    const pendingOrders = orders.filter((order) =>
+        ACTIVE_ORDER_STATUSES.has(order.status) && order.paymentStatus !== 'Failed'
+    ).length
     const totalDonations = donationOrders.length
     const cartItems = (user.cart || []).reduce((sum, item) => sum + (item.count || 0), 0)
 
@@ -169,6 +153,14 @@ router.get('/customer/donations/history', catchAsync(async (req, res) => {
     }
 
     const donationOrders = (user.order || []).filter((order) => order.NGO).reverse()
+    const donationRecords = await Donation.find({
+        donorId: user._id,
+        sourceOrder: { $in: donationOrders.map((order) => order._id) }
+    }).select('sourceOrder status')
+    const donationStatusByOrder = new Map(donationRecords.map((donation) => [donation.sourceOrder.toString(), donation.status]))
+    donationOrders.forEach((order) => {
+        order.donationStatus = donationStatusByOrder.get(order._id.toString())
+    })
     res.render('users/customerDonationHistory', { donationOrders })
 }))
 
@@ -290,6 +282,10 @@ router.post('/receiveddonations/:id/accept', catchAsync(async (req, res) => {
         return res.redirect('/receiveddonations')
     }
 
+    if (donation.status !== 'Pending') {
+        req.flash('error', 'Only pending donations can be accepted')
+        return res.redirect('/receiveddonations')
+    }
     donation.status = 'Accepted'
     await donation.save()
     req.flash('success', 'Donation accepted successfully')
@@ -318,10 +314,41 @@ router.post('/receiveddonations/:id/reject', catchAsync(async (req, res) => {
         return res.redirect('/receiveddonations')
     }
 
+    if (donation.status !== 'Pending') {
+        req.flash('error', 'Only pending donations can be rejected')
+        return res.redirect('/receiveddonations')
+    }
     donation.status = 'Rejected'
     await donation.save()
     req.flash('success', 'Donation rejected')
     res.redirect('/receiveddonations')
+}))
+
+router.post('/receiveddonations/:id/complete', catchAsync(async (req, res) => {
+    if (!req.user) {
+        req.flash('error', 'User Must LOGGED IN')
+        return res.redirect('/login')
+    }
+    const user = await User.findById(req.user._id)
+    if (!isNgoUser(user)) {
+        req.flash('error', 'Not Authorized')
+        return res.redirect('/')
+    }
+
+    const donation = await Donation.findOne({ _id: req.params.id, ngoId: user._id })
+    if (!donation) {
+        req.flash('error', 'Donation not found')
+        return res.redirect('/receiveddonations/received')
+    }
+    if (donation.status !== 'Accepted') {
+        req.flash('error', 'Only accepted donations can be completed')
+        return res.redirect('/receiveddonations/received')
+    }
+
+    donation.status = 'Completed'
+    await donation.save()
+    req.flash('success', 'Donation marked as completed')
+    res.redirect('/receiveddonations/received')
 }))
 
 //Order Details
@@ -355,6 +382,32 @@ router.get('/orderhistory/:orderid', catchAsync(async(req,res) => {
 
         res.render('users/orderDetails', {order})
     }
+}))
+
+router.post('/orderhistory/:orderid/received', catchAsync(async (req, res) => {
+    if (!req.user) {
+        req.flash('error', 'User Must LOGGED IN')
+        return res.redirect('/login')
+    }
+    if (req.user.roles !== 'customer') {
+        req.flash('error', 'Not Authorized')
+        return res.redirect('/orderhistory')
+    }
+
+    const order = await Order.findOne({ _id: req.params.orderid, user: req.user._id })
+    if (!order) {
+        req.flash('error', 'Order not found')
+        return res.redirect('/orderhistory')
+    }
+    if (order.status !== 'OutForDelivery') {
+        req.flash('error', 'This order is not ready for delivery confirmation')
+        return res.redirect(`/orderhistory/${order._id}`)
+    }
+
+    order.status = 'Delivered'
+    await order.save()
+    req.flash('success', 'Order marked as delivered')
+    return res.redirect(`/orderhistory/${order._id}`)
 }))
 
 //Register
