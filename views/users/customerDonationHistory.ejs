@@ -1,94 +1,468 @@
 <% layout('layouts/boilerplate') %>
 
 <div class="customer-dashboard container py-4">
+
   <div class="row g-4 align-items-start">
+
+
+    <!-- SIDEBAR -->
+
     <aside class="col-lg-3">
+
       <div class="restaurant-sidebar card border-0 shadow-sm h-100">
+
         <div class="card-body p-3">
+
           <div class="restaurant-brand mb-4">
-            <div class="restaurant-brand-icon">FB</div>
-            <div>
-              <h5 class="mb-0">FoodBridge</h5>
-              <small class="text-muted">Customer Panel</small>
+
+            <div class="restaurant-brand-icon">
+              FB
             </div>
+
+            <div>
+
+              <h5 class="mb-0">
+                FoodBridge
+              </h5>
+
+              <small class="text-muted">
+                Customer Panel
+              </small>
+
+            </div>
+
           </div>
+
 
           <nav class="nav flex-column restaurant-nav">
-            <a class="nav-link" href="/customer/dashboard"><i class="bi bi-grid-1x2-fill"></i> Home</a>
-            <a class="nav-link" href="/restaurants"><i class="bi bi-shop"></i> Restaurants</a>
-            <a class="nav-link" href="/orderhistory"><i class="bi bi-bag-check"></i> Orders</a>
-            <a class="nav-link active" href="/customer/donations/history"><i class="bi bi-gift"></i> Donations</a>
-            <a class="nav-link" href="/cart"><i class="bi bi-cart3"></i> Cart</a>
-            <a class="nav-link" href="/profile/<%= currentUser._id %>"><i class="bi bi-person-circle"></i> Profile</a>
-            <a class="nav-link text-danger" href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
+
+            <a
+              class="nav-link"
+              href="/customer/dashboard"
+            >
+              <i class="bi bi-grid-1x2-fill"></i>
+              Home
+            </a>
+
+
+            <a
+              class="nav-link"
+              href="/restaurants"
+            >
+              <i class="bi bi-shop"></i>
+              Restaurants
+            </a>
+
+
+            <a
+              class="nav-link"
+              href="/orderhistory"
+            >
+              <i class="bi bi-bag-check"></i>
+              Orders
+            </a>
+
+
+            <a
+              class="nav-link active"
+              href="/customer/donations/history"
+            >
+              <i class="bi bi-gift"></i>
+              Donations
+            </a>
+
+
+            <a
+              class="nav-link"
+              href="/cart"
+            >
+              <i class="bi bi-cart3"></i>
+              Cart
+            </a>
+
+
+            <a
+              class="nav-link"
+              href="/profile/<%= currentUser._id %>"
+            >
+              <i class="bi bi-person-circle"></i>
+              Profile
+            </a>
+
+
+            <a
+              class="nav-link text-danger"
+              href="/logout"
+            >
+              <i class="bi bi-box-arrow-right"></i>
+              Logout
+            </a>
+
           </nav>
+
         </div>
+
       </div>
+
     </aside>
 
+
+    <!-- MAIN -->
+
     <main class="col-lg-9">
-      <div class="d-flex justify-content-between align-items-center mb-4">
+
+
+      <div
+        class="d-flex justify-content-between align-items-center mb-4"
+      >
+
         <div>
-          <p class="text-muted mb-1">Customer donation activity</p>
-          <h1 class="mb-0">Donation History</h1>
+
+          <p class="text-muted mb-1">
+            Customer donation activity
+          </p>
+
+          <h1 class="mb-0">
+            Donation History
+          </h1>
+
         </div>
-        <a href="/cart/donation" class="btn btn-success"><i class="bi bi-plus-circle me-1"></i> Donate Food</a>
+
+
+        <a
+          href="/cart/donation"
+          class="btn btn-success"
+        >
+          <i class="bi bi-plus-circle me-1"></i>
+          Donate Food
+        </a>
+
       </div>
 
+
       <div class="card border-0 shadow-sm">
+
         <div class="card-body p-0">
+
           <div class="table-responsive">
+
             <table class="table align-middle mb-0">
+
               <thead class="table-light">
+
                 <tr>
-                  <th>Order</th>
-                  <th>NGO</th>
-                  <th>Items</th>
-                  <th>Quantity</th>
-                  <th>Date</th>
-                  <th>Amount</th>
-                  <th>Status</th>
+
+                  <th>
+                    Order
+                  </th>
+
+                  <th>
+                    NGO
+                  </th>
+
+                  <th>
+                    Items
+                  </th>
+
+                  <th>
+                    Quantity
+                  </th>
+
+                  <th>
+                    Date
+                  </th>
+
+                  <th>
+                    Amount
+                  </th>
+
+                  <th>
+                    Donation Status
+                  </th>
+
+                  <th>
+                    Delivery Status
+                  </th>
+
                 </tr>
+
               </thead>
+
+
               <tbody>
-                <% if (!donationOrders || donationOrders.length === 0) { %>
+
+
+                <% if (
+                  !donationOrders ||
+                  donationOrders.length === 0
+                ) { %>
+
                   <tr>
-                    <td colspan="6" class="text-center text-muted py-4">No donation records found.</td>
+
+                    <td
+                      colspan="8"
+                      class="text-center text-muted py-5"
+                    >
+
+                      <i
+                        class="bi bi-gift fs-2 d-block mb-2"
+                      ></i>
+
+                      No donation records found.
+
+                    </td>
+
                   </tr>
+
+
                 <% } else { %>
-                  <% for (const order of donationOrders) { %>
-                    <% const items = order.order || []; %>
-                    <% const quantity = items.reduce((sum, item) => sum + (item.count || 0), 0); %>
-                    <% const orderDate = new Date(order._id.getTimestamp()); %>
-                    <% const donationStatus = order.donationStatus || order.status; %>
+
+
+                  <% for (
+                    const order of donationOrders
+                  ) { %>
+
+
+                    <%
+                      const items =
+                        order.order || [];
+
+                      const quantity =
+                        items.reduce(
+                          (sum, item) =>
+                            sum +
+                            (item.count || 0),
+                          0
+                        );
+
+                      const orderDate =
+                        new Date(
+                          order.createdAt ||
+                          order._id.getTimestamp()
+                        );
+
+                      const donationStatus =
+                        order.donationStatus ||
+                        'Pending';
+
+                      const deliveryStatus =
+                        order.donationDeliveryStatus ||
+                        'Pending';
+                    %>
+
+
                     <tr>
-                      <td>#<%= order._id.toString().slice(-6) %></td>
-                      <td><%= order.NGO ? order.NGO.username : 'N/A' %></td>
-                      <td><%= items.map((item) => item.food && item.food.name ? item.food.name : 'Item').join(', ') %></td>
-                      <td><%= quantity %></td>
-                      <td><%= orderDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %></td>
-                      <td>₹<%= order.money || 0 %></td>
+
+
+                      <!-- ORDER -->
+
                       <td>
-                        <% if (donationStatus === 'Completed') { %>
-                          <span class="badge bg-success">Completed</span>
-                        <% } else if (donationStatus === 'Accepted') { %>
-                          <span class="badge bg-primary">Accepted</span>
-                        <% } else if (donationStatus === 'Pending') { %>
-                          <span class="badge bg-warning text-dark">Pending</span>
-                        <% } else if (donationStatus === 'Rejected' || donationStatus === 'Cancelled' || donationStatus === 'Failed') { %>
-                          <span class="badge bg-danger"><%= donationStatus %></span>
-                        <% } else { %>
-                          <span class="badge bg-secondary"><%= donationStatus %></span>
-                        <% } %>
+
+                        <strong>
+                          #<%= order._id
+                            .toString()
+                            .slice(-6)
+                            .toUpperCase()
+                          %>
+                        </strong>
+
                       </td>
+
+
+                      <!-- NGO -->
+
+                      <td>
+
+                        <strong>
+                          <%= order.NGO
+                            ? order.NGO.username
+                            : 'N/A'
+                          %>
+                        </strong>
+
+                      </td>
+
+
+                      <!-- ITEMS -->
+
+                      <td>
+
+                        <%= items
+                          .map(
+                            item =>
+                              item.food &&
+                              item.food.name
+                                ? item.food.name
+                                : 'Item'
+                          )
+                          .join(', ')
+                        %>
+
+                      </td>
+
+
+                      <!-- QUANTITY -->
+
+                      <td>
+                        <%= quantity %>
+                      </td>
+
+
+                      <!-- DATE -->
+
+                      <td>
+
+                        <%= orderDate
+                          .toLocaleDateString(
+                            'en-IN',
+                            {
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric'
+                            }
+                          )
+                        %>
+
+                      </td>
+
+
+                      <!-- AMOUNT -->
+
+                      <td>
+
+                        ₹<%= Number(
+                          order.money || 0
+                        ).toLocaleString(
+                          'en-IN'
+                        ) %>
+
+                      </td>
+
+
+                      <!-- DONATION STATUS -->
+
+                      <td>
+
+                        <% if (
+                          donationStatus ===
+                          'Accepted'
+                        ) { %>
+
+                          <span
+                            class="badge bg-primary px-3 py-2"
+                          >
+                            Accepted
+                          </span>
+
+                        <% } else if (
+                          donationStatus ===
+                          'Received'
+                        ) { %>
+
+                          <span
+                            class="badge bg-success px-3 py-2"
+                          >
+                            Received
+                          </span>
+
+                        <% } else if (
+                          donationStatus ===
+                          'Rejected'
+                        ) { %>
+
+                          <span
+                            class="badge bg-danger px-3 py-2"
+                          >
+                            Rejected
+                          </span>
+
+                        <% } else { %>
+
+                          <span
+                            class="badge bg-warning text-dark px-3 py-2"
+                          >
+                            Pending
+                          </span>
+
+                        <% } %>
+
+                      </td>
+
+
+                      <!-- DELIVERY STATUS -->
+
+                      <td>
+
+                        <% if (
+                          deliveryStatus ===
+                          'Delivered'
+                        ) { %>
+
+                          <span
+                            class="badge bg-success px-3 py-2"
+                          >
+                            Delivered
+                          </span>
+
+
+                        <% } else if (
+                          deliveryStatus ===
+                          'OutForDelivery'
+                        ) { %>
+
+                          <span
+                            class="badge bg-info text-dark px-3 py-2"
+                          >
+                            Out for Delivery
+                          </span>
+
+
+                        <% } else if (
+                          deliveryStatus ===
+                          'Cancelled'
+                        ) { %>
+
+                          <span
+                            class="badge bg-danger px-3 py-2"
+                          >
+                            Cancelled
+                          </span>
+
+
+                        <% } else { %>
+
+                          <span
+                            class="badge bg-warning text-dark px-3 py-2"
+                          >
+                            Pending
+                          </span>
+
+                        <% } %>
+
+                      </td>
+
+
                     </tr>
+
+
                   <% } %>
+
+
                 <% } %>
+
               </tbody>
+
             </table>
+
           </div>
+
         </div>
+
       </div>
+
+
     </main>
+
   </div>
+
 </div>

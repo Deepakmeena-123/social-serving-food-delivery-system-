@@ -10,6 +10,11 @@ The system supports multiple user roles, location-based food discovery, discount
 
 ---
 
+## 🚀 Live Demo
+
+👉 **[Visit FoodBridge Live](https://social-serving-food-delivery-system.onrender.com)**
+
+
 ## Features
 
 ### 🍽️ Food Tracking & Restaurant Management
@@ -674,12 +679,6 @@ https://www.linkedin.com/in/deepak-meena-a28848372/
 ### Project Repository
 
 https://github.com/Deepakmeena-123/Social-Serving-Food-Delivery-System
-
----
-
-# License
-
-This project is licensed under the MIT License.
 
 ---
 

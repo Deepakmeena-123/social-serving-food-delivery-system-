@@ -1,91 +1,737 @@
 <% layout('layouts/boilerplate') %>
 
 <div class="container py-4 customer-order-details">
+
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
   <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+
     <div>
       <p class="text-muted mb-1">Order details</p>
-      <h1 class="mb-0">Order #<%= order._id.toString().slice(-6) %></h1>
+
+      <h1 class="mb-0">
+        Order #<%= order._id.toString().slice(-6) %>
+      </h1>
     </div>
-    <a href="/orderhistory" class="btn btn-outline-secondary">Back to Orders</a>
+
+    <a
+      href="/orderhistory"
+      class="btn btn-outline-secondary"
+    >
+      Back to Orders
+    </a>
+
   </div>
 
-  <div class="card border-0 shadow-sm mb-4">
-    <div class="card-body">
-      <div class="row g-3">
-        <div class="col-md-4">
-          <p class="mb-1 text-muted">Payment Method</p>
-          <strong><%= order.modeOfPayment || 'N/A' %></strong>
-        </div>
-        <div class="col-md-4">
-          <p class="mb-1 text-muted">Payment Status</p>
-          <strong><%= order.paymentStatus || (order.modeOfPayment === 'COD' ? 'COD' : order.status === 'Success' ? 'Paid' : order.status === 'Failed' ? 'Failed' : 'Pending') %></strong>
-        </div>
-        <div class="col-md-4">
-          <p class="mb-1 text-muted">Status</p>
-          <strong><%= order.status || 'N/A' %></strong>
-        </div>
-        <div class="col-md-4">
-          <p class="mb-1 text-muted">Total Amount</p>
-          <strong>₹<%= order.money || 0 %></strong>
-        </div>
-        <div class="col-md-4">
-          <p class="mb-1 text-muted">Order Date</p>
-          <strong><%= new Date(order._id.getTimestamp()).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %></strong>
-        </div>
-        <div class="col-md-8">
-          <p class="mb-1 text-muted">Delivery Address</p>
-          <strong><%= order.user && order.user.location ? order.user.location : 'N/A' %></strong>
-        </div>
-        <div class="col-md-6">
-          <p class="mb-1 text-muted">Customer</p>
-          <strong><%= order.user ? order.user.username : 'N/A' %></strong>
-        </div>
-        <div class="col-md-6">
-          <p class="mb-1 text-muted">NGO</p>
-          <strong><%= order.NGO ? order.NGO.username : 'Not selected' %></strong>
+
+  <!-- =====================================================
+       DONATION NOTICE
+  ====================================================== -->
+
+  <% if (order.NGO) { %>
+
+    <div class="alert alert-info d-flex align-items-center mb-4">
+
+      <i class="bi bi-gift-fill me-2"></i>
+
+      <div>
+        <strong>This is a donation order.</strong>
+
+        <div class="small mt-1">
+          The donated food will be delivered to the selected NGO.
+          The NGO must confirm receipt of the food.
         </div>
       </div>
-    </div>
-  </div>
 
-  <% if (currentUser && currentUser.roles === 'customer' && order.status === 'OutForDelivery') { %>
-    <form action="/orderhistory/<%= order._id %>/received" method="POST" class="mb-4">
-      <button class="btn btn-success">I Received My Order</button>
-    </form>
+    </div>
+
   <% } %>
 
-  <div class="card border-0 shadow-sm">
-    <div class="card-header bg-white border-0 py-3">
-      <h5 class="mb-0">Ordered Food Items</h5>
-    </div>
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table align-middle mb-0">
-          <thead class="table-light">
-            <tr>
-              <th>Food</th>
-              <th>Restaurant</th>
-              <th>Quantity</th>
-              <th>Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% for (let item of order.order) { %>
-              <tr>
-                <td>
-                  <div class="d-flex align-items-center gap-2">
-                    <img src="<%= item.food && item.food.image && item.food.image.url ? item.food.image.url : 'https://openclipart.org/image/800px/289282' %>" alt="food" class="rounded" style="width: 44px; height: 44px; object-fit: cover;" />
-                    <span><%= item.food && item.food.name ? item.food.name : 'N/A' %></span>
-                  </div>
-                </td>
-                <td><%= item.food && item.food.restaurant ? item.food.restaurant.username : 'N/A' %></td>
-                <td><%= item.count || 0 %></td>
-                <td>₹<%= item.money || 0 %></td>
-              </tr>
-            <% } %>
-          </tbody>
-        </table>
+
+  <!-- =====================================================
+       ORDER SUMMARY
+  ====================================================== -->
+
+  <div class="card border-0 shadow-sm mb-4">
+
+    <div class="card-body">
+
+      <div class="row g-4">
+
+
+        <!-- PAYMENT METHOD -->
+
+        <div class="col-md-4">
+
+          <p class="mb-1 text-muted">
+            Payment Method
+          </p>
+
+          <strong>
+            <%= order.modeOfPayment || 'N/A' %>
+          </strong>
+
+        </div>
+
+
+        <!-- PAYMENT STATUS -->
+
+        <div class="col-md-4">
+
+          <p class="mb-1 text-muted">
+            Payment Status
+          </p>
+
+          <strong>
+
+            <%
+              const paymentStatus =
+                order.paymentStatus ||
+                (
+                  order.modeOfPayment === 'COD'
+                    ? 'COD'
+                    : order.status === 'Success'
+                      ? 'Paid'
+                      : order.status === 'Failed'
+                        ? 'Failed'
+                        : 'Pending'
+                );
+            %>
+
+            <%= paymentStatus %>
+
+          </strong>
+
+        </div>
+
+
+        <!-- NORMAL ORDER STATUS -->
+
+        <div class="col-md-4">
+
+          <p class="mb-1 text-muted">
+            Status
+          </p>
+
+          <% if (order.status === 'Delivered') { %>
+
+            <span class="badge bg-success px-3 py-2">
+              Delivered
+            </span>
+
+          <% } else if (order.status === 'OutForDelivery') { %>
+
+            <span class="badge bg-info text-dark px-3 py-2">
+              Out for Delivery
+            </span>
+
+          <% } else if (order.status === 'Preparing') { %>
+
+            <span class="badge bg-primary px-3 py-2">
+              Preparing
+            </span>
+
+          <% } else if (order.status === 'Confirmed') { %>
+
+            <span class="badge bg-primary px-3 py-2">
+              Confirmed
+            </span>
+
+          <% } else if (order.status === 'Pending') { %>
+
+            <span class="badge bg-warning text-dark px-3 py-2">
+              Pending
+            </span>
+
+          <% } else if (order.status === 'Rejected') { %>
+
+            <span class="badge bg-danger px-3 py-2">
+              Rejected
+            </span>
+
+          <% } else if (order.status === 'Cancelled') { %>
+
+            <span class="badge bg-danger px-3 py-2">
+              Cancelled
+            </span>
+
+          <% } else { %>
+
+            <span class="badge bg-secondary px-3 py-2">
+              <%= order.status || 'N/A' %>
+            </span>
+
+          <% } %>
+
+        </div>
+
+
+        <!-- TOTAL AMOUNT -->
+
+        <div class="col-md-4">
+
+          <p class="mb-1 text-muted">
+            Total Amount
+          </p>
+
+          <strong>
+            ₹<%= order.money || 0 %>
+          </strong>
+
+        </div>
+
+
+        <!-- ORDER DATE -->
+
+        <div class="col-md-4">
+
+          <p class="mb-1 text-muted">
+            Order Date
+          </p>
+
+          <strong>
+
+            <%
+              let orderDate = 'N/A';
+
+              if (order.createdAt) {
+
+                orderDate =
+                  new Date(
+                    order.createdAt
+                  ).toLocaleDateString(
+                    'en-IN',
+                    {
+                      day: '2-digit',
+                      month: 'short',
+                      year: 'numeric'
+                    }
+                  );
+
+              } else if (
+                order._id &&
+                order._id.getTimestamp
+              ) {
+
+                orderDate =
+                  new Date(
+                    order._id.getTimestamp()
+                  ).toLocaleDateString(
+                    'en-IN',
+                    {
+                      day: '2-digit',
+                      month: 'short',
+                      year: 'numeric'
+                    }
+                  );
+              }
+            %>
+
+            <%= orderDate %>
+
+          </strong>
+
+        </div>
+
+
+        <!-- DELIVERY ADDRESS -->
+
+        <div class="col-md-8">
+
+          <p class="mb-1 text-muted">
+            Delivery Address
+          </p>
+
+          <strong>
+            <%= order.user && order.user.location
+              ? order.user.location
+              : 'N/A'
+            %>
+          </strong>
+
+        </div>
+
+
+        <!-- CUSTOMER -->
+
+        <div class="col-md-6">
+
+          <p class="mb-1 text-muted">
+            Customer
+          </p>
+
+          <strong>
+            <%= order.user
+              ? order.user.username
+              : 'N/A'
+            %>
+          </strong>
+
+        </div>
+
+
+        <!-- NGO -->
+
+        <div class="col-md-6">
+
+          <p class="mb-1 text-muted">
+            NGO
+          </p>
+
+          <% if (order.NGO) { %>
+
+            <strong>
+              <%= order.NGO.username || 'Selected NGO' %>
+            </strong>
+
+          <% } else { %>
+
+            <strong class="text-muted">
+              Not selected
+            </strong>
+
+          <% } %>
+
+        </div>
+
       </div>
+
     </div>
+
   </div>
+
+
+  <!-- =====================================================
+       DONATION DELIVERY TRACKING
+  ====================================================== -->
+
+  <% if (order.NGO) { %>
+
+    <div class="card border-0 shadow-sm mb-4">
+
+      <div class="card-header bg-white border-0 py-3">
+
+        <div class="d-flex align-items-center">
+
+          <i class="bi bi-gift-fill text-success me-2"></i>
+
+          <h5 class="mb-0">
+            Donation Delivery Tracking
+          </h5>
+
+        </div>
+
+      </div>
+
+
+      <div class="card-body">
+
+        <div class="row g-4">
+
+
+          <!-- NGO -->
+
+          <div class="col-md-4">
+
+            <p class="text-muted mb-1">
+              Receiving NGO
+            </p>
+
+            <strong>
+              <%= order.NGO.username || 'NGO' %>
+            </strong>
+
+          </div>
+
+
+          <!-- DELIVERY STATUS -->
+
+          <div class="col-md-4">
+
+            <p class="text-muted mb-1">
+              Delivery Status
+            </p>
+
+
+            <%
+              const donationDeliveryStatus =
+                order.donationDeliveryStatus ||
+                'Pending';
+            %>
+
+
+            <% if (
+              donationDeliveryStatus === 'Delivered'
+            ) { %>
+
+              <span class="badge bg-success px-3 py-2">
+                Delivered
+              </span>
+
+            <% } else if (
+              donationDeliveryStatus === 'OutForDelivery'
+            ) { %>
+
+              <span class="badge bg-info text-dark px-3 py-2">
+                Out for Delivery
+              </span>
+
+            <% } else if (
+              donationDeliveryStatus === 'Preparing'
+            ) { %>
+
+              <span class="badge bg-primary px-3 py-2">
+                Preparing
+              </span>
+
+            <% } else if (
+              donationDeliveryStatus === 'Rejected'
+            ) { %>
+
+              <span class="badge bg-danger px-3 py-2">
+                Rejected
+              </span>
+
+            <% } else { %>
+
+              <span class="badge bg-warning text-dark px-3 py-2">
+                Pending
+              </span>
+
+            <% } %>
+
+          </div>
+
+
+          <!-- DONATION STATUS -->
+
+          <div class="col-md-4">
+
+            <p class="text-muted mb-1">
+              NGO Donation Status
+            </p>
+
+
+            <%
+              const donationApprovalStatus =
+                order.donationStatus ||
+                'Pending';
+            %>
+
+
+            <% if (
+              donationApprovalStatus === 'Accepted'
+            ) { %>
+
+              <span class="badge bg-success px-3 py-2">
+                Accepted
+              </span>
+
+            <% } else if (
+              donationApprovalStatus === 'Received'
+            ) { %>
+
+              <span class="badge bg-success px-3 py-2">
+                Received
+              </span>
+
+            <% } else if (
+              donationApprovalStatus === 'Rejected'
+            ) { %>
+
+              <span class="badge bg-danger px-3 py-2">
+                Rejected
+              </span>
+
+            <% } else { %>
+
+              <span class="badge bg-warning text-dark px-3 py-2">
+                Pending NGO Approval
+              </span>
+
+            <% } %>
+
+          </div>
+
+        </div>
+
+
+        <!-- INFORMATION MESSAGE -->
+
+        <div class="mt-4">
+
+          <% if (
+            donationDeliveryStatus === 'Pending'
+          ) { %>
+
+            <div class="alert alert-warning mb-0">
+
+              <i class="bi bi-clock me-2"></i>
+
+              Waiting for the restaurant to prepare
+              and send the donated food to the NGO.
+
+            </div>
+
+
+          <% } else if (
+            donationDeliveryStatus === 'Preparing'
+          ) { %>
+
+            <div class="alert alert-primary mb-0">
+
+              <i class="bi bi-fire me-2"></i>
+
+              The restaurant is preparing your
+              donated food for the NGO.
+
+            </div>
+
+
+          <% } else if (
+            donationDeliveryStatus === 'OutForDelivery'
+          ) { %>
+
+            <div class="alert alert-info mb-0">
+
+              <i class="bi bi-truck me-2"></i>
+
+              The donated food is out for delivery
+              to the selected NGO.
+
+            </div>
+
+
+          <% } else if (
+            donationDeliveryStatus === 'Delivered'
+          ) { %>
+
+            <div class="alert alert-success mb-0">
+
+              <i class="bi bi-check-circle me-2"></i>
+
+              <strong>
+                Your donated food has been delivered
+                successfully to the NGO.
+              </strong>
+
+            </div>
+
+          <% } %>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  <% } %>
+
+
+  <!-- =====================================================
+       NORMAL CUSTOMER DELIVERY CONFIRMATION
+       
+       IMPORTANT:
+       This button appears ONLY for normal orders.
+       
+       Donation orders are received by NGO.
+  ====================================================== -->
+
+  <% if (
+    !order.NGO &&
+    typeof currentUser !== 'undefined' &&
+    currentUser &&
+    currentUser.roles === 'customer' &&
+    order.status === 'OutForDelivery'
+  ) { %>
+
+    <div class="mb-4">
+
+      <form
+        action="/orderhistory/<%= order._id %>/received"
+        method="POST"
+      >
+
+        <button
+          type="submit"
+          class="btn btn-success"
+        >
+
+          <i class="bi bi-check-circle me-1"></i>
+
+          I Received My Order
+
+        </button>
+
+      </form>
+
+    </div>
+
+  <% } %>
+
+
+  <!-- =====================================================
+       ORDERED FOOD ITEMS
+  ====================================================== -->
+
+  <div class="card border-0 shadow-sm">
+
+    <div class="card-header bg-white border-0 py-3">
+
+      <h5 class="mb-0">
+        Ordered Food Items
+      </h5>
+
+    </div>
+
+
+    <div class="card-body p-0">
+
+      <div class="table-responsive">
+
+        <table class="table align-middle mb-0">
+
+          <thead class="table-light">
+
+            <tr>
+
+              <th>
+                Food
+              </th>
+
+              <th>
+                Restaurant
+              </th>
+
+              <th>
+                Quantity
+              </th>
+
+              <th>
+                Price
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <% if (
+              order.order &&
+              order.order.length
+            ) { %>
+
+
+              <% for (
+                let item of order.order
+              ) { %>
+
+                <tr>
+
+                  <!-- FOOD -->
+
+                  <td>
+
+                    <div
+                      class="d-flex align-items-center gap-2"
+                    >
+
+                      <img
+                        src="<%= item.food &&
+                          item.food.image &&
+                          item.food.image.url
+                            ? item.food.image.url
+                            : 'https://openclipart.org/image/800px/289282'
+                        %>"
+                        alt="food"
+                        class="rounded"
+                        style="
+                          width:44px;
+                          height:44px;
+                          object-fit:cover;
+                        "
+                      />
+
+
+                      <span>
+
+                        <%= item.food &&
+                          item.food.name
+                            ? item.food.name
+                            : 'N/A'
+                        %>
+
+                      </span>
+
+                    </div>
+
+                  </td>
+
+
+                  <!-- RESTAURANT -->
+
+                  <td>
+
+                    <%= item.food &&
+                      item.food.restaurant
+                        ? item.food.restaurant.username
+                        : 'N/A'
+                    %>
+
+                  </td>
+
+
+                  <!-- QUANTITY -->
+
+                  <td>
+
+                    <%= item.count || 0 %>
+
+                  </td>
+
+
+                  <!-- PRICE -->
+
+                  <td>
+
+                    ₹<%= item.money || 0 %>
+
+                  </td>
+
+                </tr>
+
+              <% } %>
+
+
+            <% } else { %>
+
+              <tr>
+
+                <td
+                  colspan="4"
+                  class="text-center text-muted py-4"
+                >
+
+                  No food items found.
+
+                </td>
+
+              </tr>
+
+            <% } %>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
 </div>
